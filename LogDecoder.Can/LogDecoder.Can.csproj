@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>LogDecoder.CAN</RootNamespace>
+        <AssemblyName>LogDecoder.CAN</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LogDecoder.Helpers\LogDecoder.Helpers.csproj" />
+    </ItemGroup>
+
+</Project>

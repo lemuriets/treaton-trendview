@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Can", "LogDecoder.Can\LogDecoder.Can.csproj", "{D50FBE0A-934A-48E2-911F-4D48DA1EE8D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.CLI", "LogDecoder.CLI\LogDecoder.CLI.csproj", "{814EC846-03E1-4736-A317-07FD8130F446}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Parser", "LogDecoder.Parser\LogDecoder.Parser.csproj", "{8399E49B-7352-475C-B1A9-038B50647CEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Helpers", "LogDecoder.Helpers\LogDecoder.Helpers.csproj", "{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.GUI", "LogDecoder.GUI\LogDecoder.GUI.csproj", "{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Parser.Tests", "LogDecoder.Parser.Tests\LogDecoder.Parser.Tests.csproj", "{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Can.Tests", "LogDecoder.Can.Tests\LogDecoder.Can.Tests.csproj", "{ED718A63-3609-427F-94B0-DD700E6F3200}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D50FBE0A-934A-48E2-911F-4D48DA1EE8D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D50FBE0A-934A-48E2-911F-4D48DA1EE8D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D50FBE0A-934A-48E2-911F-4D48DA1EE8D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D50FBE0A-934A-48E2-911F-4D48DA1EE8D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{814EC846-03E1-4736-A317-07FD8130F446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{814EC846-03E1-4736-A317-07FD8130F446}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{814EC846-03E1-4736-A317-07FD8130F446}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{814EC846-03E1-4736-A317-07FD8130F446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8399E49B-7352-475C-B1A9-038B50647CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8399E49B-7352-475C-B1A9-038B50647CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8399E49B-7352-475C-B1A9-038B50647CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8399E49B-7352-475C-B1A9-038B50647CEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED718A63-3609-427F-94B0-DD700E6F3200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED718A63-3609-427F-94B0-DD700E6F3200}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED718A63-3609-427F-94B0-DD700E6F3200}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED718A63-3609-427F-94B0-DD700E6F3200}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF4D44F2-2D35-42F1-AFF2-D671321A3BF2}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,82 @@
+﻿<Window x:Class="LogDecoder.GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LogDecoder.GUI"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="Расшифровщик логов" Height="500" Width="800"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Левая панель -->
+        <StackPanel Grid.Column="0" Width="340" Margin="0" VerticalAlignment="Top" >
+            <Button x:Name="BtnSelectInputFolder" Content="Выбрать папку с логами" Width="200" Margin="0,0,0,5"/>
+            <TextBlock x:Name="TxtSelectedInputFolder" Text="Папка не выбрана" Foreground="Gray" TextWrapping="Wrap" />
+
+            <TextBlock Text="ID пакетов для парсинга:" FontWeight="Bold" Margin="0,10,0,0" />
+            <ListBox x:Name="PackageIdList"
+                     SelectionMode="Multiple"
+                     MaxHeight="120"
+                     SelectedValuePath="Id">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="({0}) {1}">
+                                    <Binding Path="Id"/>
+                                    <Binding Path="Name"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <TextBlock Text="Дата и время начала расшифровки:" FontWeight="Bold" Margin="0,10,0,0" />
+            <xctk:DateTimePicker x:Name="StartDateTime"
+                             TextAlignment="Left"
+                             Format="Custom"
+                             FormatString="dd.MM.yyyy HH:mm:ss"
+                             Width="200"/>
+            
+            <TextBlock Text="Дата и время конца расшифровки:" FontWeight="Bold" Margin="0,10,0,0" />
+            <xctk:DateTimePicker x:Name="EndDateTime"
+                             TextAlignment="Left"
+                             Format="Custom"
+                             FormatString="dd.MM.yyyy HH:mm:ss"
+                             Width="200"/>
+
+            <TextBlock x:Name="TxtErrorDateTime" Foreground="Red" TextWrapping="Wrap" Margin="0,5,0,0"/>
+        </StackPanel>
+        
+        <Border Grid.Column="1" Width="1" Background="LightGray" />
+
+        <!-- Правая панель -->
+        <StackPanel Grid.Column="2" VerticalAlignment="Top">
+            <Button x:Name="BtnSelectOutputFolder" Content="Выходная папка" Width="200" Margin="0,0,0,5"/>
+            <TextBlock x:Name="TxtSelectedOutputFolder" Text="Папка не выбрана" Foreground="Gray" TextWrapping="Wrap" />
+            
+            <Button x:Name="BtnExportExcel" Content="Экспорт в Excel" Width="150" Margin="0,15,0,5" IsEnabled="False"/>
+            <TextBlock x:Name="TxtErrorExport" Foreground="Red" TextWrapping="Wrap" Margin="0,5,0,5"/>
+            
+            <Button x:Name="BtnTrendView" Content="Тренды" Width="150" IsEnabled="True"/>
+            <TextBlock x:Name="TxtIndexStatus" Foreground="ForestGreen" TextWrapping="Wrap" Margin="0,5,0,5"/>
+        </StackPanel>
+    </Grid>
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="4"/>
+        </Style>
+    </Window.Resources>
+</Window>

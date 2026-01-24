@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>LogDecoder.Parser</AssemblyName>
+        <RootNamespace>LogDecoder.Parser</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LogDecoder.Can\LogDecoder.Can.csproj" />
+      <ProjectReference Include="..\LogDecoder.Helpers\LogDecoder.Helpers.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EPPlus" Version="8.0.3" />
+    </ItemGroup>
+
+</Project>

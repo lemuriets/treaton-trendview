@@ -1,0 +1,78 @@
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug*/
+[Rr]elease*/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.dll
+*.exe
+*.pdb
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+.history/
+
+# Logs
+*.log
+
+# WPF / XAML designer
+*.g.cs
+*.g.i.cs
+
+# Publish
+publish/
+*.Publish.xml
+*.pubxml
+*.azurePubxml
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.tmp
+*.swp
+
+# User-specific files
+*.userprefs
+
+# Tests
+TestResults/
+*.TestResults/
+test_*/
+*_test/
+*.trx
+*.coverage
+*.coveragexml
+*.TestAdapter
+*.TestLogger
+*.vsdmi
+*.testsettings
