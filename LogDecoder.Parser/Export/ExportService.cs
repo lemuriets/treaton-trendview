@@ -4,7 +4,7 @@ using LogDecoder.Parser.Data;
 
 namespace LogDecoder.Parser.Export;
 
-public class ExportService(LogFileScanner logFileScanner) : IExportService
+public class ExportService(LogParser logParser) : IExportService
 {
     public void ToExcel(string file, string outputFolder, HashSet<int> filterIds, DateTime start, DateTime end)
     {
@@ -20,7 +20,7 @@ public class ExportService(LogFileScanner logFileScanner) : IExportService
 
         CreateExcelHeaders(excel, worksheetName, filterIds);
 
-        foreach (var package in logFileScanner.ExtractAllPackages(filterIds, start, end))
+        foreach (var package in logParser.GetPackagesForTimeSpan(filterIds, start, end))
         {
             var packageData = package.ParseData();
             if (packageData is null)

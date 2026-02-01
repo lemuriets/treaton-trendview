@@ -30,7 +30,7 @@ public partial class LogParser : ILogParser
 
     private readonly string _logsFolder;
     private readonly string _indexFolder;
-    private readonly IIndexer _indexer;
+    private readonly Indexer _indexer;
 
     private readonly SortedDictionary<string, LogFileScanner> _scanners = new();
     
@@ -72,31 +72,31 @@ public partial class LogParser : ILogParser
         FinishIndex?.Invoke();
     }
     
-    public List<ICanPackageParsed> GetPackagesForTimeSpan(HashSet<int> filterIds, DateTime start, int lenghtSec)
+    public List<ICanPackageParsed> GetPackagesForTimeSpan(HashSet<int> filterIds, DateTime start, DateTime end)
     {
         List<ICanPackageParsed> packages = [];
         foreach (var scanner in _scanners.Values)
         {
             try
             {
-                return scanner.ExtractAllPackages(filterIds, start, lenghtSec).ToList();
+                return scanner.ExtractAllPackages(filterIds, start, end).ToList();
             }
             catch (InvalidOperationException)
             {
-                Console.WriteLine($"Unable to extract packages for {start} - {lenghtSec} sec");
+                Console.WriteLine($"Unable to extract packages for ({start} - {end}) sec");
             }
         }
         return packages;
     }
 
-    public bool IsDateTimeExists(DateTime dt)
-    {
-        foreach (var VARIABLE in COLLECTION)
-        {
-            
-        }
-        return _indexer.FindBufferByDateTime() != -1;
-    }
+    // public bool IsDateTimeExists(DateTime dt)
+    // {
+    //     foreach (var VARIABLE in COLLECTION)
+    //     {
+    //         
+    //     }
+    //     return _indexer.FindBufferByDateTime() != -1;
+    // }
     
     public DateTime? GetStartDatetime()
     {
