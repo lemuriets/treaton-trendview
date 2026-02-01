@@ -3,7 +3,6 @@ using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data;
 using LogDecoder.Parser.Data.Contracts;
-using LogDecoder.Parser.Export;
 using LogDecoder.Parser.Contracts;
 
 namespace LogDecoder.Parser;
@@ -33,7 +32,7 @@ public partial class LogParser : ILogParser
     private readonly string _indexFolder;
     private readonly IIndexer _indexer;
 
-    private readonly SortedDictionary<string, ILogFileScanner> _scanners = new();
+    private readonly SortedDictionary<string, LogFileScanner> _scanners = new();
     
     public readonly HashSet<int> IdsAll = [IdSynchro.Id, IdWaveCivl.Id, IdStatusPwr.Id, IdMComplCivl.Id, IdMLeakCivl.Id, IdMMvCivl.Id, IdMPeepCivl.Id, IdMPipCivl.Id, IdMRbCivl.Id, IdMTexpCivl.Id, IdMTinspCivl.Id, IdMVexpCivl.Id, IdMVinspCivl.Id, IdStatusScm.Id, IdStatusMix.Id, IdStatusCivl.Id, IdStatusMotor.Id, IdStatusCapno1.Id, IdStatusCapno2.Id, IdStatusSpo.Id, IdStatusSpoV21.Id, IdStatusSpoV22.Id];
 

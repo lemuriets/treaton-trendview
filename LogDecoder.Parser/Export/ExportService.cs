@@ -1,11 +1,10 @@
-using System.Reflection.Metadata.Ecma335;
-using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data.Contracts;
 using LogDecoder.Helpers;
+using LogDecoder.Parser.Data;
 
 namespace LogDecoder.Parser.Export;
 
-public class ExportService(ILogFileScanner logFileScanner) : IExportService
+public class ExportService(LogFileScanner logFileScanner) : IExportService
 {
     public void ToExcel(string file, string outputFolder, HashSet<int> filterIds, DateTime start, DateTime end)
     {

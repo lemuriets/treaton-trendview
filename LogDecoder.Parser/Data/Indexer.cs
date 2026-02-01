@@ -16,8 +16,8 @@ public class LogFileIndex
 
 internal class IndexBuilder
 {
-    private readonly IBufferReader _bufferReader = new BufferReader();
-    private readonly IBufferParser _bufferParser = new BufferParser();
+    private readonly BufferReader _bufferReader = new BufferReader();
+    private readonly BufferParser _bufferParser = new BufferParser();
     
     public LogFileIndex Build(string file)
     {
@@ -50,8 +50,8 @@ internal class IndexBuilder
 
 internal class Indexer : IIndexer
 {
-    private readonly IBufferReader _bufferReader = new BufferReader();
-    private readonly IBufferParser _bufferParser = new BufferParser();
+    private readonly BufferReader _bufferReader = new BufferReader();
+    private readonly BufferParser _bufferParser = new BufferParser();
     
     private readonly Dictionary<string, string[]> _indexes = new();
 

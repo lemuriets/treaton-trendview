@@ -10,7 +10,7 @@ namespace LogDecoder.Parser.Data;
 
 internal class LogFileScanner: ILogFileScanner
 {
-    public LogFileScanner(string file, string indexFolder, IIndexer indexer)
+    public LogFileScanner(string file, string indexFolder, Indexer indexer)
     {
         _file = file;
         _indexFolder = indexFolder;
@@ -20,9 +20,9 @@ internal class LogFileScanner: ILogFileScanner
         _indexer = indexer;
     }
     
-    private readonly IBufferReader _bufferReader;
-    private readonly IBufferParser _bufferParser;
-    private readonly IIndexer _indexer;
+    private readonly BufferReader _bufferReader;
+    private readonly BufferParser _bufferParser;
+    private readonly Indexer _indexer;
     private readonly string _file;
     private readonly string _indexFolder;
     private readonly string _indexFile;
