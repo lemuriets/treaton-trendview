@@ -15,13 +15,12 @@ public partial class LogParser : ILogParser
         var binFilesSorted = FindBinFilesSorted(logsFolder);
         
         _indexFolder = Path.Combine(logsFolder, "index");
-        _indexer = new Indexer();
         
         Directory.CreateDirectory(_indexFolder);
         
         foreach (var file in binFilesSorted)
         {
-            _scanners[file] = new LogFileScanner(file, _indexFolder, _indexer);
+            _scanners[file] = new LogFileScanner(file, _indexFolder);
         }
     }
 
@@ -30,32 +29,25 @@ public partial class LogParser : ILogParser
 
     private readonly string _logsFolder;
     private readonly string _indexFolder;
-    private readonly Indexer _indexer;
+    private readonly IndexReader _indexReader;
 
     private readonly SortedDictionary<string, LogFileScanner> _scanners = new();
     
-    public readonly HashSet<int> IdsAll = [IdSynchro.Id, IdWaveCivl.Id, IdStatusPwr.Id, IdMComplCivl.Id, IdMLeakCivl.Id, IdMMvCivl.Id, IdMPeepCivl.Id, IdMPipCivl.Id, IdMRbCivl.Id, IdMTexpCivl.Id, IdMTinspCivl.Id, IdMVexpCivl.Id, IdMVinspCivl.Id, IdStatusScm.Id, IdStatusMix.Id, IdStatusCivl.Id, IdStatusMotor.Id, IdStatusCapno1.Id, IdStatusCapno2.Id, IdStatusSpo.Id, IdStatusSpoV21.Id, IdStatusSpoV22.Id];
-
-    public List<string> GetAllIndexes()
-    {
-        var result = new List<string>();
-        foreach (var scanner in _scanners.Values)
-        {
-            foreach (var line in scanner.GetIndex())
-            {
-                result.Add(string.Join(' ', line.Split()[1..]));
-            }
-        }
-        return result;
-    }
+    public readonly HashSet<int> IdsAll = [
+        IdSynchro.Id, IdWaveCivl.Id, IdStatusPwr.Id, IdMComplCivl.Id, IdMLeakCivl.Id, 
+        IdMMvCivl.Id, IdMPeepCivl.Id, IdMPipCivl.Id, IdMRbCivl.Id, IdMTexpCivl.Id,
+        IdMTinspCivl.Id, IdMVexpCivl.Id, IdMVinspCivl.Id, IdStatusScm.Id, IdStatusMix.Id,
+        IdStatusCivl.Id, IdStatusMotor.Id, IdStatusCapno1.Id, IdStatusCapno2.Id, IdStatusSpo.Id,
+        IdStatusSpoV21.Id, IdStatusSpoV22.Id
+    ];
     
-    public void CreateOrLoadAllIndexes()
+    public void CreateAllIndexes()
     {
         StartIndex?.Invoke();
 
         foreach (var scanner in _scanners.Values)
         {
-            scanner.CreateOrLoadIndexFile();
+            scanner.CreateIndexFileIfNotExists();
         }
 
         FinishIndex?.Invoke();
@@ -65,7 +57,7 @@ public partial class LogParser : ILogParser
     {
         StartIndex?.Invoke();
         var tasks = _scanners.Values
-            .Select(scanner => Task.Run(scanner.CreateOrLoadIndexFile));
+            .Select(scanner => Task.Run(scanner.CreateIndexFileIfNotExists));
 
         await Task.WhenAll(tasks);
         
@@ -81,9 +73,9 @@ public partial class LogParser : ILogParser
             {
                 return scanner.ExtractAllPackages(filterIds, start, end).ToList();
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
-                Console.WriteLine($"Unable to extract packages for ({start} - {end}) sec");
+                Console.WriteLine(ex.Message);
             }
         }
         return packages;
@@ -91,11 +83,11 @@ public partial class LogParser : ILogParser
 
     // public bool IsDateTimeExists(DateTime dt)
     // {
-    //     foreach (var VARIABLE in COLLECTION)
+    //     foreach (var scanner in _scanners)
     //     {
     //         
     //     }
-    //     return _indexer.FindBufferByDateTime() != -1;
+    //     return true;
     // }
     
     public DateTime? GetStartDatetime()
