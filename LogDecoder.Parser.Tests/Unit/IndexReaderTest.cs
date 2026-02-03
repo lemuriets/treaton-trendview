@@ -1,7 +1,7 @@
-namespace CanDecoder.Parser.Tests.Unit;
+namespace LogDecoder.Parser.Tests.Unit;
 
 [TestFixture]
-public class IndexerTest
+public class IndexReaderTest
 {
     [SetUp]
     public void Setup()

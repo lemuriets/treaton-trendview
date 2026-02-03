@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.General;
-using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data.Contracts;
 
 [assembly: InternalsVisibleTo("LogDecoder.Parser")]
@@ -10,38 +9,30 @@ namespace LogDecoder.Parser.Data;
 
 internal class LogFileScanner: ILogFileScanner
 {
-    public LogFileScanner(string file, string indexFolder, Indexer indexer)
+    public LogFileScanner(string file, string indexFolder)
     {
         _file = file;
         _indexFolder = indexFolder;
         _indexFile = GetIndexFilePath(file, indexFolder);
         _bufferReader = new BufferReader();
         _bufferParser = new BufferParser();
-        _indexer = indexer;
+        _indexReader = new IndexReader(_indexFile);
     }
     
     private readonly BufferReader _bufferReader;
     private readonly BufferParser _bufferParser;
-    private readonly Indexer _indexer;
+    private readonly IndexReader _indexReader;
     private readonly string _file;
     private readonly string _indexFolder;
     private readonly string _indexFile;
-
-    public string[] GetIndex()
-    {
-        return _indexer.GetIndex(_indexFile);
-    }
     
-    public void CreateOrLoadIndexFile()
+    public void CreateIndexFileIfNotExists()
     {
         if (!File.Exists(_indexFile))
         {
-            _indexer.CreateIndexFile(_file, _indexFolder);
+            IndexBuilder.CreateIndexFile(_file, _indexFolder);
         }
-        else
-        {
-            _indexer.Load(_indexFile);
-        }
+        _indexReader.Load();
     }
 
     private string GetIndexFilePath(string sourceFile, string indexFolder)
@@ -52,18 +43,12 @@ internal class LogFileScanner: ILogFileScanner
     
     public DateTime? GetStartDatetime()
     {
-        var synchro = GetFirstValidPackage(IdSynchro.Id);
-        var parsedData = synchro?.ParseData();
-        if (parsedData is null)
-        {
-            return null;
-        }
-        return DateTime.Parse(parsedData.Value.Messages[0]);
+        return _indexReader.FirstIndex?.Time;
     }
 
     public DateTime? GetLastDatetime()
     {
-        return _indexer.GetLastDatetime(_indexFile);
+        return _indexReader.LastIndex?.Time;
     }
     
     public ICanPackageParsed? GetFirstValidPackage(int id)
@@ -82,7 +67,7 @@ internal class LogFileScanner: ILogFileScanner
     
     public IEnumerable<ICanPackageParsed> ExtractAllPackages(HashSet<int> filterIds, DateTime from)
     {
-        var startBufferNum = _indexer.FindBufferByDateTime(_indexFile, from);
+        var startBufferNum = _indexReader.FindBufferByDateTime(from);
         if (startBufferNum == -1)
         {
             throw new InvalidOperationException($"Datetime <{from}> does not exists in file {_file}.");
@@ -96,11 +81,12 @@ internal class LogFileScanner: ILogFileScanner
     
     public IEnumerable<ICanPackageParsed> ExtractAllPackages(HashSet<int> filterIds, DateTime from, DateTime to)
     {
-        var startBufferNum = _indexer.FindBufferByDateTime(_indexFile, from);
-        var endBufferNum = _indexer.FindNearestBufferByDateTime(_indexFile, to);
+        var startBufferNum = _indexReader.FindBufferByDateTime(from);
+        var endBufferNum = _indexReader.FindNearestBufferByDateTime(to);
 
         if (startBufferNum == -1 || endBufferNum == -1 || startBufferNum > endBufferNum)
         {
+            Console.WriteLine($"{startBufferNum} {endBufferNum}");
             throw new InvalidOperationException($"Invalid datetime range <{from} - {to}> OR does not exists in file {_file}.");
         }
 
