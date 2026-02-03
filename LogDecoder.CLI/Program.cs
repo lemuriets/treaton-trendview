@@ -3,8 +3,10 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using LogDecoder.CAN.General;
 using LogDecoder.CAN.Packages;
+using LogDecoder.Helpers;
 using LogDecoder.Helpers.TimeHelper;
 using LogDecoder.Parser;
+using LogDecoder.Parser.Export;
 using OxyPlot;
 
 namespace LogDecoder.CLI;
@@ -26,23 +28,25 @@ class Program
     private static void Run()
     {
         // mac
-        // var logsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/test_full";
+        var logsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/test_full";
         
         // win
-        var logsFolder = "C:\\Users\\madyarov\\projects\\AVL-log-decoder\\test_1";
+        // var logsFolder = "C:\\Users\\madyarov\\projects\\AVL-log-decoder\\test_1";
+        
+        
         var parser = new LogParser(logsFolder);
         parser.CreateAllIndexes();
 
-        var dp = new DataProvider(parser);
+        var export = new ExportService(parser);
+        export.ToExcel($"{logsFolder}/00", logsFolder, [0x401, 1120], DateTime.Parse("28.07.2025 10:13:18"), DateTime.Parse("07.08.2025 14:41:46"));
 
-
-        var start = DateTime.Parse("28.07.2025 10:13:11");
-        
-        var allSeries = new TrendsData();
-        var messages = new ObservableCollection<LogMessage>();
-        dp.GetDataForTimeSpan(allSeries, messages, start, 300, 0);
-        
-        Console.WriteLine();
+        // var dp = new DataProvider(parser);
+        //
+        // var start = DateTime.Parse("28.07.2025 10:13:11");
+        //
+        // var allSeries = new TrendsData();
+        // var messages = new ObservableCollection<LogMessage>();
+        // dp.GetDataForTimeSpan(allSeries, messages, start, 300, 0);
     }
 }
 
@@ -52,7 +56,8 @@ public class DataProvider(LogParser parser)
     public void GetDataForTimeSpan(TrendsData seriesPool, ObservableCollection<LogMessage> messages, DateTime start, int lengthSec, double startX)
     {
         var x = startX;
-        var packages = parser.GetPackagesForTimeSpan(parser.IdsAll, start, lengthSec);
+        var end = start.AddSeconds(lengthSec);
+        var packages = parser.GetPackagesForTimeSpan(parser.IdsAll, start, end);
         if (packages.Count == 0)
         {
             return;
