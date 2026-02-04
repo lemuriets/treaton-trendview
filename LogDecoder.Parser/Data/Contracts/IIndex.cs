@@ -5,7 +5,7 @@ public interface IIndexBuilder
     
 }
 
-public interface IIndexReader
+public interface IIndexParser
 {
     
 }

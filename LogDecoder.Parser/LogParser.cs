@@ -12,13 +12,11 @@ public partial class LogParser : ILogParser
     public LogParser(string logsFolder)
     {
         _logsFolder = logsFolder;
-        var binFilesSorted = FindBinFilesSorted(logsFolder);
-        
         _indexFolder = Path.Combine(logsFolder, "index");
         
         Directory.CreateDirectory(_indexFolder);
         
-        foreach (var file in binFilesSorted)
+        foreach (var file in FindBinFilesSorted(logsFolder))
         {
             _scanners[file] = new LogFileScanner(file, _indexFolder);
         }
@@ -29,7 +27,7 @@ public partial class LogParser : ILogParser
 
     private readonly string _logsFolder;
     private readonly string _indexFolder;
-    private readonly IndexReader _indexReader;
+    private readonly IndexParser _indexParser;
 
     private readonly SortedDictionary<string, LogFileScanner> _scanners = new();
     
@@ -63,6 +61,19 @@ public partial class LogParser : ILogParser
         
         FinishIndex?.Invoke();
     }
+
+    public IEnumerable<ICanPackageParsed> GetPackagesFromFile(string file, HashSet<int> filterIds)
+    {
+        if (!_scanners.TryGetValue(file, out var scanner))
+        {
+            yield break;
+        }
+
+        foreach (var package in scanner.ExtractAllPackages(filterIds))
+        {
+            yield return package;
+        }
+    }
     
     public List<ICanPackageParsed> GetPackagesForTimeSpan(HashSet<int> filterIds, DateTime start, DateTime end)
     {
@@ -81,14 +92,10 @@ public partial class LogParser : ILogParser
         return packages;
     }
 
-    // public bool IsDateTimeExists(DateTime dt)
-    // {
-    //     foreach (var scanner in _scanners)
-    //     {
-    //         
-    //     }
-    //     return true;
-    // }
+    public bool IsDateTimeExists(DateTime target)
+    {
+        return _scanners.Values.Any(scanner => scanner.IsDateTimeExists(target));
+    }
     
     public DateTime? GetStartDatetime()
     {

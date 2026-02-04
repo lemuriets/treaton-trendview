@@ -6,6 +6,7 @@ namespace LogDecoder.Parser.Export;
 
 public class ExportService(LogParser logParser) : IExportService
 {
+    
     public void ToExcel(string logFile, string outputFolder, HashSet<int> filterIds, DateTime start, DateTime end)
     {
         Console.WriteLine($"Processing file: {logFile}");
@@ -27,9 +28,9 @@ public class ExportService(LogParser logParser) : IExportService
             {
                 continue;
             }
-            var packageErrors = packageData.Value.Messages;
+            var packageMessages = packageData.Value.Messages;
             var row = new [] { package.Id.ToString(), package.Name }
-                .Concat(packageErrors.ToArray())
+                .Concat(packageMessages.ToArray())
                 .ToArray();
             excel.AddRow(worksheetName, row);
         }

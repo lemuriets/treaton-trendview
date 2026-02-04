@@ -13,7 +13,7 @@ public readonly struct Index(int bufNum, DateTime time)
     }
 }
 
-internal class IndexReader : IIndexReader
+internal class IndexParser : IIndexParser
 {
     private List<Index> _indexes;
 
@@ -22,7 +22,7 @@ internal class IndexReader : IIndexReader
     public Index? FirstIndex;
     public Index? LastIndex;
 
-    public IndexReader(string indexFile)
+    public IndexParser(string indexFile)
     {
         _indexFilePath = indexFile;
     }
@@ -38,7 +38,7 @@ internal class IndexReader : IIndexReader
         }
     }
     
-    public List<Index> LoadIndex(string indexFile)
+    private List<Index> LoadIndex(string indexFile)
     {
         if (!File.Exists(indexFile))
         {
