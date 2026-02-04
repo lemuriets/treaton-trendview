@@ -4,6 +4,8 @@ using LogDecoder.Parser;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Media;
+using LogDecoder.GUI.Services;
+using LogDecoder.Parser.Export;
 
 namespace LogDecoder.GUI
 {
@@ -14,6 +16,7 @@ namespace LogDecoder.GUI
         private DateTime startDateTime;
         private DateTime endDateTime;
         private LogParser logParser;
+        private ExportService exportService;
         private string[] binFiles;
 
         public MainWindow()
@@ -70,6 +73,7 @@ namespace LogDecoder.GUI
             TxtSelectedInputFolder.Text = selectedInputFolder;
             TxtSelectedInputFolder.Foreground = Brushes.Green;
             logParser = new LogParser(selectedFolder);
+            exportService = new ExportService(logParser);
             
             logParser.StartIndex += OnIndexStart;
             logParser.FinishIndex += OnIndexFinish;
@@ -155,9 +159,7 @@ namespace LogDecoder.GUI
             {
                 await Task.Run(() =>
                 {
-                    logParser = new LogParser(inputFolder);
-                    Console.WriteLine("Unrealised method");
-                    // logParser.ExportToExcel(outputFolder, selectedIds, start, end);
+                    exportService.ToExcel(inputFolder, outputFolder, selectedIds, start, end);
                 });
 
                 TxtErrorExport.Text = "";

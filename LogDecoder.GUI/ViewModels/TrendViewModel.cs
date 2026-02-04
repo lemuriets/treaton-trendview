@@ -104,8 +104,7 @@ public class TrendViewModel : INotifyPropertyChanged
         get => _startDateTime;
         set
         {
-            var index = (value.ToString());
-            if (index == -1)
+            if (_dataProvider.IsDateTimeExists(value))
             {
                 TxtError = "Дата не найдена!";
                 return;
@@ -115,7 +114,7 @@ public class TrendViewModel : INotifyPropertyChanged
             
             TxtError = "";
 
-            UpdateCursorsAndValues(index);
+            // UpdateCursorsAndValues(index);
             UpdatePlots(value, _scale.Seconds);
         }
     }
@@ -182,7 +181,8 @@ public class TrendViewModel : INotifyPropertyChanged
     
     private DateTime GetDateTimeByX(double x)
     {
-        return DateTime.Parse(_allIndexes[(int)x]);
+        return DateTime.MinValue;
+        // return DateTime.Parse(_allIndexes[(int)x]);
     }
     
     private void MoveCursorsLeft()
@@ -196,10 +196,10 @@ public class TrendViewModel : INotifyPropertyChanged
     
     private void MoveCursorsRight()
     {
-        if ((int)_cursorX == _allIndexes.Count - 1)
-        {
-            return;
-        }
+        // if ((int)_cursorX == _allIndexes.Count - 1)
+        // {
+        //     return;
+        // }
         UpdateCursorsAndValues(_cursorX + 1);
     }
 

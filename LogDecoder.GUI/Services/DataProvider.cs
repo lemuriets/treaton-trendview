@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Runtime.InteropServices.JavaScript;
 using LogDecoder.CAN.General;
 using LogDecoder.GUI.Models;
 using LogDecoder.Helpers.TimeHelper;
@@ -11,7 +12,8 @@ public class DataProvider(LogParser parser)
     public void GetDataForTimeSpan(TrendsData seriesPool, ObservableCollection<LogMessage> messages, DateTime start, int lengthSec, double startX)
     {
         var x = startX;
-        var packages = parser.GetPackagesForTimeSpan(parser.IdsAll, start, lengthSec);
+        var end = start.AddSeconds(lengthSec);
+        var packages = parser.GetPackagesForTimeSpan(parser.IdsAll, start, end);
         if (packages.Count == 0)
         {
             return;
@@ -45,6 +47,9 @@ public class DataProvider(LogParser parser)
             }
         }
     }
-    
-    
+
+    public bool IsDateTimeExists(DateTime target)
+    {
+        return parser.IsDateTimeExists(target);
+    }
 }
