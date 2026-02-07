@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
+using LogDecoder.CAN;
 using LogDecoder.CAN.Contracts;
-using LogDecoder.CAN.General;
+using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data.Contracts;
 
 [assembly: InternalsVisibleTo("LogDecoder.Parser")]
@@ -9,107 +10,49 @@ namespace LogDecoder.Parser.Data;
 
 internal class LogFileScanner: ILogFileScanner
 {
-    public LogFileScanner(string file, string indexFolder)
+    public LogFileScanner(string file)
     {
         _file = file;
-        _indexFolder = indexFolder;
-        _indexFile = GetIndexFilePath(file, indexFolder);
-        _bufferReader = new BufferReader();
-        _bufferParser = new BufferParser();
-        _indexParser = new IndexParser(_indexFile);
     }
-    
-    private readonly BufferReader _bufferReader;
-    private readonly BufferParser _bufferParser;
-    private readonly IndexParser _indexParser;
+
     private readonly string _file;
-    private readonly string _indexFolder;
-    private readonly string _indexFile;
-    
-    public void CreateIndexFileIfNotExists()
-    {
-        if (!File.Exists(_indexFile))
-        {
-            IndexBuilder.CreateIndexFile(_file, _indexFolder);
-        }
-        _indexParser.Load();
-    }
 
-    private string GetIndexFilePath(string sourceFile, string indexFolder)
+    public (int, ICanPackageParsed?) GetFirstValidPackage(int id)
     {
-        var filename = Path.GetFileName(sourceFile);
-        return Path.Combine(indexFolder, $"{filename}.txt");
-    }
-    
-    public DateTime? GetStartDatetime()
-    {
-        return _indexParser.FirstIndex?.Time;
-    }
-
-    public DateTime? GetLastDatetime()
-    {
-        return _indexParser.LastIndex?.Time;
-    }
-    
-    public bool IsDateTimeExists(DateTime target)
-    {
-        return _indexParser.FindBufferByDateTime(target) != 1;
-    }
-    
-    public ICanPackageParsed? GetFirstValidPackage(int id)
-    {
-        return ExtractAllPackages([id])
-            .FirstOrDefault(pkg => pkg.Data.Length != 0);
-    }
-    
-    public IEnumerable<ICanPackageParsed> ExtractAllPackages(HashSet<int> filterIds)
-    {
-        foreach (var package in ExtractAllPackages(filterIds, 0, 0))
+        foreach (var (bufNum, package) in ExtractAllPackages([id]))
         {
-            yield return package;
-        }
-    }
-    
-    public IEnumerable<ICanPackageParsed> ExtractAllPackages(HashSet<int> filterIds, DateTime from, DateTime to)
-    {
-        var prevHrc = 0;
-        var currentDateTime = from;
-        foreach (var package in ExtractAllPackages(filterIds, from))
-        {
-            var hrcDelta = CanUtils.CalcHrcDelta(prevHrc, package.Hrc);
-            currentDateTime = currentDateTime.AddMicroseconds(hrcDelta);
-
-            if (currentDateTime > to)
+            var parsedPackage = CanPackageFactory.Create(package);
+            if (parsedPackage.Id != 0)
             {
-                yield break;
+                return (bufNum, parsedPackage);
             }
-            prevHrc = package.Hrc;
-            yield return package;
         }
+        return (-1, null);
     }
     
-    public IEnumerable<ICanPackageParsed> ExtractAllPackages(HashSet<int> filterIds, DateTime from)
+    public IEnumerable<(int, CanPackage)> ExtractAllPackages(HashSet<int> filterIds)
     {
-        var startBufferNum = _indexParser.FindBufferByDateTime(from);
-        if (startBufferNum == -1)
-        {
-            throw new InvalidOperationException($"Datetime <{from}> does not exists in file {_file}.");
-        }
-        
-        foreach (var package in ExtractAllPackages(filterIds, startBufferNum, 0))
-        {
-            yield return package;
-        }
+        return ExtractAllPackages(filterIds, 0, 0);
     }
     
-    private IEnumerable<ICanPackageParsed> ExtractAllPackages(HashSet<int> filterIds, int offset, int countBuffers)
+    public IEnumerable<(int, CanPackage)> ExtractAllPackages(HashSet<int> filterIds, int offsetBuffers)
     {
-        foreach (var buffer in _bufferReader.Read(_file, offset, countBuffers))
+        return ExtractAllPackages(filterIds, offsetBuffers, 0);
+    }
+    
+    public IEnumerable<(int, CanPackage)> ExtractAllPackages(HashSet<int> filterIds, int offsetBuffers, int countBuffers)
+    {
+        var bufferReader = new BufferReader(_file);
+        var bufferParser = new BufferParser();
+
+        var bufNum = 0;
+        foreach (var buffer in bufferReader.Read(offsetBuffers, countBuffers))
         {
-            foreach (var package in _bufferParser.GetPackagesFromBuffer(buffer, filterIds))
+            foreach (var package in bufferParser.GetPackagesFromBuffer(buffer, filterIds))
             {
-                yield return package;
+                yield return (bufNum, package);
             }
+            bufNum++;
         }
     }
 }

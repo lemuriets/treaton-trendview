@@ -15,45 +15,58 @@ public readonly struct Index(int bufNum, DateTime time)
 
 internal class IndexParser : IIndexParser
 {
-    private List<Index> _indexes;
+    private List<Index> _indexes = [];
+    private List<TimeRange> _sessions = [];
 
-    private string _indexFilePath;
-
-    public Index? FirstIndex;
-    public Index? LastIndex;
-
-    public IndexParser(string indexFile)
-    {
-        _indexFilePath = indexFile;
-    }
-
-    public void Load()
-    {
-        _indexes = LoadIndex(_indexFilePath);
-
-        if (_indexes.Count > 0)
-        {
-            FirstIndex = _indexes[0];
-            LastIndex = _indexes[^1];
-        }
-    }
+    public DateTime? FirstTime { get; private set; }
+    public DateTime? LastTime { get; private set; }
     
-    private List<Index> LoadIndex(string indexFile)
+    public bool IsDateTimeExists(DateTime target)
     {
-        if (!File.Exists(indexFile))
-        {
-            throw new DirectoryNotFoundException($"Specified index file was not found '{indexFile}'");
-        }
-        Console.WriteLine($"Loading index file {indexFile}");
+        return _sessions.Any(s => s.Contains(target));
+    }
 
-        var result = new List<Index>();
-        var lines = File.ReadAllLines(indexFile);
-        foreach (var line in lines)
+    public void LoadAll(string[] indexFiles)
+    {
+        _indexes.Clear();
+        foreach (var file in indexFiles)
         {
-            var index = ParseLine(line);
-            result.Add(index);
+            _indexes.AddRange(LoadIndex(file));
         }
-        return result;
+
+        if (_indexes.Count == 0)
+        {
+            Console.WriteLine("[WARN] The list of indexes is empty");
+            return;
+        }
+
+        FirstTime = _indexes[0].Time;
+        LastTime = _indexes[^1].Time;
+        
+        FillSessions(_sessions);
+        Console.WriteLine($"[INFO] Created indexes. Count: {_indexes.Count}");
+    }
+
+    private void FillSessions(List<TimeRange> sessions)
+    {
+        sessions.Clear();
+        var timeSpanStart = _indexes[0].Time;
+        for (var i = 0; i < _indexes.Count - 1; i++)
+        {
+            var index1 = _indexes[i];
+            var index2 = _indexes[i + 1];
+
+            var timeDiff = (index2.Time - index1.Time).Duration();
+            var minTimeDiff = TimeSpan.FromSeconds(Config.MinSessionIntervalSeconds);
+            if (timeDiff <= minTimeDiff)
+            {
+                continue;
+            }
+            sessions.Add(new TimeRange(timeSpanStart, index1.Time));
+            timeSpanStart = index2.Time;
+        }
+        sessions.Add(new TimeRange(timeSpanStart, _indexes[^1].Time));
+        Console.WriteLine($"[INFO] Created sessions. Count: {sessions.Count}");
     }
     
     public int FindBufferByDateTime(DateTime target)
@@ -98,6 +111,18 @@ internal class IndexParser : IIndexParser
             lastBufNum = index.BufferNumber;
         }
         return lastBufNum;
+    }
+    
+    private List<Index> LoadIndex(string indexFile)
+    {
+        if (!File.Exists(indexFile))
+        {
+            throw new DirectoryNotFoundException($"Specified index file was not found '{indexFile}'");
+        }
+        Console.WriteLine($"Loading index file {indexFile}");
+
+        var lines = File.ReadAllLines(indexFile);
+        return lines.Select(ParseLine).ToList();
     }
 
     private Index ParseLine(string line)

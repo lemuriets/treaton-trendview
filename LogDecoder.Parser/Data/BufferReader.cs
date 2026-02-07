@@ -6,30 +6,37 @@ using LogDecoder.Parser.Data.Contracts;
 
 namespace LogDecoder.Parser.Data;
 
-public class BufferReader : IBufferReader
+public class BufferReader : IBufferReader, IDisposable
 {
-    public IEnumerable<LogBuffer> Read(string path)
-        => Read(path, offset: 0, count: 0);
+    public BufferReader(string file)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(file);
+        
+        _file = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+    }
     
-    public IEnumerable<LogBuffer> Read(string path, int offset)
-        => Read(path, offset, count: 0);
+    private readonly FileStream _file;
     
-    public IEnumerable<LogBuffer> Read(string path, int offset, int count)
+    public IEnumerable<LogBuffer> Read()
+        => Read(offset: 0, count: 0);
+    
+    public IEnumerable<LogBuffer> Read(int offset)
+        => Read(offset, count: 0);
+    
+    public IEnumerable<LogBuffer> Read(int offset, int count)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(offset);
         ArgumentOutOfRangeException.ThrowIfNegative(count);
         
-        using var file = new FileStream(path, FileMode.Open, FileAccess.Read);
-        
         var offsetBuffers = offset * Config.BufferSize;
-        file.Seek(offsetBuffers, SeekOrigin.Begin);
+        _file.Seek(offsetBuffers, SeekOrigin.Begin);
         
-        var totalBuffers = file.Length / Config.BufferSize;
+        var totalBuffers = _file.Length / Config.BufferSize;
         // TODO: Изменить. Не очевидно, что при count = 0 будет полная итерация
         var iterations = count == 0 ? totalBuffers - offset : count;
         for (var i = 0; i < iterations; i++)
         {
-            var buffer = ReadNext(file);
+            var buffer = ReadNext(_file);
             if (!buffer.IsValid)
             {
                 yield break;
@@ -45,5 +52,10 @@ public class BufferReader : IBufferReader
         return bytesRead < Config.BufferSize
             ? new LogBuffer()
             : new LogBuffer(buffer);
+    }
+
+    public void Dispose()
+    {
+        _file.Dispose();
     }
 }

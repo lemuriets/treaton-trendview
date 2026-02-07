@@ -1,9 +1,10 @@
+using System.Collections;
 using System.Text.RegularExpressions;
 using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data;
-using LogDecoder.Parser.Data.Contracts;
 using LogDecoder.Parser.Contracts;
+using Index = System.Index;
 
 namespace LogDecoder.Parser;
 
@@ -13,12 +14,13 @@ public partial class LogParser : ILogParser
     {
         _logsFolder = logsFolder;
         _indexFolder = Path.Combine(logsFolder, "index");
+        _logFilesSorted = FindBinFilesSorted(logsFolder);
         
         Directory.CreateDirectory(_indexFolder);
-        
-        foreach (var file in FindBinFilesSorted(logsFolder))
+
+        foreach (var file in _logFilesSorted)
         {
-            _scanners[file] = new LogFileScanner(file, _indexFolder);
+            _scanners[file] = new LogFileScanner(file);
         }
     }
 
@@ -27,9 +29,10 @@ public partial class LogParser : ILogParser
 
     private readonly string _logsFolder;
     private readonly string _indexFolder;
-    private readonly IndexParser _indexParser;
-
+    private readonly string[] _logFilesSorted;
+    private readonly IndexParser _indexParser = new IndexParser();
     private readonly SortedDictionary<string, LogFileScanner> _scanners = new();
+    private readonly List<Session> _sessions = [];
     
     public readonly HashSet<int> IdsAll = [
         IdSynchro.Id, IdWaveCivl.Id, IdStatusPwr.Id, IdMComplCivl.Id, IdMLeakCivl.Id, 
@@ -39,80 +42,50 @@ public partial class LogParser : ILogParser
         IdStatusSpoV21.Id, IdStatusSpoV22.Id
     ];
     
-    public void CreateAllIndexes()
+    public void CreateAndLoadAllIndexes()
     {
+        var indexFiles = new List<string>();
         StartIndex?.Invoke();
-
-        foreach (var scanner in _scanners.Values)
+        foreach (var file in _logFilesSorted)
         {
-            scanner.CreateIndexFileIfNotExists();
+            indexFiles.Add(IndexBuilder.CreateIndexFile(file, _indexFolder));
         }
-
+        _indexParser.LoadAll(indexFiles.ToArray());
         FinishIndex?.Invoke();
     }
     
-    public async Task CreateAllIndexesAsync()
+    public IEnumerable<ICanPackageParsed> GetPackagesForTimeSpan(HashSet<int> filterIds, DateTime start, DateTime end)
     {
-        StartIndex?.Invoke();
-        var tasks = _scanners.Values
-            .Select(scanner => Task.Run(scanner.CreateIndexFileIfNotExists));
-
-        await Task.WhenAll(tasks);
-        
-        FinishIndex?.Invoke();
-    }
-
-    public IEnumerable<ICanPackageParsed> GetPackagesFromFile(string file, HashSet<int> filterIds)
-    {
-        if (!_scanners.TryGetValue(file, out var scanner))
-        {
-            yield break;
-        }
-
-        foreach (var package in scanner.ExtractAllPackages(filterIds))
-        {
-            yield return package;
-        }
-    }
-    
-    public List<ICanPackageParsed> GetPackagesForTimeSpan(HashSet<int> filterIds, DateTime start, DateTime end)
-    {
-        List<ICanPackageParsed> packages = [];
         foreach (var scanner in _scanners.Values)
         {
-            try
+            var startBuffer = _indexParser.FindNearestBufferByDateTime(start);
+            var endBuffer = _indexParser.FindNearestBufferByDateTime(end);
+            var buffersCount = endBuffer - startBuffer;
+            foreach (var (_, package) in scanner.ExtractAllPackages(filterIds, startBuffer, buffersCount))
             {
-                return scanner.ExtractAllPackages(filterIds, start, end).ToList();
-            }
-            catch (InvalidOperationException ex)
-            {
-                Console.WriteLine(ex.Message);
+                var parsedPackage = CanPackageFactory.Create(package);
+                if (parsedPackage.Id == 0)
+                {
+                    continue;
+                }
+                yield return parsedPackage;
             }
         }
-        return packages;
     }
 
     public bool IsDateTimeExists(DateTime target)
     {
-        return _scanners.Values.Any(scanner => scanner.IsDateTimeExists(target));
+        return _indexParser.IsDateTimeExists(target);
     }
     
     public DateTime? GetStartDatetime()
     {
-        return _scanners.Values.FirstOrDefault()?.GetStartDatetime();
+        return _indexParser.FirstTime;
     }
 
     public DateTime? GetLastDatetime()
     {
-        foreach (var scanner in _scanners.Values.Reverse())
-        {
-            var dt = scanner.GetLastDatetime();
-            if (dt is not null)
-            {
-                return dt;
-            }
-        }
-        return null;
+        return _indexParser.LastTime;
     }
 
     public static string[] FindBinFilesSorted(string folder)

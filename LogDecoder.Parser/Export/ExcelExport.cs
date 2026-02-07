@@ -1,10 +1,8 @@
-using LogDecoder.Parser.Data.Contracts;
 using LogDecoder.Helpers;
-using LogDecoder.Parser.Data;
 
 namespace LogDecoder.Parser.Export;
 
-public class ExportService(LogParser logParser) : IExportService
+public class ExcelExport(LogParser logParser) : IExcelExport
 {
     
     public void ToExcel(string logFile, string outputFolder, HashSet<int> filterIds, DateTime start, DateTime end)

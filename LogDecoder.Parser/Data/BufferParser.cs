@@ -6,9 +6,14 @@ namespace LogDecoder.Parser.Data;
 
 public class BufferParser : Contracts.IBufferParser
 {
-    public List<ICanPackageParsed> GetPackagesFromBuffer(LogBuffer logBuffer, HashSet<int> filterIds)
+    public CanPackage GetFirstPackage(LogBuffer buffer, int id)
     {
-        var packages = new List<ICanPackageParsed>();
+        return GetPackagesFromBuffer(buffer, [id]).FirstOrDefault();
+    }
+    
+    public List<CanPackage> GetPackagesFromBuffer(LogBuffer logBuffer, HashSet<int> filterIds)
+    {
+        var packages = new List<CanPackage>();
         var offset = 0;
 
         for (var i = 0; i < logBuffer.PackagesCount; i++)
@@ -31,18 +36,12 @@ public class BufferParser : Contracts.IBufferParser
             
             offset += packageLength;
             
-            if (!filterIds.Contains(packageId))
+            if (!filterIds.Contains(packageId) && filterIds.Count != 0)
             {
                 continue;
             }
             var package = CanPackageParser.FromBytes(rawPackage, packageType, packageLength, packageId);
-            var parsedPackage = CanPackageFactory.Create(package);
-            if (package.Id == 0)
-            {
-                Console.WriteLine($"Error while parsing package. PkgNum: {i}");
-                break;
-            }
-            packages.Add(parsedPackage);
+            packages.Add(package);
         }
         return packages;
     }
