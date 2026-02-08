@@ -19,7 +19,7 @@ public class ExcelExport(LogParser logParser) : IExcelExport
 
         CreateExcelHeaders(excel, worksheetName, filterIds);
 
-        foreach (var package in logParser.GetPackagesForTimeSpan(filterIds, start, end))
+        foreach (var package in logParser.GetPackages(filterIds, start, end))
         {
             var packageData = package.ParseData();
             if (packageData is null)

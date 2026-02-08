@@ -16,7 +16,7 @@ namespace LogDecoder.GUI
         private DateTime startDateTime;
         private DateTime endDateTime;
         private LogParser logParser;
-        private ExportService exportService;
+        private ExcelExport _excelExport;
         private string[] binFiles;
 
         public MainWindow()
@@ -73,7 +73,7 @@ namespace LogDecoder.GUI
             TxtSelectedInputFolder.Text = selectedInputFolder;
             TxtSelectedInputFolder.Foreground = Brushes.Green;
             logParser = new LogParser(selectedFolder);
-            exportService = new ExportService(logParser);
+            _excelExport = new ExcelExport(logParser);
             
             logParser.StartIndex += OnIndexStart;
             logParser.FinishIndex += OnIndexFinish;
@@ -159,7 +159,7 @@ namespace LogDecoder.GUI
             {
                 await Task.Run(() =>
                 {
-                    exportService.ToExcel(inputFolder, outputFolder, selectedIds, start, end);
+                    _excelExport.ToExcel(inputFolder, outputFolder, selectedIds, start, end);
                 });
 
                 TxtErrorExport.Text = "";
