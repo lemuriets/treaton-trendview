@@ -21,4 +21,8 @@
         <Using Include="NUnit.Framework"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LogDecoder.Can\LogDecoder.Can.csproj" />
+    </ItemGroup>
+
 </Project>
