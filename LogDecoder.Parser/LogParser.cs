@@ -32,7 +32,7 @@ public partial class LogParser : ILogParser
     private readonly string[] _logFilesSorted;
     private readonly IndexParser _indexParser = new IndexParser();
     private readonly SortedDictionary<string, LogFileScanner> _scanners = new();
-    private readonly List<Session> _sessions = [];
+    private readonly List<LogSession> _sessions = [];
     
     public readonly HashSet<int> IdsAll = [
         IdSynchro.Id, IdWaveCivl.Id, IdStatusPwr.Id, IdMComplCivl.Id, IdMLeakCivl.Id, 
