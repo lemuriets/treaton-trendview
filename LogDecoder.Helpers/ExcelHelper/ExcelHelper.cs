@@ -89,29 +89,6 @@ public class ExcelHelper : IDisposable
         worksheetBucket.Add(values);
     }
 
-    //public void AddChartByColumn(string sheetName, int columnIndex, bool hasHeader = true)
-    //{
-    //    var worksheet = GetWorksheetByName(sheetName);
-    //    if (worksheet.Dimension == null)
-    //        throw new InvalidOperationException("Worksheet is empty.");
-
-    //    var startRow = hasHeader ? 2 : 1;
-    //    var endRow = worksheet.Dimension.End.Row;
-
-    //    var chartColumn = worksheet.Dimension.End.Column + 2;
-    //    var chartRow = 1;
-
-    //    var chart = worksheet.Drawings.AddChart($"Chart_Column{columnIndex}", eChartType.Line) as ExcelLineChart;
-    //    chart.Title.Text = worksheet.Cells[1, columnIndex].Text ?? $"Column {columnIndex}";
-
-    //    chart.Series.Add(
-    //        worksheet.Cells[startRow, columnIndex, endRow, columnIndex]
-    //    );
-
-    //    chart.SetPosition(chartRow - 1, 0, chartColumn - 1, 0);
-    //    chart.SetSize(600, 400);
-    //}
-
     private ExcelWorksheet GetWorksheetByName(string name)
     {
         return _package.Workbook.Worksheets[name];

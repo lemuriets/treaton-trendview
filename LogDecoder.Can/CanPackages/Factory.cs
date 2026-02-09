@@ -21,11 +21,9 @@ public static class CanPackageFactory
     private static readonly Dictionary<int, FactoryItem> _registered = new();
     public static HashSet<int> RegisteredIds => _registered.Keys.ToHashSet();
 
-    public static List<(int Id, string PackageName)> GetIdsWithNames(HashSet<int> excludeIds)
+    public static List<(int Id, string PackageName)> GetIdsWithNames()
     {
         return _registered
-            .Where(kvp => !excludeIds.Contains(kvp.Key))
-            .OrderBy(kvp => kvp.Key)
             .Select(kvp => (kvp.Key, kvp.Value.PackageName))
             .ToList();
     }

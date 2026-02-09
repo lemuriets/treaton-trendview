@@ -11,9 +11,12 @@ public static class IndexBuilder
         var baseFilename = Path.GetFileName(logFile);
         var indexFilePath = Path.Combine(folderToSave, baseFilename + ".txt");
         var indexes = CreateIndex(logFile);
-
+        
+        if (File.Exists(indexFilePath) && !rewrite)
+        {
+            return indexFilePath;
+        }
         File.WriteAllLines(indexFilePath, indexes);
-
         return indexFilePath;
     }
 

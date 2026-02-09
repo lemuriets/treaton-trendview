@@ -46,6 +46,20 @@ public partial class LogParser : ILogParser
         FinishIndex?.Invoke();
     }
     
+    public async Task CreateAndLoadAllIndexesAsync()
+    {
+        var indexFiles = new List<string>();
+        StartIndex?.Invoke();
+        var createTasks = _logFilesSorted
+            .Select(file => Task.Run(() => IndexBuilder.CreateIndexFile(file, _indexFolder)))
+            .ToArray();
+        
+        var results = await Task.WhenAll(createTasks);
+        indexFiles.AddRange(results);
+        _indexParser.LoadAll(indexFiles.ToArray());
+        FinishIndex?.Invoke();
+    }
+    
     public IEnumerable<ICanPackageParsed> GetPackages(HashSet<int> filterIds, DateTime start)
     {
         foreach (var scanner in _scanners.Values)

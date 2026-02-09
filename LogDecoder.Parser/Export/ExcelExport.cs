@@ -5,12 +5,9 @@ namespace LogDecoder.Parser.Export;
 public class ExcelExport(LogParser logParser) : IExcelExport
 {
     
-    public void ToExcel(string logFile, string outputFolder, HashSet<int> filterIds, DateTime start, DateTime end)
+    public void ToExcel(string title, string outputFolder, HashSet<int> filterIds, DateTime start, DateTime end)
     {
-        Console.WriteLine($"Processing file: {logFile}");
-
-        var baseFilename = Path.GetFileName(logFile);
-        var excelFilePath = Path.Combine(outputFolder, baseFilename + ".xlsx");
+        var excelFilePath = Path.Combine(outputFolder, title + ".xlsx");
         using var excelSession = new ExcelSession(excelFilePath);
         using var excel = new ExcelHelper(excelSession.Package);
 
