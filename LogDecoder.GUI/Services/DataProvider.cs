@@ -13,15 +13,13 @@ public class DataProvider(LogParser parser)
     {
         var x = startX;
         var end = start.AddSeconds(lengthSec);
-        var packages = parser.GetPackagesForTimeSpan(parser.IdsAll, start, end);
-        if (packages.Count == 0)
+        var prevHrc = -1;
+        foreach (var pkg in parser.GetPackages(parser.IdsAll, start, end))
         {
-            return;
-        }
-        Console.WriteLine($"{packages.Count} {start} - {lengthSec}");
-        var prevHrc = packages[0].Hrc;
-        foreach (var pkg in packages)
-        {
+            if (prevHrc == -1)
+            {
+                prevHrc = pkg.Hrc;
+            }
             Console.WriteLine(x);
             var hrcDelta = CanUtils.CalcHrcDelta(prevHrc, pkg.Hrc);
             var shift = hrcDelta / TimeHelper.MicrosecondsPerSecond;

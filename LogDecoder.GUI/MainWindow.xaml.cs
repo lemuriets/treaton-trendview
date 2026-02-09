@@ -1,10 +1,10 @@
-﻿using LogDecoder.CAN.Packages;
+﻿using System.DirectoryServices.ActiveDirectory;
+using LogDecoder.CAN.Packages;
 using LogDecoder.GUI.Models;
 using LogDecoder.Parser;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Media;
-using LogDecoder.GUI.Services;
 using LogDecoder.Parser.Export;
 
 namespace LogDecoder.GUI
@@ -18,6 +18,7 @@ namespace LogDecoder.GUI
         private LogParser logParser;
         private ExcelExport _excelExport;
         private string[] binFiles;
+        private bool _indexing;
 
         public MainWindow()
         {
@@ -32,7 +33,7 @@ namespace LogDecoder.GUI
             EndDateTime.Value = DateTime.Now;
 
             PackageIdList.ItemsSource = CanPackageFactory
-                .GetIdsWithNames(excludeIds: [IdSynchro.Id])
+                .GetIdsWithNames()
                 .Select(p => new PackageItem { Id = p.Id, Name = p.PackageName })
                 .ToList();
         }
@@ -78,7 +79,7 @@ namespace LogDecoder.GUI
             logParser.StartIndex += OnIndexStart;
             logParser.FinishIndex += OnIndexFinish;
 
-            await logParser.CreateAllIndexesAsync();
+            await logParser.CreateAndLoadAllIndexesAsync();
             
             StartDateTime.Value = logParser.GetStartDatetime();
 
@@ -127,6 +128,9 @@ namespace LogDecoder.GUI
             if (!StartDateTime.Value.HasValue || !EndDateTime.Value.HasValue)
                 return;
 
+            if (_indexing)
+                return;
+
             var start = StartDateTime.Value.Value;
             var end = EndDateTime.Value.Value;
 
@@ -150,27 +154,31 @@ namespace LogDecoder.GUI
                 .Cast<PackageItem>()
                 .Select(p => p.Id)
                 .ToHashSet();
-            var inputFolder = selectedInputFolder;
+            var title = "Данные пакетов";
             var outputFolder = selectedOutputFolder;
             var start = startDateTime;
             var end = endDateTime;
+            
+            Console.WriteLine(outputFolder);
+            
+            Console.WriteLine(string.Join(' ', selectedIds));
 
             try
             {
+                TxtExportStatus.Text = "Производится экспорт. Подождите";
                 await Task.Run(() =>
                 {
-                    _excelExport.ToExcel(inputFolder, outputFolder, selectedIds, start, end);
+                    _excelExport.ToExcel(title, outputFolder, selectedIds, start, end);
                 });
-
-                TxtErrorExport.Text = "";
             }
             catch (Exception ex)
             {
-                TxtErrorExport.Text = "Ошибка: " + ex.Message;
+                TxtExportStatus.Text = "Ошибка: " + ex.Message;
             }
             finally
             {
                 BtnExportExcel.IsEnabled = true;
+                TxtExportStatus.Text = "";
             }
         }
         
@@ -187,12 +195,18 @@ namespace LogDecoder.GUI
         {
             TxtIndexStatus.Text = "Индексирование... Подождите";
             BtnTrendView.IsEnabled = false;
+            _indexing = true;
+            
+            CheckInputs();
         }
 
         private void OnIndexFinish()
         {
             TxtIndexStatus.Text = "";
             BtnTrendView.IsEnabled = true;
+            _indexing = false;
+            
+            CheckInputs();
         }
     }
 }
