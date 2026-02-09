@@ -4,6 +4,8 @@ public class LogSessionsSequence()
 {
     private readonly List<LogSession> _sessions = [];
 
+    public int TotalSeconds { get; private set; }
+
     public void Add(LogSession session)
     {
         if (_sessions.Count > 0)
@@ -14,6 +16,7 @@ public class LogSessionsSequence()
             }
         }
         _sessions.Add(session);
+        TotalSeconds += session.TotalSeconds;
     }
 
     public LogSession? GetSessionByTime(DateTime target)
