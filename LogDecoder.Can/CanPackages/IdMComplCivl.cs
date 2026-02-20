@@ -7,7 +7,6 @@ namespace LogDecoder.CAN.Packages;
 public class IdMComplCivl : BasePackageParsed
 {
     public const int Id = 0x4B4;
-    public const string Name = "Комплайнс и резистанс";
 
     public IdMComplCivl(CanPackage package, string name) : base(package, name) { }
 

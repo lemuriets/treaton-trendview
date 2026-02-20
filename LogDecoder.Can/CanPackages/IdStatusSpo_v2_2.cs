@@ -4,9 +4,9 @@ using LogDecoder.CAN.General;
 namespace LogDecoder.CAN.Packages;
 
 [CanPackageAttr(0x582, "Состояние модуля пульсометрии Masimo 2")]
-public class IdStatusSpoV22 : BasePackageParsed
+public class IdStatusSpo_v2_2 : BasePackageParsed
 {
-    public IdStatusSpoV22(CanPackage p, string name) : base(p, name) { }
+    public IdStatusSpo_v2_2(CanPackage p, string name) : base(p, name) { }
     
     public const int Id = 0x582;
     

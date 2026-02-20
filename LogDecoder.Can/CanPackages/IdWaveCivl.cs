@@ -9,7 +9,6 @@ public class IdWaveCivl : BasePackageParsed
     public IdWaveCivl(CanPackage package, string name): base(package, name) { }
     
     public const int Id = 0x4A6;
-    public const string Name = "Графическая информация";
 
     public override PackageData? ParseData()
     {

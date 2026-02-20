@@ -3,11 +3,11 @@ using LogDecoder.CAN.General;
 
 namespace LogDecoder.CAN.Packages;
 
-public class EmptyPackage : ICanPackageParsed
+public class UnknownCanPackage : ICanPackageParsed
 {
-    public static readonly EmptyPackage Instance = new();
+    public static readonly UnknownCanPackage Instance = new();
 
-    private EmptyPackage() { }
+    private UnknownCanPackage() { }
     
     public int Id => 0;
     public PackageType Type => PackageType.Empty;

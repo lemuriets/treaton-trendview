@@ -10,7 +10,6 @@ public class IdSynchro : BasePackageParsed
     public IdSynchro(CanPackage package, string name): base(package, name) { }
     
     public static int Id = 1120;
-    public const string Name = "Синхро-пакет";
 
     public override PackageData? ParseData()
     {
