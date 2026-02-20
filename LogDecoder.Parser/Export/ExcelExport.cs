@@ -5,7 +5,7 @@ namespace LogDecoder.Parser.Export;
 public class ExcelExport(LogParser logParser) : IExcelExport
 {
     
-    public void ToExcel(string logFile, string outputFolder, HashSet<int> filterIds, DateTime start, DateTime end)
+    public void ToExcel(string logFile, string outputFolder, IReadOnlySet<int> filterIds, DateTime start, DateTime end)
     {
         Console.WriteLine($"Processing file: {logFile}");
 
@@ -34,7 +34,7 @@ public class ExcelExport(LogParser logParser) : IExcelExport
         }
     }
 
-    private void CreateExcelHeaders(ExcelHelper excel, string sheetName, HashSet<int> ids)
+    private void CreateExcelHeaders(ExcelHelper excel, string sheetName, IReadOnlySet<int> ids)
     {
         foreach (var id in ids)
         {

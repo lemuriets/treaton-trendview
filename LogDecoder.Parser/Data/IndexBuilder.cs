@@ -1,36 +1,41 @@
+using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.Packages;
 
 namespace LogDecoder.Parser.Data;
 
-public static class IndexBuilder
+public class IndexBuilder
 {
-    public static string CreateIndexFile(string logFile, string folderToSave, bool rewrite = false)
+    public IndexBuilder(ICanPackageFactory factory)
+    {
+        _factory = factory;
+    }
+
+    private readonly ICanPackageFactory _factory;
+    
+    public string CreateIndexFile(string logFile, string folderToSave, bool rewrite = false)
     {
         Console.WriteLine($"Creating index for: {logFile}");
 
         var baseFilename = Path.GetFileName(logFile);
         var indexFilePath = Path.Combine(folderToSave, baseFilename + ".txt");
-        var indexes = CreateIndex(logFile);
 
-        File.WriteAllLines(indexFilePath, indexes);
-
+        if (!File.Exists(indexFilePath) || rewrite)
+        {
+            var indexes = CreateIndex(logFile);
+            File.WriteAllLines(indexFilePath, indexes);
+        }
         return indexFilePath;
     }
 
-    private static List<string> CreateIndex(string logFile)
+    private List<string> CreateIndex(string logFile)
     {
         var fileScanner = new LogFileScanner(logFile);
         
         var indexes = new List<string>();
         var datetimeSet = new HashSet<string>();
-        foreach (var (bufNum, package) in fileScanner.ExtractAllPackages([IdSynchro.Id]))
+        foreach (var (bufNum, package) in fileScanner.GetAllPackagesParsed(_factory, new HashSet<int>{IdSynchro.Id}))
         {
-            var parsedPackage = CanPackageFactory.Create(package);
-            if (parsedPackage.Id == 0)
-            {
-                continue;
-            }
-            var packageData = parsedPackage.ParseData();
+            var packageData = package.ParseData();
             if (packageData is null)
             {
                 continue;

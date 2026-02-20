@@ -8,10 +8,10 @@ public class BufferParser : Contracts.IBufferParser
 {
     public CanPackage GetFirstPackage(LogBuffer buffer, int id)
     {
-        return GetPackagesFromBuffer(buffer, [id]).FirstOrDefault();
+        return GetPackagesFromBuffer(buffer, new HashSet<int>{id}).FirstOrDefault();
     }
     
-    public List<CanPackage> GetPackagesFromBuffer(LogBuffer logBuffer, HashSet<int> filterIds)
+    public List<CanPackage> GetPackagesFromBuffer(LogBuffer logBuffer, IReadOnlySet<int> filterIds)
     {
         var packages = new List<CanPackage>();
         var offset = 0;

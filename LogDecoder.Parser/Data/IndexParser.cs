@@ -1,29 +1,28 @@
+using System.Globalization;
+using LogDecoder.CAN;
 using LogDecoder.Parser.Data.Contracts;
 
 namespace LogDecoder.Parser.Data;
 
-public readonly struct Index(int bufNum, DateTime time)
+public readonly struct IndexEntry(string filename, int bufNum, DateTime time)
 {
+    public readonly string Filename = filename;
     public readonly int BufferNumber = bufNum;
     public readonly DateTime Time = time;
-
-    public override string ToString()
-    {
-        return $"{BufferNumber} {Time}";
-    }
 }
 
 internal class IndexParser : IIndexParser
 {
-    private List<Index> _indexes = [];
-    private List<TimeRange> _sessions = [];
+    private List<IndexEntry> _indexes = [];
+    private LogSessionsSequence _sessions = new LogSessionsSequence();
+    public LogSessionsSequence Sessions => _sessions;
 
     public DateTime? FirstTime { get; private set; }
     public DateTime? LastTime { get; private set; }
     
     public bool IsDateTimeExists(DateTime target)
     {
-        return _sessions.Any(s => s.Contains(target));
+        return _sessions.Contains(target);
     }
 
     public void LoadAll(string[] indexFiles)
@@ -31,7 +30,7 @@ internal class IndexParser : IIndexParser
         _indexes.Clear();
         foreach (var file in indexFiles)
         {
-            _indexes.AddRange(LoadIndex(file));
+            _indexes.AddRange(LoadIndexFile(file));
         }
 
         if (_indexes.Count == 0)
@@ -43,18 +42,19 @@ internal class IndexParser : IIndexParser
         FirstTime = _indexes[0].Time;
         LastTime = _indexes[^1].Time;
         
-        FillSessions(_sessions);
+        FillSessions(_indexes, _sessions);
         Console.WriteLine($"[INFO] Created indexes. Count: {_indexes.Count}");
     }
 
-    private void FillSessions(List<TimeRange> sessions)
+    private void FillSessions(List<IndexEntry> indexes, LogSessionsSequence sessions)
     {
         sessions.Clear();
-        var timeSpanStart = _indexes[0].Time;
-        for (var i = 0; i < _indexes.Count - 1; i++)
+        var timeSpanStart = indexes[0].Time;
+        var startBuffer = indexes[0].BufferNumber;
+        for (var i = 0; i < indexes.Count - 1; i++)
         {
-            var index1 = _indexes[i];
-            var index2 = _indexes[i + 1];
+            var index1 = indexes[i];
+            var index2 = indexes[i + 1];
 
             var timeDiff = (index2.Time - index1.Time).Duration();
             var minTimeDiff = TimeSpan.FromSeconds(Config.MinSessionIntervalSeconds);
@@ -62,29 +62,33 @@ internal class IndexParser : IIndexParser
             {
                 continue;
             }
-            sessions.Add(new TimeRange(timeSpanStart, index1.Time));
+            sessions.Add(new LogSession(startBuffer, index1.BufferNumber, new TimeRange(timeSpanStart, index1.Time)));
             timeSpanStart = index2.Time;
+            startBuffer = index2.BufferNumber;
         }
-        sessions.Add(new TimeRange(timeSpanStart, _indexes[^1].Time));
+        sessions.Add(new LogSession(startBuffer, indexes[^1].BufferNumber, new TimeRange(timeSpanStart, indexes[^1].Time)));
         Console.WriteLine($"[INFO] Created sessions. Count: {sessions.Count}");
     }
     
-    public int FindBufferByDateTime(DateTime target)
+    public IndexEntry? FindFloor(DateTime target)
     {
         var left = 0;
         var right = _indexes.Count - 1;
-        
+        IndexEntry? result = null;
+
         while (left <= right)
         {
-            // (left + right) / 2
             var mid = left + (right - left) / 2;
-            var index = _indexes[mid];
-            if (index.Time == target)
+            var current = _indexes[mid];
+
+            if (current.Time == target)
             {
-                return index.BufferNumber;
+                return current;
             }
-            if (index.Time < target)
+
+            if (current.Time < target)
             {
+                result = current;
                 left = mid + 1;
             }
             else
@@ -92,28 +96,10 @@ internal class IndexParser : IIndexParser
                 right = mid - 1;
             }
         }
-        return -1;
-    }
-
-    public int FindNearestBufferByDateTime(DateTime target)
-    {
-        if (_indexes.Count == 0)
-        {
-            return -1;
-        }
-        var lastBufNum = -1;
-        foreach (var index in _indexes)
-        {
-            if (index.Time > target)
-            {
-                break;
-            }
-            lastBufNum = index.BufferNumber;
-        }
-        return lastBufNum;
+        return result;
     }
     
-    private List<Index> LoadIndex(string indexFile)
+    private List<IndexEntry> LoadIndexFile(string indexFile)
     {
         if (!File.Exists(indexFile))
         {
@@ -121,19 +107,26 @@ internal class IndexParser : IIndexParser
         }
         Console.WriteLine($"Loading index file {indexFile}");
 
-        var lines = File.ReadAllLines(indexFile);
-        return lines.Select(ParseLine).ToList();
+        var filename = Path.GetFileNameWithoutExtension(indexFile);
+        var result = new List<IndexEntry>();
+        
+        foreach (var line in File.ReadLines(indexFile))
+        {
+            var (bufNum, dt) = ParseLine(line);
+            result.Add(new IndexEntry(filename, bufNum, dt));
+        }
+        return result;
     }
 
-    private Index ParseLine(string line)
+    private (int, DateTime) ParseLine(string line)
     {
         var spaceIndex = line.IndexOf(' ');
         var strBufNum = line.AsSpan(0, spaceIndex);
         var strTime = line.AsSpan(spaceIndex + 1);
 
         var bufNum = int.Parse(strBufNum);
-        var time = DateTime.Parse(strTime);
+        var time = DateTime.ParseExact(strTime, CanConfig.TimeFormat, CultureInfo.InvariantCulture);
 
-        return new Index(bufNum, time);
+        return (bufNum, time);
     }
 }
