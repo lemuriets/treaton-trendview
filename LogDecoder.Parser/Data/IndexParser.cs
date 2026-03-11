@@ -22,6 +22,7 @@ internal class IndexParser : IIndexParser
     
     public bool IsDateTimeExists(DateTime target)
     {
+        // return _indexes.IndexOf()
         return _sessions.Contains(target);
     }
 
@@ -62,11 +63,13 @@ internal class IndexParser : IIndexParser
             {
                 continue;
             }
-            sessions.Add(new LogSession(startBuffer, index1.BufferNumber, new TimeRange(timeSpanStart, index1.Time)));
+
+            var session = new LogSession(startBuffer, index1.BufferNumber, new TimeRange(timeSpanStart, index1.Time));
+            sessions.TryAdd(session);
             timeSpanStart = index2.Time;
             startBuffer = index2.BufferNumber;
         }
-        sessions.Add(new LogSession(startBuffer, indexes[^1].BufferNumber, new TimeRange(timeSpanStart, indexes[^1].Time)));
+        sessions.TryAdd(new LogSession(startBuffer, indexes[^1].BufferNumber, new TimeRange(timeSpanStart, indexes[^1].Time)));
         Console.WriteLine($"[INFO] Created sessions. Count: {sessions.Count}");
     }
     
@@ -125,6 +128,7 @@ internal class IndexParser : IIndexParser
         var strTime = line.AsSpan(spaceIndex + 1);
 
         var bufNum = int.Parse(strBufNum);
+        // var time = DateTime.Parse(strTime);
         var time = DateTime.ParseExact(strTime, CanConfig.TimeFormat, CultureInfo.InvariantCulture);
 
         return (bufNum, time);

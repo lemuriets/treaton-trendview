@@ -13,9 +13,13 @@ public class DataProvider(LogParser parser)
     {
         var x = startX;
         var end = start.AddSeconds(lengthSec);
-        foreach (var pkg in parser.GetPackages(parser.IdsAll, start, end))
+        var prevHrc = -1;
+        foreach (var pkg in parser.GetPackages(parser.RegisteredIds, start, end))
         {
-            Console.WriteLine(x);
+            if (prevHrc == -1)
+            {
+                prevHrc = pkg.Hrc;
+            }
             var hrcDelta = CanUtils.CalcHrcDelta(prevHrc, pkg.Hrc);
             var shift = hrcDelta / TimeHelper.MicrosecondsPerSecond;
             

@@ -63,7 +63,7 @@
             <TextBlock x:Name="TxtSelectedOutputFolder" Text="Папка не выбрана" Foreground="Gray" TextWrapping="Wrap" />
             
             <Button x:Name="BtnExportExcel" Content="Экспорт в Excel" Width="150" Margin="0,15,0,5" IsEnabled="False"/>
-            <TextBlock x:Name="TxtErrorExport" Foreground="Red" TextWrapping="Wrap" Margin="0,5,0,5"/>
+            <TextBlock x:Name="TxtExportStatus" Foreground="Red" TextWrapping="Wrap" Margin="0,5,0,5"/>
             
             <Button x:Name="BtnTrendView" Content="Тренды" Width="150" IsEnabled="True"/>
             <TextBlock x:Name="TxtIndexStatus" Foreground="ForestGreen" TextWrapping="Wrap" Margin="0,5,0,5"/>

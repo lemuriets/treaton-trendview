@@ -1,9 +1,11 @@
-﻿using LogDecoder.CAN.Packages;
+﻿using System.IO;
+using LogDecoder.CAN.Packages;
 using LogDecoder.GUI.Models;
 using LogDecoder.Parser;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Media;
+using LogDecoder.CAN.Contracts;
 using LogDecoder.GUI.Services;
 using LogDecoder.Parser.Export;
 
@@ -11,16 +13,17 @@ namespace LogDecoder.GUI
 {
     public partial class MainWindow : Window
     {
-        private string selectedInputFolder = "";
-        private string selectedOutputFolder = "";
-        private DateTime startDateTime;
-        private DateTime endDateTime;
-        private LogParser logParser;
+        private string _selectedInputFolder = "";
+        private string _selectedOutputFolder = "";
+        private DateTime _startDateTime;
+        private DateTime _endDateTime;
+        private LogParser _logParser;
         private ExcelExport _excelExport;
-        private string[] binFiles;
-
+        private readonly ICanPackageFactory _factory;
+        
         public MainWindow()
         {
+            _factory = new CanPackageFactory();
             InitializeComponent();
             FillWidgets();
             ConnectEvents();
@@ -31,9 +34,9 @@ namespace LogDecoder.GUI
             StartDateTime.Value = DateTime.Now;
             EndDateTime.Value = DateTime.Now;
 
-            PackageIdList.ItemsSource = CanPackageFactory
-                .GetIdsWithNames(excludeIds: [IdSynchro.Id])
-                .Select(p => new PackageItem { Id = p.Id, Name = p.PackageName })
+            PackageIdList.ItemsSource = _factory
+                .GetIdsWithNames()
+                .Select(p => new PackageItem { Id = p.Id, Name = p.Name })
                 .ToList();
         }
 
@@ -52,7 +55,7 @@ namespace LogDecoder.GUI
 
         private async void SelectInputFolder_Click(object sender, RoutedEventArgs e)
         {
-            UpdateButtonsAfterSelectFolder(false);
+            UpdateButtons(false);
             CheckInputs();
             
             var selectedFolder = SelectFolder();
@@ -60,37 +63,36 @@ namespace LogDecoder.GUI
             {
                 return;
             }
-            binFiles = LogParser.FindBinFilesSorted(selectedFolder);
-            if (binFiles.Length == 0)
+            var filesAggregator = new LogFilesAggregator(selectedFolder, Path.GetFileName, LogParser.FilenameTemplateRegex());
+            if (filesAggregator.SortedFiles.Count == 0)
             {
-                selectedInputFolder = "";
+                _selectedInputFolder = "";
                 TxtSelectedInputFolder.Text = "В данной папке нет файлов с логами";
                 TxtSelectedInputFolder.Foreground = Brushes.Red;
                 return;
             }
 
-            selectedInputFolder = selectedFolder;
-            TxtSelectedInputFolder.Text = selectedInputFolder;
+            _selectedInputFolder = selectedFolder;
+            TxtSelectedInputFolder.Text = _selectedInputFolder;
             TxtSelectedInputFolder.Foreground = Brushes.Green;
-            logParser = new LogParser(selectedFolder);
-            _excelExport = new ExcelExport(logParser);
+            _logParser = new LogParser(selectedFolder, _factory);
+            _excelExport = new ExcelExport(_logParser);
             
-            logParser.StartIndex += OnIndexStart;
-            logParser.FinishIndex += OnIndexFinish;
+            _logParser.StartIndex += OnIndexStart;
+            _logParser.FinishIndex += OnIndexFinish;
 
-            await logParser.CreateAllIndexesAsync();
+            await _logParser.CreateOrLoadAllIndexesAsync();
             
-            StartDateTime.Value = logParser.GetStartDatetime();
+            StartDateTime.Value = _logParser.GetStartDatetime();
 
-            UpdateButtonsAfterSelectFolder(true);
             CheckInputs();
         }
 
         private void SelectOutputFolder_Click(object sender, RoutedEventArgs e)
         {
-            selectedOutputFolder = SelectFolder();
+            _selectedOutputFolder = SelectFolder();
 
-            TxtSelectedOutputFolder.Text = selectedOutputFolder;
+            TxtSelectedOutputFolder.Text = _selectedOutputFolder;
             TxtSelectedOutputFolder.Foreground = Brushes.Green;
             CheckInputs();
         }
@@ -102,30 +104,34 @@ namespace LogDecoder.GUI
             return folderDialog.FolderName;
         }
         
-        private void UpdateButtonsAfterSelectFolder(bool enabled)
+        private void UpdateButtons(bool enabled)
         {
             BtnTrendView.IsEnabled = enabled;
+            BtnExportExcel.IsEnabled = enabled;
         }
 
         private void Inputs_Changed(object sender, RoutedEventArgs e)
         {
-            UpdateButtonsAfterSelectFolder(false);
+            UpdateButtons(false);
             CheckInputs();
         }
 
         private void CheckInputs()
         {
-            BtnExportExcel.IsEnabled = false;
             TxtErrorDateTime.Text = "";
 
-            if (selectedInputFolder == "" || selectedOutputFolder == "")
+            if (_selectedInputFolder == "" || _selectedOutputFolder == "")
+            {
                 return;
-
+            }
             if (PackageIdList.SelectedItems.Count == 0)
+            {
                 return;
-
+            }
             if (!StartDateTime.Value.HasValue || !EndDateTime.Value.HasValue)
+            {
                 return;
+            }
 
             var start = StartDateTime.Value.Value;
             var end = EndDateTime.Value.Value;
@@ -136,10 +142,9 @@ namespace LogDecoder.GUI
                 return;
             }
 
-            startDateTime = start;
-            endDateTime = end;
-
-            BtnExportExcel.IsEnabled = true;
+            _startDateTime = start;
+            _endDateTime = end;
+            UpdateButtons(true);
         }
 
         private async void BtnExportExcel_Click(object sender, RoutedEventArgs e)
@@ -150,23 +155,26 @@ namespace LogDecoder.GUI
                 .Cast<PackageItem>()
                 .Select(p => p.Id)
                 .ToHashSet();
-            var inputFolder = selectedInputFolder;
-            var outputFolder = selectedOutputFolder;
-            var start = startDateTime;
-            var end = endDateTime;
+            var inputFolder = _selectedInputFolder;
+            var outputFolder = _selectedOutputFolder;
+            var start = _startDateTime;
+            var end = _endDateTime;
 
             try
             {
+                TxtExportStatus.Text = "Экспорт журнала ошибок. Подождите...";
+                TxtExportStatus.Foreground = Brushes.Green;
                 await Task.Run(() =>
                 {
                     _excelExport.ToExcel(inputFolder, outputFolder, selectedIds, start, end);
                 });
 
-                TxtErrorExport.Text = "";
+                TxtExportStatus.Text = "";
             }
             catch (Exception ex)
             {
-                TxtErrorExport.Text = "Ошибка: " + ex.Message;
+                TxtExportStatus.Text = "Ошибка: " + ex.Message;
+                TxtExportStatus.Foreground = Brushes.Red;
             }
             finally
             {
@@ -176,7 +184,7 @@ namespace LogDecoder.GUI
         
         private void BtnTrendView_Click(object sender, RoutedEventArgs e)
         {
-            var trendWindow = new TrendView(logParser)
+            var trendWindow = new TrendView(_logParser)
             {
                 Owner = this
             };
@@ -186,13 +194,17 @@ namespace LogDecoder.GUI
         private void OnIndexStart()
         {
             TxtIndexStatus.Text = "Индексирование... Подождите";
-            BtnTrendView.IsEnabled = false;
+            StartDateTime.IsEnabled = false;
+            EndDateTime.IsEnabled = false;
+            CheckInputs();
         }
 
         private void OnIndexFinish()
         {
             TxtIndexStatus.Text = "";
-            BtnTrendView.IsEnabled = true;
+            StartDateTime.IsEnabled = true;
+            EndDateTime.IsEnabled = true;
+            CheckInputs();
         }
     }
 }

@@ -20,16 +20,14 @@ public class ExcelSession : IDisposable
         {
             _file.Delete();
         }
-
-        Package = _file.Exists && !rewrite
-            ? new ExcelPackage(_file)
-            : new ExcelPackage();
+        Package = new ExcelPackage(_file);
     }
 
     public void Dispose()
     {
         if (Package.Workbook.Worksheets.Count > 0)
         {
+            Console.WriteLine($"File saved as {_file}");
             Package.SaveAs(_file);
         }
         Package.Dispose();
@@ -49,7 +47,7 @@ public class ExcelHelper : IDisposable
     public ExcelWorksheet GetOrCreateWorksheet(string sheetName)
     {
         var worksheet = GetWorksheetByName(sheetName);
-        if (worksheet == null)
+        if (worksheet is null)
         {
             _sheetIndexes[sheetName] = 0;
             _sheetBuckets[sheetName] = new();
@@ -88,29 +86,6 @@ public class ExcelHelper : IDisposable
 
         worksheetBucket.Add(values);
     }
-
-    //public void AddChartByColumn(string sheetName, int columnIndex, bool hasHeader = true)
-    //{
-    //    var worksheet = GetWorksheetByName(sheetName);
-    //    if (worksheet.Dimension == null)
-    //        throw new InvalidOperationException("Worksheet is empty.");
-
-    //    var startRow = hasHeader ? 2 : 1;
-    //    var endRow = worksheet.Dimension.End.Row;
-
-    //    var chartColumn = worksheet.Dimension.End.Column + 2;
-    //    var chartRow = 1;
-
-    //    var chart = worksheet.Drawings.AddChart($"Chart_Column{columnIndex}", eChartType.Line) as ExcelLineChart;
-    //    chart.Title.Text = worksheet.Cells[1, columnIndex].Text ?? $"Column {columnIndex}";
-
-    //    chart.Series.Add(
-    //        worksheet.Cells[startRow, columnIndex, endRow, columnIndex]
-    //    );
-
-    //    chart.SetPosition(chartRow - 1, 0, chartColumn - 1, 0);
-    //    chart.SetSize(600, 400);
-    //}
 
     private ExcelWorksheet GetWorksheetByName(string name)
     {

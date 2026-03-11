@@ -8,16 +8,18 @@ namespace LogDecoder.Parser;
 
 public partial class LogParser : ILogParser
 {
-    public LogParser(string logsFolder)
+    public LogParser(string logsFolder, ICanPackageFactory factory)
     {
         _logsFolder = logsFolder;
         _indexFolder = Path.Combine(logsFolder, "index");
         _filesAggrerator = new LogFilesAggregator(_logsFolder, Path.GetFileName, FilenameTemplateRegex());
-        _factory = new CanPackageFactory();
+        _factory = factory;
         _indexBuilder = new IndexBuilder(_factory);
         _indexParser = new IndexParser();
 
-        IdsAll = _factory.RegisteredIds;
+        RegisteredIds = _factory.RegisteredIds;
+        IdsWithNames = _factory.GetIdsWithNames();
+        SortedBinFiles = _filesAggrerator.SortedFiles;
         
         Directory.CreateDirectory(_indexFolder);
     }
@@ -33,7 +35,9 @@ public partial class LogParser : ILogParser
     private readonly IndexParser _indexParser;
     private readonly Dictionary<string, LogFileScanner> _scanners = new();
 
-    public readonly IReadOnlySet<int> IdsAll;
+    public readonly IReadOnlySet<int> RegisteredIds;
+    public readonly List<(int Id, string Name)> IdsWithNames;
+    public readonly IReadOnlyList<string> SortedBinFiles;
     
     public bool IsDateTimeExists(DateTime target) => _indexParser.IsDateTimeExists(target);
     public DateTime? GetStartDatetime() => _indexParser.FirstTime;
@@ -130,5 +134,5 @@ public partial class LogParser : ILogParser
     }
 
     [GeneratedRegex(@"^[0-1][0-9]$")]
-    private static partial Regex FilenameTemplateRegex();
+    public static partial Regex FilenameTemplateRegex();
 }
