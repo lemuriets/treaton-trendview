@@ -27,7 +27,7 @@ public class CanPackageFactory : ICanPackageFactory
         {
             return item.Constructor(package, item.PackageName);
         }
-        return  UnknownCanPackage.Instance;
+        return UnknownCanPackage.Instance;
     }
 
     public void Register(int id, string name, Func<CanPackage, string, ICanPackageParsed> constructor)

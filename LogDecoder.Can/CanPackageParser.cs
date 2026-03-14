@@ -1,83 +1,82 @@
 using System.Runtime.CompilerServices;
+using OfficeOpenXml;
+
 namespace LogDecoder.CAN;
 
 public static class CanPackageParser
 {
-    private const int LengthSize = 1;
+    private const int HeaderSize = 1;
     private const int HrcSize = 3;
     private const int MaxDataSize = 8;
+    private const int MinDataSize = 0;
     
-    public const int MaxPackageSize = LengthSize + HrcSize + MaxDataSize + (int)PackageType.Extended;
+    public const int MinPackageSize = HeaderSize + HrcSize + MinDataSize + (int)PackageType.Standard;
+    public const int MaxPackageSize = HeaderSize + HrcSize + MaxDataSize + (int)PackageType.Extended;
 
-    public static CanPackage FromBytes(byte[] rawPackage)
+    public static bool TryParse(ReadOnlyMemory<byte> bytes, out CanPackage package)
     {
-        var type = GetPackageType(rawPackage[0]);
-        var length = GetPackageLength(rawPackage[0], type);
-        var id = GetPackageId(rawPackage, type);
-        var data = GetData(rawPackage, type);
-        if (data.Length == 0)
-        {
-            return new CanPackage();
-        }
-        var hrc = GetHrc(rawPackage, type, data.Length);
+        package = default;
 
-        return new CanPackage(type, id, data, hrc, length);
+        var span = bytes.Span;
+        
+        var type = GetPackageType(span[0]);
+        var dataSize = GetDataSize(span[0]);
+        if (dataSize > MaxDataSize)
+        {
+            return false;
+        }
+        
+        var length = GetTotalPackageLength(type, dataSize);
+        if (bytes.Length < length)
+        {
+            return false;
+        }
+        
+        var idSize = GetIdSize(type);
+        var id = GetPackageId(span, idSize);
+        var data = bytes.Slice(HeaderSize + idSize, dataSize);
+        var hrc = GetHrc(span, type, dataSize);
+
+        package = new CanPackage(type, id, data, hrc, length);
+        
+        return true;
+    }
+    
+    private static int GetIdSize(PackageType type)
+    {
+        return type == PackageType.Standard ? 2 : 4;
     }
 
-    public static CanPackage FromBytes(byte[] rawPackage, PackageType type, int length, int id)
+    public static int GetTotalPackageLength(PackageType type, int dataSize)
     {
-        var data = GetData(rawPackage, type);
-        if (data.Length == 0)
-        {
-            return new CanPackage();
-        }
-        if (length > rawPackage.Length)
-        {
-            return new CanPackage();
-        }
-        var hrc = GetHrc(rawPackage, type, data.Length);
-
-        return new CanPackage(type, id, data, hrc, length);
+        return HeaderSize + GetIdSize(type) + dataSize + HrcSize;
     }
 
-    public static int GetPackageLength(byte firstByte, PackageType type)
+    private static int GetDataSize(byte firstByte)
     {
-        var dataLength = GetDataSize(firstByte);
-        return LengthSize + (int)type + dataLength + HrcSize;
+        return firstByte & 0x7F;
     }
-
-    private static int GetDataSize(byte firstByte) => firstByte & 0x7F;
 
     public static PackageType GetPackageType(byte firstByte)
     {
-        return (firstByte & 0xFF) < 0x80 ? PackageType.Standard : PackageType.Extended;
+        return firstByte < 0x80
+            ? PackageType.Standard
+            : PackageType.Extended;
     }
 
-    public static int GetPackageId(byte[] raw, PackageType type)
+    public static int GetPackageId(ReadOnlySpan<byte> raw, int idSize)
     {
-        return ReadInt32Little(raw, LengthSize, (int)type);
+        return ReadInt32Little(raw, HeaderSize, idSize);
     }
 
-    private static byte[] GetData(byte[] raw, PackageType type)
+    private static int GetHrc(ReadOnlySpan<byte> raw, PackageType type, int dataSize)
     {
-        var size = GetDataSize(raw[0]);
-        if (size > MaxDataSize)
-        {
-            return [];
-        }
-
-        var start = LengthSize + (int)type;
-        return raw[start..(start + size)];
-    }
-
-    private static int GetHrc(byte[] raw, PackageType type, int dataSize)
-    {
-        var start = LengthSize + (int)type + dataSize;
+        var start = HeaderSize + GetIdSize(type) + dataSize;
         return ReadInt32Little(raw, start, HrcSize);
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int ReadInt32Little(byte[] raw, int offset, int count)
+    private static int ReadInt32Little(ReadOnlySpan<byte> raw, int offset, int count)
     {
          unchecked
          {

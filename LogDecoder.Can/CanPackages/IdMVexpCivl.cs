@@ -13,9 +13,13 @@ public class IdMVexpCivl : BasePackageParsed
     public override PackageData? ParseData()
     {
         if (Data.Length < 4)
+        {
             return null;
-        var vexpAvg = BitUtil.ToU16(Data[0], Data[1]);
-        var vexp = BitUtil.ToU16(Data[2], Data[3]);
+        }
+        var span = Data.Span;
+
+        var vexpAvg = BitUtil.ToU16(span[0], span[1]);
+        var vexp = BitUtil.ToU16(span[2], span[3]);
         
         var numericData = new NumericDataItem[]
         {

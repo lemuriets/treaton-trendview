@@ -31,12 +31,13 @@ public class IdStatusSpo_v2_2 : BasePackageParsed
         {
             return null;
         }
+        var span = Data.Span;
 
-        var exc2 = BitUtil.ToU16(Data[0], Data[1]);
-        var dfc  = BitUtil.ToU16(Data[2], Data[3]);
-        var bfc  = BitUtil.ToU16(Data[4], Data[5]);
-        var b6   = Data[6];
-        var b7   = Data[7];
+        var exc2 = BitUtil.ToU16(span[0], span[1]);
+        var dfc  = BitUtil.ToU16(span[2], span[3]);
+        var bfc  = BitUtil.ToU16(span[4], span[5]);
+        var b6   = span[6];
+        var b7   = span[7];
         var mode = (b7 >> 6) & 0x03;
 
         var numericData = new NumericDataItem[]

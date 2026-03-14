@@ -16,8 +16,10 @@ public class IdMRbCivl : BasePackageParsed
         {
             return null;
         }
-        var rrTotal = Data[0];
-        var rrIndependent = Data[1];
+        var span = Data.Span;
+
+        var rrTotal = span[0];
+        var rrIndependent = span[1];
         
         var numericData = new NumericDataItem[]
         {

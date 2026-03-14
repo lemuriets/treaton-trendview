@@ -7,6 +7,7 @@ using LogDecoder.CAN.Packages;
 using LogDecoder.Helpers;
 using LogDecoder.Helpers.TimeHelper;
 using LogDecoder.Parser;
+using LogDecoder.Parser.Data;
 using LogDecoder.Parser.Export;
 using OfficeOpenXml;
 using OxyPlot;
@@ -30,11 +31,11 @@ class Program
     private static void Run()
     {
         // mac
-        // var logsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/test_1";
+        var logsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/test_1";
         // var logsFolder = "/Volumes/Cucumber/treaton_bin_avl";
         
         // win
-        var logsFolder = "C:\\Users\\madyarov\\Desktop\\sd\\a";
+        // var logsFolder = "C:\\Users\\madyarov\\Desktop\\sd\\a";
 
 
 
@@ -46,6 +47,6 @@ class Program
         var end = DateTime.Parse("08.11.2025 18:45:30");
         
         var export = new ExcelExport(parser);
-        export.ToExcel($"{logsFolder}", logsFolder, parser.RegisteredIds, start, end);
+        // export.ToExcel(logsFolder, logsFolder, parser.RegisteredIds, start, end);
     }
 }

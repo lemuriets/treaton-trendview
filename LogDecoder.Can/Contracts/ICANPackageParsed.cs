@@ -7,7 +7,7 @@ public interface ICanPackageParsed
 {
     int Id { get; }
     PackageType Type { get; }
-    byte[] Data { get; }
+    ReadOnlyMemory<byte> Data { get; }
     int Hrc { get; set; }
     int Length { get; }
     string Name { get; }

@@ -26,13 +26,14 @@ public class IdStatusSpo_v2_1 : BasePackageParsed
         {
             return null;
         }
+        var span = Data.Span;
         
-        var filling = BitUtil.ToU16(Data[0], Data[1]) * 0.001;
-        var pulse = BitUtil.ToU16(Data[2], Data[3]);
-        var spo2 = Data[4];
-        var pvi = Data[5];
-        var sensorStatus = Data[6];
-        var qualityByte = Data[7];
+        var filling = BitUtil.ToU16(span[0], span[1]) * 0.001;
+        var pulse = BitUtil.ToU16(span[2], span[3]);
+        var spo2 = span[4];
+        var pvi = span[5];
+        var sensorStatus = span[6];
+        var qualityByte = span[7];
 
         var sensorState = sensorStatus & 0x0F;
         var sensorType = (sensorStatus >> 4) & 0x0F;

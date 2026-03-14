@@ -16,8 +16,10 @@ public class IdMMvCivl : BasePackageParsed
         {
             return null;
         }
-        var mvTotal = BitUtil.ToU16(Data[0], Data[1]);
-        var mvMachine = BitUtil.ToU16(Data[2], Data[3]);
+        var span = Data.Span;
+
+        var mvTotal = BitUtil.ToU16(span[0], span[1]);
+        var mvMachine = BitUtil.ToU16(span[2], span[3]);
         
         var numericData = new NumericDataItem[]
         {

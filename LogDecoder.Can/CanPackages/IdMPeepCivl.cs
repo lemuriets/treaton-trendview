@@ -16,9 +16,11 @@ public class IdMPeepCivl : BasePackageParsed
         {
             return null;
         }
-        var peep = BitUtil.ToU16(Data[0], Data[1]);
-        var autoPeep = BitUtil.ToU16(Data[2], Data[3]);
-        var flow = (short)BitUtil.ToU16(Data[4], Data[5]) * 0.1;
+        var span = Data.Span;
+
+        var peep = BitUtil.ToU16(span[0], span[1]);
+        var autoPeep = BitUtil.ToU16(span[2], span[3]);
+        var flow = (short)BitUtil.ToU16(span[4], span[5]) * 0.1;
         
         var numericData = new NumericDataItem[]
         {

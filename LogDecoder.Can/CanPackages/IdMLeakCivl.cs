@@ -16,10 +16,12 @@ public class IdMLeakCivl : BasePackageParsed
         {
             return null;
         }
-        var pavg = BitUtil.ToS16(Data[0], Data[1]);
-        var dV = BitUtil.ToS16(Data[2], Data[3]);
-        var leak = BitUtil.ToS16(Data[4], Data[5]);
-        var leakPct = BitUtil.ToS16(Data[6], Data[7]);
+        var span = Data.Span;
+        
+        var pavg = BitUtil.ToS16(span[0], span[1]);
+        var dV = BitUtil.ToS16(span[2], span[3]);
+        var leak = BitUtil.ToS16(span[4], span[5]);
+        var leakPct = BitUtil.ToS16(span[6], span[7]);
 
         var numericData = new NumericDataItem[]
         {

@@ -38,9 +38,10 @@ namespace LogDecoder.CAN.Packages;
             {
                 return null;
             }
+            var span = Data.Span;
 
-            var status = Data[0];
-            var b1 = Data[1];
+            var status = span[0];
+            var b1 = span[1];
 
             var numericData = new NumericDataItem[]
             {

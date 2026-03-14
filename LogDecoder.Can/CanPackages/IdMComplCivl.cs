@@ -16,8 +16,10 @@ public class IdMComplCivl : BasePackageParsed
         {
             return null;
         }
-        var cst = BitUtil.ToU16(Data[0], Data[1]) * 0.1;
-        var rst = BitUtil.ToU16(Data[2], Data[3]);
+        var span = Data.Span;
+        
+        var cst = BitUtil.ToU16(span[0], span[1]) * 0.1;
+        var rst = BitUtil.ToU16(span[2], span[3]);
         
         var numericData = new NumericDataItem[]
         {

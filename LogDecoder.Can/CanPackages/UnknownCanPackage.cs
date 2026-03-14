@@ -11,7 +11,7 @@ public class UnknownCanPackage : ICanPackageParsed
     
     public int Id => 0;
     public PackageType Type => PackageType.Empty;
-    public byte[] Data => [];
+    public ReadOnlyMemory<byte> Data => default;
     public int Hrc { get; set; }
     public int Length => 0;
     public string Name => "";

@@ -34,11 +34,13 @@ public class IdStatusMix : BasePackageParsed
         {
             return null;
         }
-        var statusBits = BitUtil.ToU32(Data[4], Data[5], Data[6], Data[7]);
+        var span = Data.Span;
 
-        var oxygenPressure = Data[0] * 0.1;
-        var atmospherePressure = BitUtil.ToU16(Data[1], Data[2]);
-        var activeMode = Data[3];
+        var statusBits = BitUtil.ToU32(span[4], span[5], span[6], span[7]);
+
+        var oxygenPressure = span[0] * 0.1;
+        var atmospherePressure = BitUtil.ToU16(span[1], span[2]);
+        var activeMode = span[3];
         
         var numericData = new NumericDataItem[]
         {

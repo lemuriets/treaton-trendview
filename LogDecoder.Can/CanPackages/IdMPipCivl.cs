@@ -16,9 +16,11 @@ public class IdMPipCivl : BasePackageParsed
         {
             return null;
         }
-        var pip = Data[0];
-        var cdyn = BitUtil.ToU16(Data[1], Data[2]) * 0.01;
-        var stress = BitUtil.ToU16(Data[3], Data[4]) * 0.01;
+        var span = Data.Span;
+
+        var pip = span[0];
+        var cdyn = BitUtil.ToU16(span[1], span[2]) * 0.01;
+        var stress = BitUtil.ToU16(span[3], span[4]) * 0.01;
         
         var numericData = new NumericDataItem[]
         {

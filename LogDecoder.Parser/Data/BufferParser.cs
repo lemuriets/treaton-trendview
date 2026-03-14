@@ -1,19 +1,11 @@
 using LogDecoder.CAN;
-using LogDecoder.CAN.Contracts;
-using LogDecoder.CAN.Packages;
 
 namespace LogDecoder.Parser.Data;
 
 public class BufferParser : Contracts.IBufferParser
 {
-    public CanPackage GetFirstPackage(LogBuffer buffer, int id)
+    public IEnumerable<CanPackage> GetPackagesFromBuffer(LogBuffer logBuffer, IReadOnlySet<int> filterIds)
     {
-        return GetPackagesFromBuffer(buffer, new HashSet<int>{id}).FirstOrDefault();
-    }
-    
-    public List<CanPackage> GetPackagesFromBuffer(LogBuffer logBuffer, IReadOnlySet<int> filterIds)
-    {
-        var packages = new List<CanPackage>();
         var offset = 0;
 
         for (var i = 0; i < logBuffer.PackagesCount; i++)
@@ -22,27 +14,16 @@ public class BufferParser : Contracts.IBufferParser
             {
                 break;
             }
-            var firstByte = logBuffer.Data[offset];
-            
-            var packageType = CanPackageParser.GetPackageType(firstByte);
-            var packageLength = CanPackageParser.GetPackageLength(firstByte, packageType);
-            if (packageLength > CanPackageParser.MaxPackageSize)
+            if (!CanPackageParser.TryParse(logBuffer.Data.Slice(offset), out var package))
             {
                 break;
             }
-            var rawPackage = new byte[packageLength];
-            Buffer.BlockCopy(logBuffer.Data, offset, rawPackage, 0, packageLength);
-            var packageId = CanPackageParser.GetPackageId(rawPackage, packageType);
+            offset += package.Length;
             
-            offset += packageLength;
-            
-            if (!filterIds.Contains(packageId) && filterIds.Count != 0)
+            if (filterIds.Count == 0 || filterIds.Contains(package.Id))
             {
-                continue;
+                yield return package;
             }
-            var package = CanPackageParser.FromBytes(rawPackage, packageType, packageLength, packageId);
-            packages.Add(package);
         }
-        return packages;
     }
 }

@@ -1,28 +1,36 @@
+using System.Buffers.Binary;
+
 namespace LogDecoder.Parser.Data;
 
 public readonly struct LogBuffer
 {
-    private const int PayloadStartPosition = 16;
-    public readonly byte[] Header;
-    public readonly byte[] Data;
+    private const int HeaderSize = 16;
+    
+    public readonly ReadOnlyMemory<byte> Header;
+    public readonly ReadOnlyMemory<byte> Data;
     public readonly int PackagesCount;
     
-    public bool IsValid => Header is not null && Data is not null;
+    public bool IsValid => Header.Length == HeaderSize;
+    public bool IsEmpty => Data.Length == 0;
 
-    public LogBuffer(byte[] buffer)
+    public LogBuffer(ReadOnlyMemory<byte> buffer)
     {
-        Header = new byte[PayloadStartPosition];
-        Buffer.BlockCopy(buffer, 0, Header, 0, PayloadStartPosition);
+        if (buffer.Length < HeaderSize)
+        {
+            Header = default;
+            Data = default;
+            PackagesCount = 0;
+            return;
+        }
         
-        var dataLength = buffer.Length - PayloadStartPosition;
-        Data = new byte[dataLength];
-        Buffer.BlockCopy(buffer, PayloadStartPosition, Data, 0, dataLength);
+        Header = buffer.Slice(0, HeaderSize);
+        Data = buffer.Slice(HeaderSize);
         
-        PackagesCount = GetPackagesCount();
+        PackagesCount = GetPackagesCount(Header.Span);
     }
 
-    private int GetPackagesCount()
+    private int GetPackagesCount(ReadOnlySpan<byte> header)
     {
-        return BitConverter.ToInt32(Header, 0);
+        return BinaryPrimitives.ReadInt32LittleEndian(header);
     }
 }

@@ -26,8 +26,10 @@ public class IdStatusPwr : BasePackageParsed
         {
             return null;
         }
-        var battery = Data[1]; 
-        var statusBits = BitUtil.ToU16(Data[2], Data[3]);
+        var span = Data.Span;
+
+        var battery = span[1]; 
+        var statusBits = BitUtil.ToU16(span[2], span[3]);
         
         var numericData = new NumericDataItem[]
         {

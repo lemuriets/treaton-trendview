@@ -42,11 +42,13 @@ public class IdStatusCapno2 : BasePackageParsed
         {
             return null;
         }
-        var statusBits = BitUtil.ToU32(Data[0], Data[1], Data[2], Data[3]);
+        var span = Data.Span;
 
-        var priority = Data[4];
-        var presence = Data[5];
-        var atm = BitUtil.ToU16(Data[6], Data[7]);
+        var statusBits = BitUtil.ToU32(span[0], span[1], span[2], span[3]);
+
+        var priority = span[4];
+        var presence = span[5];
+        var atm = BitUtil.ToU16(span[6], span[7]);
 
         var messages = Array.Empty<string>();
         if (presence == 0x00)

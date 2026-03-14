@@ -25,8 +25,10 @@ public class IdStatusScm : BasePackageParsed
         {
             return null;
         }
+        var span = Data.Span;
+
         var numericData = Array.Empty<NumericDataItem>();
-        var messages = ParseBits(Data[0], BitsDefinitions);
+        var messages = ParseBits(span[0], BitsDefinitions);
 
         return new PackageData(numericData, messages);
     }

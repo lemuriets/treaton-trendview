@@ -16,7 +16,9 @@ public class IdMTexpCivl : BasePackageParsed
         {
             return null;
         }
-        var texp = BitUtil.ToU16(Data[0], Data[1]);
+        var span = Data.Span;
+
+        var texp = BitUtil.ToU16(span[0], span[1]);
         
         var numericData = new NumericDataItem[]
         {

@@ -7,7 +7,7 @@ public class BasePackageParsed(CanPackage basePackage, string name) : ICanPackag
 {
     public int Id { get; } = basePackage.Id;
     public PackageType Type { get; } = basePackage.Type;
-    public byte[] Data { get; } = basePackage.Data;
+    public ReadOnlyMemory<byte> Data { get; } = basePackage.Data;
     public int Hrc { get; set; } = basePackage.Hrc;
     public int Length { get; } = basePackage.Length;
     public string Name {  get; } = name;

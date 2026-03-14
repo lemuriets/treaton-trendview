@@ -16,12 +16,14 @@ public class IdWaveCivl : BasePackageParsed
         {
             return null;
         }
+        var span = Data.Span;
+
         // поток приведенный к тройнику [0.1 л/мин]
-        var flow = BitUtil.ToS16(Data[0], Data[1]) * 0.1;
+        var flow = BitUtil.ToS16(span[0], span[1]) * 0.1;
         // давление в магистрали [мм вод.ст.] -> см вод. ст
-        var paw = BitUtil.ToS16(Data[2], Data[3]) / 10;
+        var paw = BitUtil.ToS16(span[2], span[3]) / 10;
         // объем [0.1 мл]
-        var vol = BitUtil.ToS32(Data[4], Data[5], Data[6], Data[7]) * 0.1;
+        var vol = BitUtil.ToS32(span[4], span[5], span[6], span[7]) * 0.1;
         
         var numericData = new NumericDataItem[]
         {

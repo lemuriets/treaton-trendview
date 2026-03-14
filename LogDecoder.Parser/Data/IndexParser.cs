@@ -22,7 +22,6 @@ internal class IndexParser : IIndexParser
     
     public bool IsDateTimeExists(DateTime target)
     {
-        // return _indexes.IndexOf()
         return _sessions.Contains(target);
     }
 
@@ -128,7 +127,6 @@ internal class IndexParser : IIndexParser
         var strTime = line.AsSpan(spaceIndex + 1);
 
         var bufNum = int.Parse(strBufNum);
-        // var time = DateTime.Parse(strTime);
         var time = DateTime.ParseExact(strTime, CanConfig.TimeFormat, CultureInfo.InvariantCulture);
 
         return (bufNum, time);

@@ -62,7 +62,9 @@ public class IdStatusCivl : BasePackageParsed
         {
             return null;
         }
-        var bits = BitUtil.ToU64(Data[0], Data[1], Data[2], Data[3], Data[4], Data[5]);
+        var span = Data.Span;
+
+        var bits = BitUtil.ToU64(span[0], span[1], span[2], span[3], span[4], span[5]);
 
         var numericData = Array.Empty<NumericDataItem>();
         var messages = ParseBits(bits, BitsDefinitions);

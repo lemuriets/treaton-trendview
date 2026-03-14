@@ -8,50 +8,45 @@ namespace LogDecoder.Parser.Data;
 
 public class BufferReader : IBufferReader, IDisposable
 {
-    public BufferReader(string file)
+    public BufferReader(string file, int bufferSize)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(file);
         
-        _file = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+        _file = new FileStream(
+            file,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize,
+            FileOptions.SequentialScan);
+        _buffer = new byte[_bufferSize];
+        _bufferSize = bufferSize;
     }
     
     private readonly FileStream _file;
+    private readonly byte[] _buffer;
+    private readonly int _bufferSize;
     
-    public IEnumerable<LogBuffer> Read()
-        => Read(offset: 0, count: 0);
-    
-    public IEnumerable<LogBuffer> Read(int offset)
-        => Read(offset, count: 0);
-    
-    public IEnumerable<LogBuffer> Read(int offset, int count)
+    public IEnumerable<LogBuffer> Read(int offset = 0, int count = 0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(offset);
         ArgumentOutOfRangeException.ThrowIfNegative(count);
         
-        var offsetBuffers = offset * Config.BufferSize;
+        var offsetBuffers = offset * _bufferSize;
         _file.Seek(offsetBuffers, SeekOrigin.Begin);
         
-        var totalBuffers = _file.Length / Config.BufferSize;
+        var totalBuffers = _file.Length / _bufferSize;
         // TODO: Изменить. Не очевидно, что при count = 0 будет полная итерация
         var iterations = count == 0 ? totalBuffers - offset : count;
-        for (var i = 0; i < iterations; i++)
+        for (long i = 0; i < iterations; i++)
         {
-            var buffer = ReadNext(_file);
-            if (!buffer.IsValid)
+            var read = _file.Read(_buffer);
+            if (read < _bufferSize)
             {
                 yield break;
             }
-            yield return buffer;
+            yield return new LogBuffer(_buffer);
         }
-    }
-
-    private LogBuffer ReadNext(FileStream file)
-    {
-        var buffer = new byte[Config.BufferSize];
-        var bytesRead = file.Read(buffer, 0, buffer.Length);
-        return bytesRead < Config.BufferSize
-            ? new LogBuffer()
-            : new LogBuffer(buffer);
     }
 
     public void Dispose()

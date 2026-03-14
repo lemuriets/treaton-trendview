@@ -16,8 +16,10 @@ public class IdMTinspCivl : BasePackageParsed
         {
             return null;
         }
-        var tinsp = BitUtil.ToU16(Data[0], Data[1]);
-        var rcInsp = BitUtil.ToU16(Data[2], Data[3]);
+        var span = Data.Span;
+
+        var tinsp = BitUtil.ToU16(span[0], span[1]);
+        var rcInsp = BitUtil.ToU16(span[2], span[3]);
         
         var numericData = new NumericDataItem[]
         {

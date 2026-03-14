@@ -24,15 +24,17 @@ public class IdStatusSpo : BasePackageParsed
 
     public override PackageData? ParseData()
     {
-        if (Length < 6)
+        if (Data.Length < 6)
         {
             return null;
         }
+        var span = Data.Span;
+
         // 0.1%
-        var pleth = BitUtil.ToU16(Data[0], Data[1]);
+        var pleth = BitUtil.ToU16(span[0], span[1]);
         // уд/мин
-        var pulseRate = BitUtil.ToU16(Data[2], Data[3]);
-        var spO2 = Data[4];
+        var pulseRate = BitUtil.ToU16(span[2], span[3]);
+        var spO2 = span[4];
         
         var numericData = new NumericDataItem[]
         {
@@ -40,7 +42,7 @@ public class IdStatusSpo : BasePackageParsed
             new("pulseRate", pulseRate),
             new("spO2", spO2)
         };;
-        var messages = ParseBits(Data[5], BitsDefinitions);
+        var messages = ParseBits(span[5], BitsDefinitions);
 
         return new PackageData(numericData, messages);
     }

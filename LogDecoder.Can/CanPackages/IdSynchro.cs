@@ -19,8 +19,10 @@ public class IdSynchro : BasePackageParsed
         }
         try
         {
+            var span = Data.Span;
+
             var (year, month, day, hour, minute, second) =
-                (2000 + Data[0], Data[1], Data[2], Data[3], Data[4], Data[5]);
+                (2000 + span[0], span[1], span[2], span[3], span[4], span[5]);
             var datetime = new DateTime(year, month, day, hour, minute, second);
 
             var messages = new []{datetime.ToString(CanConfig.TimeFormat)};
