@@ -12,14 +12,8 @@ public class BufferReader : IBufferReader, IDisposable
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(file);
         
-        _file = new FileStream(
-            file,
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.Read,
-            bufferSize,
-            FileOptions.SequentialScan);
-        _buffer = new byte[_bufferSize];
+        _file = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, FileOptions.SequentialScan);
+        _buffer = new byte[bufferSize];
         _bufferSize = bufferSize;
     }
     
@@ -38,13 +32,9 @@ public class BufferReader : IBufferReader, IDisposable
         var totalBuffers = _file.Length / _bufferSize;
         // TODO: Изменить. Не очевидно, что при count = 0 будет полная итерация
         var iterations = count == 0 ? totalBuffers - offset : count;
-        for (long i = 0; i < iterations; i++)
+        for (var i = 0; i < iterations; i++)
         {
             var read = _file.Read(_buffer);
-            if (read < _bufferSize)
-            {
-                yield break;
-            }
             yield return new LogBuffer(_buffer);
         }
     }

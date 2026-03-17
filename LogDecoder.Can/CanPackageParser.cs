@@ -1,5 +1,4 @@
-using System.Runtime.CompilerServices;
-using OfficeOpenXml;
+using System.Buffers.Binary;
 
 namespace LogDecoder.CAN;
 
@@ -35,7 +34,7 @@ public static class CanPackageParser
         var idSize = GetIdSize(type);
         var id = GetPackageId(span, idSize);
         var data = bytes.Slice(HeaderSize + idSize, dataSize);
-        var hrc = GetHrc(span, type, dataSize);
+        var hrc = GetHrc(span, idSize, dataSize);
 
         package = new CanPackage(type, id, data, hrc, length);
         
@@ -66,25 +65,19 @@ public static class CanPackageParser
 
     public static int GetPackageId(ReadOnlySpan<byte> raw, int idSize)
     {
-        return ReadInt32Little(raw, HeaderSize, idSize);
+        return idSize switch
+        {
+            2 => BinaryPrimitives.ReadUInt16LittleEndian(raw.Slice(HeaderSize, 2)),
+            4 => BinaryPrimitives.ReadInt32LittleEndian(raw.Slice(HeaderSize, 4)),
+            _ => 0
+        };
     }
 
-    private static int GetHrc(ReadOnlySpan<byte> raw, PackageType type, int dataSize)
+    private static int GetHrc(ReadOnlySpan<byte> raw, int idSize, int dataSize)
     {
-        var start = HeaderSize + GetIdSize(type) + dataSize;
-        return ReadInt32Little(raw, start, HrcSize);
-    }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int ReadInt32Little(ReadOnlySpan<byte> raw, int offset, int count)
-    {
-         unchecked
-         {
-             var b0 = count > 0 ? raw[offset] : 0;
-             var b1 = count > 1 ? raw[offset + 1] : 0;
-             var b2 = count > 2 ? raw[offset + 2] : 0;
-             var b3 = count > 3 ? raw[offset + 3] : 0;
-             return b0 | (b1 << 8) | (b2 << 16) | (b3 << 24);
-         }
+        var start = HeaderSize + idSize + dataSize;
+        return raw[start]
+               | (raw[start + 1] << 8)
+               | (raw[start + 2] << 16);
     }
 }

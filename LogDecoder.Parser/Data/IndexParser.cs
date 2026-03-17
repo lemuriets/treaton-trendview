@@ -42,7 +42,7 @@ internal class IndexParser : IIndexParser
         FirstTime = _indexes[0].Time;
         LastTime = _indexes[^1].Time;
         
-        FillSessions(_indexes, _sessions);
+        // FillSessions(_indexes, _sessions);
         Console.WriteLine($"[INFO] Created indexes. Count: {_indexes.Count}");
     }
 

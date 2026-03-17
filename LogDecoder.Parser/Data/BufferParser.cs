@@ -6,6 +6,7 @@ public class BufferParser : Contracts.IBufferParser
 {
     public IEnumerable<CanPackage> GetPackagesFromBuffer(LogBuffer logBuffer, IReadOnlySet<int> filterIds)
     {
+        var hasFilter = filterIds.Count != 0;
         var offset = 0;
 
         for (var i = 0; i < logBuffer.PackagesCount; i++)
@@ -14,16 +15,23 @@ public class BufferParser : Contracts.IBufferParser
             {
                 break;
             }
+            
+            // var type = CanPackageParser.GetPackageType(logBuffer.Data.Span[offset]);
+            // var id = CanPackageParser.GetPackageId(logBuffer.Data.Span.Slice(offset), (int)type);
+            // var lenght = CanPackageParser.GetTotalPackageLength();
+            // if (hasFilter && !filterIds.Contains(id))
+            // {
+            //     continue;
+            // }
             if (!CanPackageParser.TryParse(logBuffer.Data.Slice(offset), out var package))
             {
-                break;
+                yield break;
             }
-            offset += package.Length;
-            
-            if (filterIds.Count == 0 || filterIds.Contains(package.Id))
+            if (!hasFilter || filterIds.Contains(package.Id))
             {
                 yield return package;
             }
+            offset += package.Length;
         }
     }
 }
