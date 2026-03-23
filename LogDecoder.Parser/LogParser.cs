@@ -87,6 +87,8 @@ public partial class LogParser : ILogParser
         var startFilename = startIndex.Value.Filename;
         var endFilename = endIndex.Value.Filename;
         
+        Console.WriteLine($"[DEBUG] GetPackages(), start filename: {startFilename}, end filename: {endFilename}");
+        Console.WriteLine($"[DEBUG] GetPackages(), start buffer: {startIndex.Value.BufferNumber}, end buffer: {endIndex.Value.BufferNumber}");
         foreach (var file in _filesAggrerator.GetRange(startFilename, endFilename))
         {
             var filename = Path.GetFileNameWithoutExtension(file);

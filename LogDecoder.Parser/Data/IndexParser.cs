@@ -39,8 +39,8 @@ internal class IndexParser : IIndexParser
             return;
         }
 
-        FirstTime = _indexes[0].Time;
-        LastTime = _indexes[^1].Time;
+        FirstTime = _indexes.Min(i => i.Time);
+        LastTime = _indexes.Max(i => i.Time);
         
         // FillSessions(_indexes, _sessions);
         Console.WriteLine($"[INFO] Created indexes. Count: {_indexes.Count}");
@@ -74,32 +74,47 @@ internal class IndexParser : IIndexParser
     
     public IndexEntry? FindFloor(DateTime target)
     {
-        var left = 0;
-        var right = _indexes.Count - 1;
         IndexEntry? result = null;
 
-        while (left <= right)
+        foreach (var index in _indexes)
         {
-            var mid = left + (right - left) / 2;
-            var current = _indexes[mid];
-
-            if (current.Time == target)
+            if (index.Time > target)
             {
-                return current;
+                break;
             }
-
-            if (current.Time < target)
-            {
-                result = current;
-                left = mid + 1;
-            }
-            else
-            {
-                right = mid - 1;
-            }
+            result = index;
         }
         return result;
     }
+    
+    // public IndexEntry? FindFloor(DateTime target)
+    // {
+    //     var left = 0;
+    //     var right = _indexes.Count - 1;
+    //     IndexEntry? result = null;
+    //
+    //     while (left <= right)
+    //     {
+    //         var mid = left + (right - left) / 2;
+    //         var current = _indexes[mid];
+    //
+    //         if (current.Time == target)
+    //         {
+    //             return current;
+    //         }
+    //
+    //         if (current.Time < target)
+    //         {
+    //             result = current;
+    //             left = mid + 1;
+    //         }
+    //         else
+    //         {
+    //             right = mid - 1;
+    //         }
+    //     }
+    //     return result;
+    // }
     
     private List<IndexEntry> LoadIndexFile(string indexFile)
     {

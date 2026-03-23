@@ -15,23 +15,16 @@ public class BufferParser : Contracts.IBufferParser
             {
                 break;
             }
-            
-            // var type = CanPackageParser.GetPackageType(logBuffer.Data.Span[offset]);
-            // var id = CanPackageParser.GetPackageId(logBuffer.Data.Span.Slice(offset), (int)type);
-            // var lenght = CanPackageParser.GetTotalPackageLength();
-            // if (hasFilter && !filterIds.Contains(id))
-            // {
-            //     continue;
-            // }
             if (!CanPackageParser.TryParse(logBuffer.Data.Slice(offset), out var package))
             {
                 yield break;
             }
-            if (!hasFilter || filterIds.Contains(package.Id))
+            if (hasFilter && !filterIds.Contains(package.Id))
             {
-                yield return package;
+                continue;
             }
             offset += package.Length;
+            yield return package;
         }
     }
 }

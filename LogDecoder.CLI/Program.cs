@@ -1,16 +1,6 @@
-﻿using System.Collections;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using LogDecoder.CAN.Contracts;
-using LogDecoder.CAN.General;
+﻿using System.Diagnostics;
 using LogDecoder.CAN.Packages;
-using LogDecoder.Helpers;
-using LogDecoder.Helpers.TimeHelper;
 using LogDecoder.Parser;
-using LogDecoder.Parser.Data;
-using LogDecoder.Parser.Export;
-using OfficeOpenXml;
-using OxyPlot;
 
 namespace LogDecoder.CLI;
 
@@ -33,9 +23,10 @@ class Program
         // mac
         // var logsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/test_1";
         // var logsFolder = "/Volumes/Cucumber/treaton_bin_avl";
+        var logsFolder = "/Volumes/KINGSTON/SD";
         
         // win
-        var logsFolder = "/Volumes/KINGSTON/SD";
+        
 
 
 

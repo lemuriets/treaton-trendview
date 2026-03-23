@@ -12,6 +12,12 @@ public class IdStatusCivl : BasePackageParsed
 
     private static readonly Dictionary<int,(string,PackageTechStatus)> BitsDefinitions = new()
     {
+        { 47, ("Окклюзия ЭТ-трубки", PackageTechStatus.Warning) },
+        { 46, ("Окклюзия клапана", PackageTechStatus.Warning) },
+        { 45, ("Окклюзия контура", PackageTechStatus.Warning) },
+        { 44, ("Неисправность небулайзера", PackageTechStatus.Error) },
+        { 43, ("AutoLeak", PackageTechStatus.Info) },
+        { 42, ("Подключён внешний датчик потока", PackageTechStatus.Info) },
         { 41, ("Подключён внешний модуль потока", PackageTechStatus.Info) },
         { 40, ("Рестарт КИВЛ", PackageTechStatus.Info) },
         { 39, ("Ошибка автокалибровки датчика кислорода", PackageTechStatus.Warning) },
