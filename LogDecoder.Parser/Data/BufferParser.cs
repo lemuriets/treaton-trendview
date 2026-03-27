@@ -13,18 +13,17 @@ public class BufferParser : Contracts.IBufferParser
         {
             if (offset >= logBuffer.Data.Length)
             {
-                break;
+                yield  break;
             }
             if (!CanPackageParser.TryParse(logBuffer.Data.Slice(offset), out var package))
             {
                 yield break;
             }
-            if (hasFilter && !filterIds.Contains(package.Id))
+            if (!hasFilter || filterIds.Contains(package.Id))
             {
-                continue;
+                yield return package;
             }
             offset += package.Length;
-            yield return package;
         }
     }
 }

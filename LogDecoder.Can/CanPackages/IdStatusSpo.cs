@@ -10,7 +10,6 @@ public class IdStatusSpo : BasePackageParsed
 
     private static readonly Dictionary<int, (string msg, PackageTechStatus level)> BitsDefinitions = new()
     {
-        { 0, ("Норма (нет сообщения)", PackageTechStatus.Ok) },
         { 1, ("Модуль отключен", PackageTechStatus.Info) },
         { 2, ("Модуль неисправен", PackageTechStatus.Error) },
         { 3, ("Датчик отсоединен", PackageTechStatus.Warning) },

@@ -37,6 +37,11 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            
+            <CheckBox x:Name="ChkSelectAllPackages"
+                      Content="Выбрать все пакеты"
+                      IsChecked="True"
+                      Margin="0,5,0,0"/>
 
             <TextBlock Text="Дата и время начала расшифровки:" FontWeight="Bold" Margin="0,10,0,0" />
             <xctk:DateTimePicker x:Name="StartDateTime"
@@ -61,6 +66,11 @@
         <StackPanel Grid.Column="2" VerticalAlignment="Top">
             <Button x:Name="BtnSelectOutputFolder" Content="Выходная папка" Width="200" Margin="0,0,0,5"/>
             <TextBlock x:Name="TxtSelectedOutputFolder" Text="Папка не выбрана" Foreground="Gray" TextWrapping="Wrap" />
+            
+            <StackPanel HorizontalAlignment="Center" Margin="0,10,0,10">
+                <CheckBox x:Name="ChkIgnoreDuplicates" IsChecked="True" Content="Игнорировать дубликаты"/>
+                <CheckBox x:Name="ChkExcludeEmptyTimestamps" IsChecked="True" Content="Исключить пустые таймштампы"/>
+            </StackPanel>
             
             <Button x:Name="BtnExportExcel" Content="Экспорт в Excel" Width="150" Margin="0,15,0,5" IsEnabled="False"/>
             <TextBlock x:Name="TxtExportStatus" Foreground="Red" TextWrapping="Wrap" Margin="0,5,0,5"/>
