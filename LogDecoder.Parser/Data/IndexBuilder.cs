@@ -33,7 +33,8 @@ public class IndexBuilder
         
         var indexes = new List<string>();
         var datetimeSet = new HashSet<string>();
-        foreach (var (bufNum, package) in fileScanner.GetAllPackagesParsed(_factory, new HashSet<int>{IdSynchro.Id}))
+        var context = new ParseContext();
+        foreach (var (bufNum, package) in fileScanner.GetAllPackagesParsed(_factory, new HashSet<int>{IdSynchro.Id}, context))
         {
             var packageData = package.ParseData();
             if (packageData is null)

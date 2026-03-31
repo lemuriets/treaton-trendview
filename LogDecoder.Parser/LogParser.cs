@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using LogDecoder.CAN;
 using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data;
@@ -27,6 +28,7 @@ public partial class LogParser : ILogParser
     public event Action? StartIndex;
     public event Action? FinishIndex;
 
+    private CivlMode _civlMode = CivlMode.Waiting;
     private readonly ICanPackageFactory _factory;
     private readonly string _logsFolder;
     private readonly string _indexFolder;
@@ -86,6 +88,8 @@ public partial class LogParser : ILogParser
         
         var startFilename = startIndex.Value.Filename;
         var endFilename = endIndex.Value.Filename;
+
+        var context = new ParseContext();
         
         Console.WriteLine($"[DEBUG] GetPackages(), start filename: {startFilename}, end filename: {endFilename}");
         Console.WriteLine($"[DEBUG] GetPackages(), start buffer: {startIndex.Value.BufferNumber}, end buffer: {endIndex.Value.BufferNumber}");
@@ -93,9 +97,9 @@ public partial class LogParser : ILogParser
         {
             var filename = Path.GetFileNameWithoutExtension(file);
             var scanner = GetScanner(file);
-
+            
             var (offset, count) = ResolveScanRange(filename, startFilename, endFilename, startIndex.Value.BufferNumber, endIndex.Value.BufferNumber);
-            foreach (var (_, package) in scanner.GetAllPackagesParsed(_factory, filterIds, offsetBuffers: offset, countBuffers: count))
+            foreach (var (_, package) in scanner.GetAllPackagesParsed(_factory, filterIds, context, offsetBuffers: offset, countBuffers: count))
             {
                 yield return package;
             }

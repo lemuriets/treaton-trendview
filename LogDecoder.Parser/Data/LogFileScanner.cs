@@ -18,30 +18,21 @@ public class LogFileScanner: ILogFileScanner
     private readonly string _file;
     private readonly BufferParser _bufferParser = new();
     
-    public IEnumerable<(int, ICanPackageParsed)> GetAllPackagesParsed(ICanPackageFactory factory, IReadOnlySet<int> filterIds, int offsetBuffers = 0, int countBuffers = 0)
+    public IEnumerable<(int, ICanPackageParsed)> GetAllPackagesParsed(ICanPackageFactory factory, IReadOnlySet<int> filterIds, ParseContext context, int offsetBuffers = 0, int countBuffers = 0)
     {
-        using var bufferReader = new BufferReader(_file, Config.BufferSize);
-        var bufNum = 0;
-        foreach (var buffer in bufferReader.Read(offsetBuffers, countBuffers))
+        foreach (var (bufNum, package) in GetAllPackages(filterIds, offsetBuffers, countBuffers))
         {
-            foreach (var package in _bufferParser.GetPackagesFromBuffer(buffer, filterIds))
+            var parsed = factory.Create(package, context);
+            if (parsed.Id != 0)
             {
-                var parsed = factory.Create(package);
-
-                if (parsed.Id == 0)
-                {
-                    continue;
-                }
                 yield return (bufNum, parsed);
             }
-            bufNum++;
         }
     }
 
-    public IEnumerable<(int, CanPackage)> GetAllPackages(HashSet<int> filterIds, int offsetBuffers = 0, int countBuffers = 0)
+    public IEnumerable<(int, CanPackage)> GetAllPackages(IReadOnlySet<int> filterIds, int offsetBuffers = 0, int countBuffers = 0)
     {
         using var bufferReader = new BufferReader(_file, Config.BufferSize);
-
         var bufNum = 0;
         foreach (var buffer in bufferReader.Read(offsetBuffers, countBuffers))
         {
