@@ -13,6 +13,7 @@ namespace LogDecoder.GUI
 {
     public partial class MainWindow : Window
     {
+        private bool _isUpdatingSelectAll;
         private string _selectedInputFolder = "";
         private string _selectedOutputFolder = "";
         private DateTime _startDateTime;
@@ -38,6 +39,8 @@ namespace LogDecoder.GUI
                 .GetIdsWithNames()
                 .Select(p => new PackageItem { Id = p.Id, Name = p.Name })
                 .ToList();
+            
+            PackageIdList.Loaded += (s, e) => PackageIdList.SelectAll();
         }
 
         private void ConnectEvents()
@@ -51,6 +54,9 @@ namespace LogDecoder.GUI
             EndDateTime.ValueChanged += Inputs_Changed;
             
             PackageIdList.SelectionChanged += Inputs_Changed;
+            
+            ChkSelectAllPackages.Checked += ChkSelectAllPackages_Checked;
+            ChkSelectAllPackages.Unchecked += ChkSelectAllPackages_Unchecked;
         }
 
         private async void SelectInputFolder_Click(object sender, RoutedEventArgs e)
@@ -113,6 +119,7 @@ namespace LogDecoder.GUI
         private void Inputs_Changed(object sender, RoutedEventArgs e)
         {
             UpdateButtons(false);
+            UpdateSelectAllCheckbox();
             CheckInputs();
         }
 
@@ -146,6 +153,15 @@ namespace LogDecoder.GUI
             _endDateTime = end;
             UpdateButtons(true);
         }
+        
+        private void UpdateSelectAllCheckbox()
+        {
+            _isUpdatingSelectAll = true;
+
+            ChkSelectAllPackages.IsChecked = PackageIdList.SelectedItems.Count == PackageIdList.Items.Count;
+
+            _isUpdatingSelectAll = false;
+        }
 
         private async void BtnExportExcel_Click(object sender, RoutedEventArgs e)
         {
@@ -155,18 +171,31 @@ namespace LogDecoder.GUI
                 .Cast<PackageItem>()
                 .Select(p => p.Id)
                 .ToHashSet();
+
             var inputFolder = _selectedInputFolder;
             var outputFolder = _selectedOutputFolder;
             var start = _startDateTime;
             var end = _endDateTime;
 
+            var ignoreDuplicates = ChkIgnoreDuplicates.IsChecked == true;
+            var excludeEmptyTimestamps = ChkExcludeEmptyTimestamps.IsChecked == true;
+
             try
             {
                 TxtExportStatus.Text = "Экспорт журнала ошибок. Подождите...";
                 TxtExportStatus.Foreground = Brushes.Green;
+
                 await Task.Run(() =>
                 {
-                    _excelExport.ToExcel(inputFolder, outputFolder, selectedIds, start, end);
+                    _excelExport.ToExcel(
+                        inputFolder,
+                        outputFolder,
+                        selectedIds,
+                        start,
+                        end,
+                        [PackageTechStatus.Warning, PackageTechStatus.Error, PackageTechStatus.Critical],
+                        ignoreDuplicates,
+                        excludeEmptyTimestamps);
                 });
 
                 TxtExportStatus.Text = "";
@@ -189,6 +218,20 @@ namespace LogDecoder.GUI
                 Owner = this
             };
             trendWindow.Show();
+        }
+        
+        private void ChkSelectAllPackages_Checked(object sender, RoutedEventArgs e)
+        {
+            PackageIdList.SelectAll();
+        }
+
+        private void ChkSelectAllPackages_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (_isUpdatingSelectAll)
+            {
+                return;
+            }
+            PackageIdList.UnselectAll();
         }
 
         private void OnIndexStart()

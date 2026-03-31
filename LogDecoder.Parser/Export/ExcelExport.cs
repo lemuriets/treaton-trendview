@@ -6,7 +6,7 @@ namespace LogDecoder.Parser.Export;
 
 public class ExcelExport(LogParser logParser) : IExcelExport
 {
-    public void ToExcel(string logsFolder, string outputFolder, IReadOnlySet<int> filterIds, DateTime start, DateTime end)
+    public void ToExcel(string logsFolder, string outputFolder, IReadOnlySet<int> filterIds, DateTime start, DateTime end, PackageTechStatus[] techStatusesToParse, bool ignoreDuplicates = false, bool excludeEmptyTimestamps = false)
     {
         var excelFilePath = Path.Combine(outputFolder, "Errors Log.xlsx");
         Console.WriteLine($"Exporting data from: {logsFolder}. To: {excelFilePath}. Ids: [{string.Join(',', filterIds)}]");
@@ -21,7 +21,8 @@ public class ExcelExport(LogParser logParser) : IExcelExport
         ICanPackageParsed? prevPackage = null;
         foreach (var package in logParser.GetPackages(filterIds, start, end))
         {
-            if (prevPackage != null &&
+            if (excludeEmptyTimestamps &&
+                prevPackage != null &&
                 prevPackage.Id == package.Id &&
                 package.Id == IdSynchro.Id)
             {
@@ -37,7 +38,7 @@ public class ExcelExport(LogParser logParser) : IExcelExport
             {
                 continue;
             }
-            if (prevMessages.SequenceEqual(packageMessages))
+            if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages))
             {
                 continue;
             }
