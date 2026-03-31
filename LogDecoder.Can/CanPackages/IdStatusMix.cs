@@ -3,27 +3,31 @@ using LogDecoder.CAN.General;
 
 namespace LogDecoder.CAN.Packages;
 
-[CanPackageAttr(0x442, "Состояние платы СГ")]
+[CanPackageAttr(0x442, "Состояние платы смесителя газов")]
 public class IdStatusMix : BasePackageParsed
 {
     public const int Id = 0x442;
 
     private static readonly Dictionary<int,(string,PackageTechStatus)> BitsDefinitions = new()
     {
+        { 0, ("Рестарт", PackageTechStatus.Info) },
         { 11, ("Неисправность (загрязнение) НЕРА-фильтра", PackageTechStatus.Warning) },
         { 13, ("Неисправность CAN", PackageTechStatus.Warning) },
         { 15, ("Неисправность источника питания +12VA", PackageTechStatus.Warning) },
         { 18, ("Ошибка констант датчика потока в магистрали воздуха", PackageTechStatus.Warning) },
         { 19, ("Ошибка констант датчика потока в магистрали кислорода", PackageTechStatus.Warning) },
         { 20, ("Ошибка констант датчика давления в камере смешения", PackageTechStatus.Warning) },
+        { 21, ("Напряжение питания выше 27V (превышает 30 V)", PackageTechStatus.Warning) },
+        { 22, ("Напряжение питания ниже 27V (ниже 20 V)", PackageTechStatus.Warning) },
         { 23, ("Отсутствует связь с БУ", PackageTechStatus.Error) },
         { 24, ("Отсутствует связь с КИВЛ", PackageTechStatus.Error) },
+        { 25, ("неисправен пропорциональный клапан в магистрали О2 (не используется)", PackageTechStatus.Error) },
         { 26, ("Неисправен АЦП AD7738", PackageTechStatus.Error) },
         { 27, ("Неисправен ИОН", PackageTechStatus.Error) },
-        { 29, ("Неисправен датчик потока кислорода", PackageTechStatus.Error) },
-        { 28, ("Неисправен датчик потока воздуха", PackageTechStatus.Error) },
-        { 31, ("Неисправен датчик давления кислорода", PackageTechStatus.Error) },
+        { 28, ("неисправен датчик потока в магистрали воздуха (выходное напряжение вне допустимого предела или не в пределах напряжение смещения нуля в режиме калибровки)", PackageTechStatus.Error) },
+        { 29, ("неисправен датчик потока в магистрали О2 (выходное напряжение вне допустимого предела или не в пределах напряжение смещения нуля в режиме калибровки)", PackageTechStatus.Error) },
         { 30, ("Неисправен датчик абсолютного давления", PackageTechStatus.Error) },
+        { 31, ("Неисправен датчик давления кислорода", PackageTechStatus.Error) },
     };
 
     public IdStatusMix(CanPackage p, string name) : base(p, name) { }

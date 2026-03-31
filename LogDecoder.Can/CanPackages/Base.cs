@@ -26,10 +26,11 @@ public class BasePackageParsed(CanPackage basePackage, string name) : ICanPackag
         where T : struct, IConvertible
     {
         var results = new List<string>();
+        var bits = Convert.ToUInt64(value);
 
         foreach (var kv in bitDefinitions)
         {
-            if (BitUtil.IsBitSet(Convert.ToUInt64(value), kv.Key))
+            if (BitUtil.IsBitSet(bits, kv.Key))
             {
                 results.Add(kv.Value.msg);
                 TechStatus = (PackageTechStatus)Math.Max((int)TechStatus, (int)kv.Value.status);

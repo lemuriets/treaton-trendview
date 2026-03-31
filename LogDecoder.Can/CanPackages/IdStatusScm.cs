@@ -8,6 +8,7 @@ public class IdStatusScm : BasePackageParsed
 {
     public const int Id = 0x422;
 
+    // добавить ошибок (потенциальная ошибка в документации)
     private static readonly Dictionary<int,(string,PackageTechStatus)> BitsDefinitions = new()
     {
         { 0, ("Ошибка PHY Ethernet", PackageTechStatus.Error) },

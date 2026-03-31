@@ -1,4 +1,5 @@
 ﻿namespace LogDecoder.CAN.Packages;
+
 public enum PackageTechStatus
 {
     Ok,

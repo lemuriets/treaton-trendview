@@ -10,7 +10,7 @@ public class IdStatusCivl : BasePackageParsed
     
     public const int Id = 0x4A8;
 
-    private static readonly Dictionary<int,(string,PackageTechStatus)> BitsDefinitions = new()
+    private static readonly Dictionary<int, (string, PackageTechStatus)> BitsDefinitions = new()
     {
         { 47, ("Окклюзия ЭТ-трубки", PackageTechStatus.Warning) },
         { 46, ("Окклюзия клапана", PackageTechStatus.Warning) },

@@ -9,7 +9,7 @@ namespace LogDecoder.CAN.Packages;
         public const int Id = 0x482;
 
         // TODO: добавить кодов и доработать парсинг
-        private static readonly Dictionary<int, (string msg, PackageTechStatus level)> BitsDefinitions = new()
+        private static readonly Dictionary<int, (string msg, PackageTechStatus level)> StatusDefinitions = new()
         {
             { 0x00, ("Измерение", PackageTechStatus.Ok) },
             { 0x01, ("Калибровка нуля", PackageTechStatus.Info) },
@@ -38,18 +38,66 @@ namespace LogDecoder.CAN.Packages;
             {
                 return null;
             }
+
             var span = Data.Span;
 
             var status = span[0];
-            var b1 = span[1];
+            var flags = span[1];
 
             var numericData = new NumericDataItem[]
             {
-                new("status", status),
-                new("b1", b1),
+                new("Статус", status),
+                new("Флаги", flags),
             };
-            var messages = ParseBits(status, BitsDefinitions);
 
-            return new PackageData(numericData, messages);
+            var messages = new List<string>();
+
+            if (StatusDefinitions.TryGetValue(status, out var statusInfo))
+            {
+                messages.Add(statusInfo.msg);
+                TechStatus = statusInfo.level;
+            }
+            else
+            {
+                messages.Add($"Неизвестный код состояния: 0x{status:X2}");
+                TechStatus = PackageTechStatus.Warning;
+            }
+
+            messages.Add(((flags & (1 << 0)) == 0)
+                ? "Режим отображения: в мм рт.ст."
+                : "Режим отображения: в процентах");
+
+            messages.Add(((flags & (1 << 1)) == 0)
+                ? "Деморежим: выкл."
+                : "Деморежим: вкл.");
+
+            messages.Add(((flags & (1 << 2)) == 0)
+                ? "Режим синхронизации: внутренняя"
+                : "Режим синхронизации: внешняя");
+
+            if ((flags & (1 << 3)) != 0)
+            {
+                messages.Add("Подключена линия отбора пробы");
+            }
+
+            if ((flags & (1 << 4)) != 0)
+            {
+                messages.Add("Наличие в приборе блока измерения N2O");
+            }
+
+            if ((flags & (1 << 5)) != 0)
+            {
+                messages.Add("Наличие в приборе блока измерения O2");
+            }
+
+            messages.Add(((flags & (1 << 6)) == 0)
+                ? "Режим измерений: обычные циклические измерения"
+                : "Режим измерений: измерения в дыхательной паузе");
+
+            messages.Add(((flags & (1 << 7)) == 0)
+                ? "Режим работы: капнограф"
+                : "Режим работы: метаболограф");
+
+            return new PackageData(numericData, messages.ToArray());
         }
     }

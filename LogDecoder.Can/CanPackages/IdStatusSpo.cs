@@ -8,7 +8,7 @@ public class IdStatusSpo : BasePackageParsed
 {
     public const int Id = 0x4E1;
 
-    private static readonly Dictionary<int, (string msg, PackageTechStatus level)> BitsDefinitions = new()
+    private static readonly Dictionary<int, (string msg, PackageTechStatus level)> BitsDefinitions5 = new()
     {
         { 0, ("Норма (нет сообщения)", PackageTechStatus.Ok) },
         { 1, ("Модуль отключен", PackageTechStatus.Info) },
@@ -42,7 +42,7 @@ public class IdStatusSpo : BasePackageParsed
             new("pulseRate", pulseRate),
             new("spO2", spO2)
         };;
-        var messages = ParseBits(span[5], BitsDefinitions);
+        var messages = ParseBits(span[5], BitsDefinitions5);
 
         return new PackageData(numericData, messages);
     }

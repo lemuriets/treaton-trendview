@@ -3,7 +3,7 @@ using LogDecoder.CAN.General;
 
 namespace LogDecoder.CAN.Packages;
 
-[CanPackageAttr(0x4C3, "Состояние ПП")]
+[CanPackageAttr(0x4C3, "Состояние преобразователя протоколов")]
 public class IdStatusCapno2 : BasePackageParsed
 {
     public const int Id = 0x4C3;

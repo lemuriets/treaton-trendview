@@ -3,7 +3,7 @@ using LogDecoder.CAN.General;
 
 namespace LogDecoder.CAN.Packages;
 
-[CanPackageAttr(0x5A9, "Состояние КМ")]
+[CanPackageAttr(0x5A9, "Состояние контроллера мотора")]
 public class IdStatusMotor : BasePackageParsed
 {
     public const int Id = 0x5A9;
@@ -16,7 +16,7 @@ public class IdStatusMotor : BasePackageParsed
         { 3, ("Флаг сброса", PackageTechStatus.Info) },
         { 5, ("Отказ энкодера", PackageTechStatus.Error) },
         { 6, ("Отказ привода", PackageTechStatus.Error) },
-        { 7, ("КРИТИЧЕСКИЙ ОТКАЗ (останов мотора)", PackageTechStatus.Critical) }
+        { 7, ("КРИТИЧЕСКИЙ ОТКАЗ (остановка мотора)", PackageTechStatus.Critical) }
     };
 
     public IdStatusMotor(CanPackage p, string name) : base(p, name) { }
