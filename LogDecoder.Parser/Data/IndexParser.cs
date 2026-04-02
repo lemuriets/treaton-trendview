@@ -130,6 +130,10 @@ internal class IndexParser : IIndexParser
         foreach (var line in File.ReadLines(indexFile))
         {
             var (bufNum, dt) = ParseLine(line);
+            if (dt > DateTime.Now)
+            {
+                continue;
+            }
             result.Add(new IndexEntry(filename, bufNum, dt));
         }
         return result;
