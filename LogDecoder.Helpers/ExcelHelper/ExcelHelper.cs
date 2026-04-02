@@ -38,7 +38,7 @@ public class ExcelHelper : IDisposable
 {
     private readonly ExcelPackage _package;
     private Dictionary<string, int> _sheetIndexes = new();
-    private readonly Dictionary<string, List<string[]>> _sheetBuckets = new();
+    private readonly Dictionary<string, List<object[]>> _sheetBuckets = new();
     public ExcelHelper(ExcelPackage package)
     {
         _package = package;
@@ -63,13 +63,18 @@ public class ExcelHelper : IDisposable
             return GetWorksheetByName(baseName);
         return GetWorksheetByName($"{baseName}_{worksheetIndex}");
     }
-
-    public void AddRow(string sheetName, params string[] values)
+    
+    public void AddRow(string sheetName, IEnumerable<object> values)
     {
         AddRow(sheetName, Color.Empty, values);
     }
 
-    public void AddRow(string sheetName, Color color, params string[] values)
+    public void AddRow(string sheetName, params object[] values)
+    {
+        AddRow(sheetName, Color.Empty, values);
+    }
+
+    public void AddRow(string sheetName, Color color, IEnumerable<object> values)
     {
         var worksheetBucket = _sheetBuckets[sheetName];
 
@@ -84,7 +89,7 @@ public class ExcelHelper : IDisposable
             GetOrCreateWorksheet(nextListName);
         }
 
-        worksheetBucket.Add(values);
+        worksheetBucket.Add(values.ToArray());
     }
 
     private ExcelWorksheet GetWorksheetByName(string name)
@@ -95,7 +100,9 @@ public class ExcelHelper : IDisposable
     private void Flush(string sheetName)
     {
         if (_sheetBuckets[sheetName].Count == 0)
+        {
             return;
+        }
 
         var ws = GetLastWorksheet(sheetName);
         ws.Cells[1, 1].LoadFromArrays(_sheetBuckets[sheetName]);

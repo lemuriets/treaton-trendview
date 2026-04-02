@@ -9,21 +9,18 @@ public class BufferParser : Contracts.IBufferParser
         var hasFilter = filterIds.Count != 0;
         var offset = 0;
 
-        for (var i = 0; i < logBuffer.PackagesCount; i++)
+        while (offset < logBuffer.Data.Length)
         {
-            if (offset >= logBuffer.Data.Length)
-            {
-                yield break;
-            }
             if (!CanPackageParser.TryParse(logBuffer.Data.Slice(offset), out var package))
             {
                 yield break;
             }
-            if (!hasFilter || filterIds.Contains(package.Id))
-            {
-                yield return package;
-            }
             offset += package.Length;
+            if (hasFilter && !filterIds.Contains(package.Id))
+            {
+                continue;
+            }
+            yield return package;
         }
     }
 }
