@@ -1,5 +1,6 @@
 using System.Text;
 using LogDecoder.CAN.Contracts;
+using LogDecoder.CAN.General;
 using LogDecoder.CAN.Packages;
 using LogDecoder.Helpers.Csv;
 
@@ -11,7 +12,7 @@ public class CsvExport(LogParser logParser)
     {
         Directory.CreateDirectory(outputFolder);
 
-        var csvFilePath = Path.Combine(outputFolder, $"Errors Log {DateTime.Now:dd.MM.yyyy HH-mm-ss}.csv");
+        var csvFilePath = Path.Combine(outputFolder, $"ИВЛ {DateTime.Now:dd.MM.yyyy HH-mm-ss}.csv");
         Console.WriteLine($"Exporting data from: {logsFolder}. To: {csvFilePath}. Ids: [{string.Join(',', filterIds)}]");
 
         using var csvSession = new CsvSession(csvFilePath);
@@ -22,42 +23,47 @@ public class CsvExport(LogParser logParser)
         var rowCounter = 0;
         string[] prevMessages = [];
         ICanPackageParsed? prevPackage = null;
+        string lastDateTimeStr = "";
 
         foreach (var package in logParser.GetPackages(filterIds, start, end))
         {
+            if (excludeEmptyTimestamps &&
+                prevPackage != null &&
+                package.Id == IdSynchro.Id &&
+                prevPackage.Id == package.Id)
+            {
+                continue;
+            }
+            
             var packageData = package.ParseData();
             if (packageData is null)
             {
                 continue;
             }
-
             // if (!ShouldExport(package, techStatusesToParse))
             // {
             //     continue;
             // }
-
-            if (excludeEmptyTimestamps &&
-                prevPackage != null &&
-                prevPackage.Id == package.Id &&
-                package.Id == IdSynchro.Id)
-            {
-                continue;
-            }
-
+            
             var packageMessages = packageData.Value.Messages;
-            var packageNumericDataStrings = packageData.Value.GetNumericDataStrings();
+            var packageNumericData = packageData.Value.NumericData;
 
-            if (packageMessages.Length == 0 && packageNumericDataStrings.Length == 0)
+            if (packageMessages.Length == 0 && packageNumericData.Length == 0)
+            {
+                continue;
+            }
+            
+            if (package.Id == IdSynchro.Id)
+            {
+                lastDateTimeStr = packageMessages[0];
+            }
+
+            if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages) && packageNumericData.Length == 0)
             {
                 continue;
             }
 
-            if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages) && packageNumericDataStrings.Length == 0)
-            {
-                continue;
-            }
-
-            csvWriter.AddRow(BuildRow(package, packageMessages, packageNumericDataStrings));
+            csvWriter.AddRow(BuildRow(package, lastDateTimeStr, packageMessages, packageNumericData));
 
             rowCounter++;
             prevPackage = package;
@@ -76,16 +82,23 @@ public class CsvExport(LogParser logParser)
         return techStatusesToParse.Contains(package.TechStatus);
     }
 
-    private static List<string> BuildRow(ICanPackageParsed package, IEnumerable<string> messages, IEnumerable<string> data)
+    private static List<string> BuildRow(ICanPackageParsed package, string datetimeStr, IEnumerable<string> messages, IEnumerable<NumericDataItem> data)
     {
         var row = new List<string>
         {
             package.Id.ToString(),
             package.Name,
-            string.Join('\n', messages),
         };
-        row.AddRange(data);
-
+        var messagesStr = string.Join('\n', messages);
+        var packageTime = package.Id == IdSynchro.Id
+            ? messagesStr
+            : $"{datetimeStr}\n{messagesStr}";
+        row.Add(packageTime);
+        foreach (var item in data)
+        {
+            row.Add(item.Name);
+            row.Add(Math.Round(item.Value, 3).ToString());
+        }
         return row;
     }
 }

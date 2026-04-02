@@ -72,7 +72,13 @@ public class IdStatusCivl : BasePackageParsed
 
         var bits = BitUtil.ToU64(span[0], span[1], span[2], span[3], span[4], span[5]);
 
-        var numericData = Array.Empty<NumericDataItem>();
+        var workModeCode = span[6];
+        var o2Percent = span[7];
+        var numericData = new NumericDataItem[]
+        {
+            new("код текущего режима работы", workModeCode),
+            new("текущий %O2, измеренный датчиком кислорода", o2Percent),
+        };
         var messages = ParseBits(bits, BitsDefinitions);
 
         return new PackageData(numericData, messages);

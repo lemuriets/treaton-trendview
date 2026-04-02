@@ -49,8 +49,8 @@ public class IdStatusMix : BasePackageParsed
         var numericData = new NumericDataItem[]
         {
             new("oxygenPressure", oxygenPressure),
-            new("atmospherePressure", atmospherePressure),
-            new("activeMode", activeMode)
+            new("atmPressure", atmospherePressure),
+            new("mode", activeMode)
         };
         var messages = ParseBits(statusBits, BitsDefinitions);
 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LogDecoder.GUI"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="Расшифровщик логов" Height="500" Width="800"
+        Title="Расшифровщик логов" Height="600" Width="800"
         ResizeMode="NoResize">
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
@@ -19,10 +19,11 @@
             <Button x:Name="BtnSelectInputFolder" Content="Выбрать папку с логами" Width="200" Margin="0,0,0,5"/>
             <TextBlock x:Name="TxtSelectedInputFolder" Text="Папка не выбрана" Foreground="Gray" TextWrapping="Wrap" />
 
+            
             <TextBlock Text="ID пакетов для парсинга:" FontWeight="Bold" Margin="0,10,0,0" />
             <ListBox x:Name="PackageIdList"
                      SelectionMode="Multiple"
-                     MaxHeight="120"
+                     MaxHeight="280"
                      SelectedValuePath="Id">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -69,13 +70,13 @@
             
             <StackPanel HorizontalAlignment="Center" Margin="0,10,0,10">
                 <CheckBox x:Name="ChkIgnoreDuplicates" IsChecked="True" Content="Игнорировать дубликаты"/>
-                <CheckBox x:Name="ChkExcludeEmptyTimestamps" IsChecked="True" Content="Исключить пустые таймштампы"/>
+                <CheckBox x:Name="ChkExcludeEmptyTimestamps" IsChecked="True" Content="Исключить подряд идущие таймштампы"/>
             </StackPanel>
             
-            <Button x:Name="BtnExportExcel" Content="Экспорт в Excel" Width="150" Margin="0,15,0,5" IsEnabled="False"/>
+            <Button x:Name="BtnExportCsv" Content="Экспорт в CSV" Width="150" Margin="0,15,0,5" IsEnabled="False"/>
             <TextBlock x:Name="TxtExportStatus" Foreground="Red" TextWrapping="Wrap" Margin="0,5,0,5"/>
             
-            <Button x:Name="BtnTrendView" Content="Тренды" Width="150" IsEnabled="True"/>
+            <!-- <Button x:Name="BtnTrendView" Content="Тренды" Width="150" IsEnabled="True"/> -->
             <TextBlock x:Name="TxtIndexStatus" Foreground="ForestGreen" TextWrapping="Wrap" Margin="0,5,0,5"/>
         </StackPanel>
     </Grid>

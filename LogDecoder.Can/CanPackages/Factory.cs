@@ -15,9 +15,10 @@ public class CanPackageFactory : ICanPackageFactory
         RegisterBuiltIn();
     }
 
-    public List<(int Id, string Name)> GetIdsWithNames()
+    public List<(int Id, string Name)> GetIdsWithNames(IReadOnlySet<int>? excludeIds = null)
     {
         return _registered
+            .Where(kvp => excludeIds == null || !excludeIds.Contains(kvp.Key))
             .Select(kvp => (kvp.Key, kvp.Value.PackageName))
             .ToList();
     }
