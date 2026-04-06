@@ -19,8 +19,9 @@ namespace LogDecoder.GUI
         private DateTime _startDateTime;
         private DateTime _endDateTime;
         private LogParser _logParser;
-        private ExcelExport _excelExport;
+        private CsvExport _csvExport;
         private readonly ICanPackageFactory _factory;
+        private readonly IReadOnlySet<int> _defaultSelectedIds = new HashSet<int>() { IdSynchro.Id };
         
         public MainWindow()
         {
@@ -36,8 +37,9 @@ namespace LogDecoder.GUI
             EndDateTime.Value = DateTime.Now;
 
             PackageIdList.ItemsSource = _factory
-                .GetIdsWithNames()
+                .GetIdsWithNames(excludeIds: _defaultSelectedIds)
                 .Select(p => new PackageItem { Id = p.Id, Name = p.Name })
+                .OrderBy(p => p.Id)
                 .ToList();
             
             PackageIdList.Loaded += (s, e) => PackageIdList.SelectAll();
@@ -47,8 +49,8 @@ namespace LogDecoder.GUI
         {
             BtnSelectInputFolder.Click += SelectInputFolder_Click;
             BtnSelectOutputFolder.Click += SelectOutputFolder_Click;
-            BtnExportExcel.Click += BtnExportExcel_Click;
-            BtnTrendView.Click += BtnTrendView_Click;
+            BtnExportCsv.Click += BtnExportCsvClick;
+            // BtnTrendView.Click += BtnTrendView_Click;
 
             StartDateTime.ValueChanged += Inputs_Changed;
             EndDateTime.ValueChanged += Inputs_Changed;
@@ -77,12 +79,18 @@ namespace LogDecoder.GUI
                 TxtSelectedInputFolder.Foreground = Brushes.Red;
                 return;
             }
-
             _selectedInputFolder = selectedFolder;
+            if (_selectedOutputFolder == "")
+            {
+                _selectedOutputFolder = selectedFolder;
+                
+                TxtSelectedOutputFolder.Text = _selectedOutputFolder;
+                TxtSelectedOutputFolder.Foreground = Brushes.Green;
+            }
             TxtSelectedInputFolder.Text = _selectedInputFolder;
             TxtSelectedInputFolder.Foreground = Brushes.Green;
             _logParser = new LogParser(selectedFolder, _factory);
-            _excelExport = new ExcelExport(_logParser);
+            _csvExport = new CsvExport(_logParser);
             
             _logParser.StartIndex += OnIndexStart;
             _logParser.FinishIndex += OnIndexFinish;
@@ -96,6 +104,11 @@ namespace LogDecoder.GUI
 
         private void SelectOutputFolder_Click(object sender, RoutedEventArgs e)
         {
+            var folder = SelectFolder();
+            if (folder == "")
+            {
+                return;
+            }
             _selectedOutputFolder = SelectFolder();
 
             TxtSelectedOutputFolder.Text = _selectedOutputFolder;
@@ -112,8 +125,8 @@ namespace LogDecoder.GUI
         
         private void UpdateButtons(bool enabled)
         {
-            BtnTrendView.IsEnabled = enabled;
-            BtnExportExcel.IsEnabled = enabled;
+            // BtnTrendView.IsEnabled = enabled;
+            BtnExportCsv.IsEnabled = enabled;
         }
 
         private void Inputs_Changed(object sender, RoutedEventArgs e)
@@ -163,14 +176,16 @@ namespace LogDecoder.GUI
             _isUpdatingSelectAll = false;
         }
 
-        private async void BtnExportExcel_Click(object sender, RoutedEventArgs e)
+        private async void BtnExportCsvClick(object sender, RoutedEventArgs e)
         {
-            BtnExportExcel.IsEnabled = false;
+            BtnExportCsv.IsEnabled = false;
 
             var selectedIds = PackageIdList.SelectedItems
                 .Cast<PackageItem>()
                 .Select(p => p.Id)
                 .ToHashSet();
+            
+            selectedIds.UnionWith(_defaultSelectedIds);
 
             var inputFolder = _selectedInputFolder;
             var outputFolder = _selectedOutputFolder;
@@ -187,13 +202,19 @@ namespace LogDecoder.GUI
 
                 await Task.Run(() =>
                 {
-                    _excelExport.ToExcel(
+                    _csvExport.ToCsv(
                         inputFolder,
                         outputFolder,
                         selectedIds,
                         start,
                         end,
-                        [PackageTechStatus.Warning, PackageTechStatus.Error, PackageTechStatus.Critical],
+                        [
+                            PackageTechStatus.Warning,
+                            PackageTechStatus.Error,
+                            PackageTechStatus.Critical,
+                            PackageTechStatus.Info,
+                            PackageTechStatus.Ok
+                        ],
                         ignoreDuplicates,
                         excludeEmptyTimestamps);
                 });
@@ -207,7 +228,7 @@ namespace LogDecoder.GUI
             }
             finally
             {
-                BtnExportExcel.IsEnabled = true;
+                BtnExportCsv.IsEnabled = true;
             }
         }
         
@@ -239,7 +260,7 @@ namespace LogDecoder.GUI
             TxtIndexStatus.Text = "Индексирование... Подождите";
             StartDateTime.IsEnabled = false;
             EndDateTime.IsEnabled = false;
-            CheckInputs();
+            BtnExportCsv.IsEnabled = false;
         }
 
         private void OnIndexFinish()
@@ -247,7 +268,7 @@ namespace LogDecoder.GUI
             TxtIndexStatus.Text = "";
             StartDateTime.IsEnabled = true;
             EndDateTime.IsEnabled = true;
-            CheckInputs();
+            BtnExportCsv.IsEnabled = true;
         }
     }
 }
