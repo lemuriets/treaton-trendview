@@ -8,7 +8,15 @@ namespace LogDecoder.Parser.Export;
 
 public class CsvExport(LogParser logParser)
 {
-    public void ToCsv(string logsFolder, string outputFolder, IReadOnlySet<int> filterIds, DateTime start, DateTime end, PackageTechStatus[] techStatusesToParse, bool ignoreDuplicates = false, bool excludeEmptyTimestamps = false)
+    public void ToCsv(
+        string logsFolder,
+        string outputFolder,
+        IReadOnlySet<int> filterIds,
+        DateTime start,
+        DateTime end,
+        PackageTechStatus[] techStatusesToParse,
+        bool ignoreDuplicates = false,
+        bool excludeEmptyTimestamps = false)
     {
         Directory.CreateDirectory(outputFolder);
 

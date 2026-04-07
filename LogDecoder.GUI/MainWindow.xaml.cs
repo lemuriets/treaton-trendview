@@ -33,7 +33,7 @@ namespace LogDecoder.GUI
 
         private void FillWidgets()
         {
-            StartDateTime.Value = DateTime.Now;
+            StartDateTime.Value = DateTime.MinValue;
             EndDateTime.Value = DateTime.Now;
 
             PackageIdList.ItemsSource = _factory
@@ -96,9 +96,13 @@ namespace LogDecoder.GUI
             _logParser.FinishIndex += OnIndexFinish;
 
             await _logParser.CreateOrLoadAllIndexesAsync();
-            
-            StartDateTime.Value = _logParser.GetStartDatetime();
 
+            Console.WriteLine(StartDateTime.Value);
+            Console.WriteLine(DateTime.MinValue);
+            if (StartDateTime.Value == DateTime.MinValue)
+            {
+                StartDateTime.Value = _logParser.GetStartDatetime();
+            }
             CheckInputs();
         }
 
