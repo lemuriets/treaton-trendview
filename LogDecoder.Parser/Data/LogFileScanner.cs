@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using LogDecoder.CAN;
 using LogDecoder.CAN.Contracts;
-using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data.Contracts;
 
 [assembly: InternalsVisibleTo("LogDecoder.Parser")]
@@ -10,37 +9,89 @@ namespace LogDecoder.Parser.Data;
 
 public class LogFileScanner: ILogFileScanner
 {
-    public LogFileScanner(string file)
+    public LogFileScanner(string filePath)
     {
-        _file = file;
+        ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
+        
+        _filePath = filePath;
+        _tempBuffer = new byte[LogBuffer.BufferWithHeaderSize];
     }
-
-    private readonly string _file;
-    private readonly BufferParser _bufferParser = new();
     
-    public IEnumerable<(int, ICanPackageParsed)> GetAllPackagesParsed(ICanPackageFactory factory, IReadOnlySet<int> filterIds, ParseContext context, int offsetBuffers = 0, int countBuffers = 0)
+    private readonly string _filePath;
+    private readonly byte[] _tempBuffer;
+    
+    public IEnumerable<(long, ICanPackageParsed)> GetPackagesParsed(
+        ICanPackageFactory factory,
+        IReadOnlySet<int> filterIds,
+        ParseContext context,
+        long startOffset = 0,
+        long? endOffset = null)
     {
-        foreach (var (bufNum, package) in GetAllPackages(filterIds, offsetBuffers, countBuffers))
+        foreach (var (offset, package) in GetPackages(filterIds, startOffset, endOffset))
         {
             var parsed = factory.Create(package, context);
             if (parsed.Id != 0)
             {
-                yield return (bufNum, parsed);
+                yield return (offset, parsed);
             }
         }
     }
 
-    public IEnumerable<(int, CanPackage)> GetAllPackages(IReadOnlySet<int> filterIds, int offsetBuffers = 0, int countBuffers = 0)
+    public IEnumerable<(long, CanPackage)> GetPackages(
+        IReadOnlySet<int> filterIds,
+        long startOffset = 0,
+        long? endOffset = null)
     {
-        using var bufferReader = new BufferReader(_file, Config.BufferSize);
-        var bufNum = 0;
-        foreach (var buffer in bufferReader.Read(offsetBuffers, countBuffers))
+        ArgumentOutOfRangeException.ThrowIfNegative(startOffset);
+
+        using var file = File.OpenRead(_filePath);
+
+        endOffset ??= file.Length;
+        ArgumentOutOfRangeException.ThrowIfNegative(endOffset.Value);
+        
+        if (startOffset > endOffset || endOffset > file.Length)
         {
-            foreach (var package in _bufferParser.GetPackagesFromBuffer(buffer, filterIds))
-            {
-                yield return (bufNum, package);
-            }
-            bufNum++;
+            throw new ArgumentException($"startOffset must be <= endOffset and endOffset <= file.Length ({file.Length})");
         }
+        
+        var offsetInFirstBuffer = (int)(startOffset % LogBuffer.BufferWithHeaderSize);
+        var offsetInLastBuffer = (int)(endOffset % LogBuffer.BufferWithHeaderSize);
+        var firstBufferIndex = (int)(startOffset / LogBuffer.BufferWithHeaderSize);
+        var lastBufferIndex = (int)(endOffset / LogBuffer.BufferWithHeaderSize);
+
+        var offsetBufferStart = startOffset - offsetInFirstBuffer;
+        
+        file.Seek(offsetBufferStart, SeekOrigin.Begin);
+        
+        for (var i = firstBufferIndex; i <= lastBufferIndex; i++)
+        {
+            var logBuffer = ReadBuffer(file);
+            if (!logBuffer.IsValid)
+            {
+                yield break;
+            }
+            int localStartOffset = i == firstBufferIndex
+                ? Math.Max(0, offsetInFirstBuffer - LogBuffer.HeaderSize)
+                : 0;
+            int localEndOffset = i == lastBufferIndex
+                ? Math.Min(LogBuffer.PayloadSize, offsetInLastBuffer - LogBuffer.HeaderSize)
+                : LogBuffer.PayloadSize;
+            
+            foreach (var (bufOffset, package) in logBuffer.GetPackages(filterIds, localStartOffset, localEndOffset))
+            {
+                var globalOffset = offsetBufferStart + (i - firstBufferIndex) * LogBuffer.BufferWithHeaderSize + bufOffset + LogBuffer.HeaderSize;
+                yield return (globalOffset, package);
+            }
+        }
+    }
+
+    private LogBuffer ReadBuffer(FileStream file)
+    {
+        var read = file.Read(_tempBuffer);
+        if (read != LogBuffer.BufferWithHeaderSize)
+        {
+            return default;
+        }
+        return new LogBuffer(_tempBuffer);
     }
 }

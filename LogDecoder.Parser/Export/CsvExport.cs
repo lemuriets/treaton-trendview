@@ -78,7 +78,7 @@ public class CsvExport(LogParser logParser)
             prevMessages = packageMessages;
         }
 
-        Console.WriteLine($"Added {rowCounter} rows to csv.");
+        Console.WriteLine($"[INFO] Added {rowCounter} rows to csv.");
     }
 
     private static bool ShouldExport(ICanPackageParsed package, PackageTechStatus[] techStatusesToParse)

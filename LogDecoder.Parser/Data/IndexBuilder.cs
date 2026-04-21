@@ -14,16 +14,16 @@ public class IndexBuilder
     
     public string CreateIndexFile(string logFile, string folderToSave, bool rewrite = false)
     {
-        Console.WriteLine($"Creating index for: {logFile}");
-
         var baseFilename = Path.GetFileName(logFile);
         var indexFilePath = Path.Combine(folderToSave, baseFilename + ".txt");
-
-        if (!File.Exists(indexFilePath) || rewrite)
+        if (File.Exists(indexFilePath) && !rewrite)
         {
-            var indexes = CreateIndex(logFile);
-            File.WriteAllLines(indexFilePath, indexes);
+            return indexFilePath;
         }
+        Console.WriteLine($"[INFO] Creating index for: {logFile}");
+        
+        var indexes = CreateIndex(logFile);
+        File.WriteAllLines(indexFilePath, indexes);
         return indexFilePath;
     }
 
@@ -34,7 +34,7 @@ public class IndexBuilder
         var indexes = new List<string>();
         var datetimeSet = new HashSet<string>();
         var context = new ParseContext();
-        foreach (var (bufNum, package) in fileScanner.GetAllPackagesParsed(_factory, new HashSet<int>{IdSynchro.Id}, context))
+        foreach (var (offset, package) in fileScanner.GetPackagesParsed(_factory, new HashSet<int>{IdSynchro.Id}, context))
         {
             var packageData = package.ParseData();
             if (packageData is null)
@@ -44,7 +44,7 @@ public class IndexBuilder
             var dt = packageData.Value.Messages[0];
             if (datetimeSet.Add(dt))
             {
-                indexes.Add($"{bufNum} {dt}");
+                indexes.Add($"{offset} {dt}");
             }
         }
         return indexes;

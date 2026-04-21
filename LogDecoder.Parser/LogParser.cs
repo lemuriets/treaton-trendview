@@ -81,9 +81,13 @@ public partial class LogParser : ILogParser
     {
         var startIndex = _indexParser.FindFloor(start);
         var endIndex = _indexParser.FindFloor(end);
-        if (startIndex is null || endIndex is null)
+        if (startIndex is null)
         {
-            throw new Exception($"Unable to find indexes range. ({start} - {end}) -> {startIndex} {endIndex}");
+            throw new Exception($"Unable to find {start} in index.");
+        }
+        if (endIndex is null)
+        {
+            throw new Exception($"Unable to find {end} in index.");
         }
         
         var startFilename = startIndex.Value.Filename;
@@ -91,38 +95,37 @@ public partial class LogParser : ILogParser
 
         var context = new ParseContext();
         
-        Console.WriteLine($"[DEBUG] GetPackages(), start filename: {startFilename}, end filename: {endFilename}");
-        Console.WriteLine($"[DEBUG] GetPackages(), start buffer: {startIndex.Value.BufferNumber}, end buffer: {endIndex.Value.BufferNumber}");
+        Console.WriteLine($"[DEBUG] GetPackages(), start: ({startFilename}: {startIndex.Value.Offset}), end: ({endFilename}: {endIndex.Value.Offset})");
         foreach (var file in _filesAggrerator.GetRange(startFilename, endFilename))
         {
             var filename = Path.GetFileNameWithoutExtension(file);
             var scanner = GetScanner(file);
             
-            var (offset, count) = ResolveScanRange(filename, startFilename, endFilename, startIndex.Value.BufferNumber, endIndex.Value.BufferNumber);
-            foreach (var (_, package) in scanner.GetAllPackagesParsed(_factory, filterIds, context, offsetBuffers: offset, countBuffers: count))
+            var (startOffset, endOffset) = ResolveScanRange(filename, startFilename, endFilename, startIndex.Value.Offset, endIndex.Value.Offset);
+            foreach (var (_, package) in scanner.GetPackagesParsed(_factory, filterIds, context, startOffset, endOffset))
             {
                 yield return package;
             }
         }
     }
     
-    private (int offset, int count) ResolveScanRange(string filename, string startFilename, string endFilename, int startBuffer, int endBuffer)
+    private (int offset, int count) ResolveScanRange(string filename, string startFilename, string endFilename, int startOffset, int endOffset)
     {
         if (startFilename == endFilename)
         {
             if (filename == startFilename)
             {
-                return (startBuffer, endBuffer - startBuffer);
+                return (startOffset, endOffset);
             }
             return (0, 0);
         }
         if (filename == startFilename)
         {
-            return (startBuffer, 0);
+            return (startOffset, 0);
         }
         if (filename == endFilename)
         {
-            return (0, endBuffer);
+            return (0, endOffset);
         }
         return (0, 0);
     }

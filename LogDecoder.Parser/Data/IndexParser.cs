@@ -4,10 +4,10 @@ using LogDecoder.Parser.Data.Contracts;
 
 namespace LogDecoder.Parser.Data;
 
-public readonly struct IndexEntry(string filename, int bufNum, DateTime time)
+public readonly struct IndexEntry(string filename, int offset, DateTime time)
 {
     public readonly string Filename = filename;
-    public readonly int BufferNumber = bufNum;
+    public readonly int Offset = offset;
     public readonly DateTime Time = time;
 }
 
@@ -42,7 +42,7 @@ internal class IndexParser : IIndexParser
         FirstTime = _indexes.Min(i => i.Time);
         LastTime = _indexes.Max(i => i.Time);
         
-        // FillSessions(_indexes, _sessions);
+        FillSessions(_indexes, _sessions);
         Console.WriteLine($"[INFO] Created indexes. Count: {_indexes.Count}. From: [{FirstTime}] To: [{LastTime}]");
     }
 
@@ -50,7 +50,7 @@ internal class IndexParser : IIndexParser
     {
         sessions.Clear();
         var timeSpanStart = indexes[0].Time;
-        var startBuffer = indexes[0].BufferNumber;
+        var startOffset = indexes[0].Offset;
         for (var i = 0; i < indexes.Count - 1; i++)
         {
             var index1 = indexes[i];
@@ -63,12 +63,12 @@ internal class IndexParser : IIndexParser
                 continue;
             }
 
-            var session = new LogSession(startBuffer, index1.BufferNumber, new TimeRange(timeSpanStart, index1.Time));
+            var session = new LogSession(startOffset, index1.Offset, new TimeRange(timeSpanStart, index1.Time));
             sessions.TryAdd(session);
             timeSpanStart = index2.Time;
-            startBuffer = index2.BufferNumber;
+            startOffset = index2.Offset;
         }
-        sessions.TryAdd(new LogSession(startBuffer, indexes[^1].BufferNumber, new TimeRange(timeSpanStart, indexes[^1].Time)));
+        sessions.TryAdd(new LogSession(startOffset, indexes[^1].Offset, new TimeRange(timeSpanStart, indexes[^1].Time)));
         Console.WriteLine($"[INFO] Created sessions. Count: {sessions.Count}");
     }
     
@@ -122,19 +122,19 @@ internal class IndexParser : IIndexParser
         {
             throw new DirectoryNotFoundException($"Specified index file was not found '{indexFile}'");
         }
-        Console.WriteLine($"Loading index file {indexFile}");
+        Console.WriteLine($"[INFO] Loading index file {indexFile}");
 
         var filename = Path.GetFileNameWithoutExtension(indexFile);
         var result = new List<IndexEntry>();
         
         foreach (var line in File.ReadLines(indexFile))
         {
-            var (bufNum, dt) = ParseLine(line);
+            var (offset, dt) = ParseLine(line);
             if (dt > DateTime.Now)
             {
                 continue;
             }
-            result.Add(new IndexEntry(filename, bufNum, dt));
+            result.Add(new IndexEntry(filename, offset, dt));
         }
         return result;
     }
@@ -142,12 +142,12 @@ internal class IndexParser : IIndexParser
     private (int, DateTime) ParseLine(string line)
     {
         var spaceIndex = line.IndexOf(' ');
-        var strBufNum = line.AsSpan(0, spaceIndex);
+        var strOffset = line.AsSpan(0, spaceIndex);
         var strTime = line.AsSpan(spaceIndex + 1);
 
-        var bufNum = int.Parse(strBufNum);
+        var offset = int.Parse(strOffset);
         var time = DateTime.ParseExact(strTime, CanConfig.TimeFormat, CultureInfo.InvariantCulture);
 
-        return (bufNum, time);
+        return (offset, time);
     }
 }
