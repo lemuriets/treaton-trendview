@@ -46,8 +46,8 @@ namespace LogDecoder.CAN.Packages;
 
             var numericData = new NumericDataItem[]
             {
-                new("Статус", status),
-                new("Флаги", flags),
+                new("status", status),
+                new("flags", flags),
             };
 
             var messages = new List<string>();
