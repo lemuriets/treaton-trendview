@@ -27,7 +27,7 @@ public class IdWaveVco2Capno2 : BasePackageParsed
             new("VCO2Wave_ml_x100", vco2Wave),
             new("VCO2Integral_percent", vco2Integral)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

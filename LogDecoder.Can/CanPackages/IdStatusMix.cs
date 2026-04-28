@@ -52,7 +52,7 @@ public class IdStatusMix : BasePackageParsed
             new("atmPressure", atmospherePressure),
             new("mode", activeMode)
         };
-        var messages = ParseBits(statusBits, BitsDefinitions);
+        var messages = ParseBitsAndUpdateStatus(statusBits, BitsDefinitions);
 
         return new PackageData(numericData, messages);
     }

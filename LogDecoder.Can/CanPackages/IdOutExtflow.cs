@@ -42,6 +42,6 @@ public class IdOutExtflow : BasePackageParsed
             messages.Add("Данные не обновлены (используется предыдущая точка)");
         }
 
-        return new PackageData(numericData, messages.ToArray());
+        return new PackageData(numericData, messages);
     }
 }

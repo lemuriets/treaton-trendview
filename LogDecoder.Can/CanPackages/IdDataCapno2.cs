@@ -33,7 +33,7 @@ public class IdDataCapno2 : BasePackageParsed
             new("EtCO2_mmHg", etCo2MmHg),
             new("RespRate_1_min", rr),
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

@@ -25,7 +25,7 @@ public class IdSynchro : BasePackageParsed
                 (2000 + span[0], span[1], span[2], span[3], span[4], span[5]);
             var datetime = new DateTime(year, month, day, hour, minute, second);
 
-            var messages = new []{datetime.ToString(CanConfig.TimeFormat)};
+            var messages = new List<string>{ datetime.ToString(CanConfig.TimeFormat) };
             var numericData = Array.Empty<NumericDataItem>();
 
             return new PackageData(numericData, messages);

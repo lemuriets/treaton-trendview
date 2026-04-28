@@ -26,7 +26,7 @@ public class IdStatErrMix : BasePackageParsed
             new("error_bit_number", errorBitNumber),
             new("error_voltage_mV", errorVoltageMv)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

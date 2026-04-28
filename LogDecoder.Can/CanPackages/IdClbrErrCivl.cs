@@ -121,11 +121,11 @@ public class IdClbrErrCivl : BasePackageParsed
         
         var messages = _mode switch
         {
-            2 => ParseBits(span[0], KvtBitsDefinitions),
-            4 => ParseBits(span[0], ValveBitsDefinitions),
-            5 => ParseBits(span[0], BitsDefinitions),
-            14 => ParseBits(span[0], FlowExhaleBitsDefinitions),
-            25 => ParseBits(span[0], NcPAPBitsDefinitions),
+            2 => ParseBitsAndUpdateStatus(span[0], KvtBitsDefinitions),
+            4 => ParseBitsAndUpdateStatus(span[0], ValveBitsDefinitions),
+            5 => ParseBitsAndUpdateStatus(span[0], BitsDefinitions),
+            14 => ParseBitsAndUpdateStatus(span[0], FlowExhaleBitsDefinitions),
+            25 => ParseBitsAndUpdateStatus(span[0], NcPAPBitsDefinitions),
             _ => []
         };
         var numericData = new List<NumericDataItem>();
@@ -147,6 +147,6 @@ public class IdClbrErrCivl : BasePackageParsed
         {
             numericData.Add(new("MaxError", value));
         }
-        return new PackageData(numericData.ToArray(), messages);
+        return new PackageData(numericData, messages);
     }
 }

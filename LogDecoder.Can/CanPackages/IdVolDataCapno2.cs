@@ -31,7 +31,7 @@ public class IdVolDataCapno2 : BasePackageParsed
             new("DeadSpace_ml", deadSpace),
             new("AlveolarVent_ml_cycle", alveolarVentCycle),
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
         
         return new PackageData(numericData, messages);
     }

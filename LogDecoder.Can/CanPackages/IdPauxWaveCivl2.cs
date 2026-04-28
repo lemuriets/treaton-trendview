@@ -27,7 +27,7 @@ public class IdPauxWaveCivl2 : BasePackageParsed
             new("paux1_mmH2O", paux1),
             new("paux2_mmH2O", paux2)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

@@ -24,7 +24,7 @@ public class IdNcpapCivl2 : BasePackageParsed
         {
             new("nCPAP_mmH2O", ncpap)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

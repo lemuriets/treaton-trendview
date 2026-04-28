@@ -49,8 +49,8 @@ public class IdPar3Civl : BasePackageParsed
             new("Приращение deltaPEEP", deltaPeep),
         };
 
-        var messages = ParseBits(flags, BitDefinitions).ToList();
+        var messages = ParseBitsAndUpdateStatus(flags, BitDefinitions).ToList();
 
-        return new PackageData(numericData.ToArray(), messages.ToArray());
+        return new PackageData(numericData, messages);
     }
 }

@@ -24,7 +24,7 @@ public class IdWorktimeCivl : BasePackageParsed
         {
             new("Worktime_min", worktimeMinutes)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

@@ -20,24 +20,24 @@ public class IdPar1Civl : BasePackageParsed
     };
 
     // режимы (биты 3..0)
-    private static readonly Dictionary<int, (string, PackageTechStatus)> ModeBitDefinitions = new()
+    private static readonly Dictionary<int, string> Modes = new()
     {
-        {0, ("CMV/VCV", PackageTechStatus.Ok)},
-        {1, ("CMV/PCV", PackageTechStatus.Ok)},
-        {2, ("SIMV/PC+PS+apnea", PackageTechStatus.Ok)},
-        {3, ("SIMV/VC+PS+apnea", PackageTechStatus.Ok)},
-        {4, ("CPAP+PS+apnea", PackageTechStatus.Ok)},
-        {5, ("BiSTEP+PS+apnea", PackageTechStatus.Ok)},
-        {6, ("NIV", PackageTechStatus.Ok)},
-        {7, ("APRV", PackageTechStatus.Ok)},
-        {8, ("PCV-VG", PackageTechStatus.Ok)},
-        {9, ("SIMV/DC", PackageTechStatus.Ok)},
-        {10, ("iSV", PackageTechStatus.Ok)},
-        {11, ("nCPAP", PackageTechStatus.Ok)},
-        {12, ("CPAP+VS", PackageTechStatus.Ok)},
-        {13, ("nIMV", PackageTechStatus.Ok)},
-        {14, ("HF_O2", PackageTechStatus.Ok)},
-        {15, ("Зарезервировано", PackageTechStatus.Warning)},
+        {0, "CMV/VCV"},
+        {1, "CMV/PCV"},
+        {2, "SIMV/PC+PS+apnea"},
+        {3, "SIMV/VC+PS+apnea"},
+        {4, "CPAP+PS+apnea"},
+        {5, "BiSTEP+PS+apnea"},
+        {6, "NIV"},
+        {7, "APRV"},
+        {8, "PCV-VG"},
+        {9, "SIMV/DC"},
+        {10, "iSV"},
+        {11, "nCPAP"},
+        {12, "CPAP+VS"},
+        {13, "nIMV"},
+        {14, "HF_O2"},
+        {15, "Зарезервировано"},
     };
 
     public override PackageData? ParseData()
@@ -49,13 +49,12 @@ public class IdPar1Civl : BasePackageParsed
 
         var span = Data.Span;
 
-        var messages = new List<string>();
-        messages.AddRange(ParseBits(span[0], BitDefinitions));
+        var messages = ParseBitsAndUpdateStatus(span[0], BitDefinitions);
 
         var mode = span[0] & 0x0F;
-        if (ModeBitDefinitions.TryGetValue(mode, out var modeInfo))
+        if (Modes.TryGetValue(mode, out var modeInfo))
         {
-            messages.Add($"Mode: {modeInfo.Item1}");
+            messages.Add($"Mode: {modeInfo}");
         }
 
         var pdkv = span[1]; // см вод ст
@@ -89,6 +88,6 @@ public class IdPar1Civl : BasePackageParsed
         {
             messages.Add("Время выдоха: авто-режим");
         }
-        return new PackageData(numericData.ToArray(), messages.ToArray());
+        return new PackageData(numericData, messages);
     }
 }

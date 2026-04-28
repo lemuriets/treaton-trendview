@@ -29,7 +29,7 @@ public class IdPauxDataCivl2 : BasePackageParsed
             new("PauxAvg_mmH2O", avgPressure),
             new("PauxMin_mmH2O", minPressure)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

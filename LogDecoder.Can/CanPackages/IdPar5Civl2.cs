@@ -23,7 +23,7 @@ public class IdPar5Civl2 : BasePackageParsed
         var rb = span[4];
         var vsupp = BitUtil.ToU16(span[5], span[6]) * 0.1;
 
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
         var numericData = new NumericDataItem[]
         {
             new("Объём вдоха [0.1 мл]", volume),

@@ -20,7 +20,7 @@ public class BasePackageParsed(CanPackage basePackage, string name) : ICanPackag
 
     public override string ToString() => string.Join(' ', Data);
     
-    protected string[] ParseBits<T>(
+    protected List<string> ParseBitsAndUpdateStatus<T>(
         T value,
         Dictionary<int, (string msg, PackageTechStatus status)> bitDefinitions)
         where T : struct, IConvertible
@@ -30,12 +30,18 @@ public class BasePackageParsed(CanPackage basePackage, string name) : ICanPackag
 
         foreach (var kv in bitDefinitions)
         {
-            if (BitUtil.IsBitSet(bits, kv.Key))
+            if (kv.Key is < 0 or >= 64)
             {
-                results.Add(kv.Value.msg);
-                TechStatus = (PackageTechStatus)Math.Max((int)TechStatus, (int)kv.Value.status);
+                continue;
             }
+
+            if (!BitUtil.IsBitSet(bits, kv.Key))
+            {
+                continue;
+            }
+            results.Add(kv.Value.msg);
+            TechStatus = (PackageTechStatus)Math.Max((int)TechStatus, (int)kv.Value.status);
         }
-        return results.ToArray();
+        return results;
     }
 }

@@ -30,7 +30,7 @@ public class IdWaveCapno1 : BasePackageParsed
             new("O2_percent_x10", o2Raw),
             new("N2O_percent_x10", n2oRaw)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

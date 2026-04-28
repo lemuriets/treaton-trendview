@@ -35,12 +35,14 @@ public class IdStatusPwr : BasePackageParsed
 
         var battery = span[1]; 
         var statusBits = BitUtil.ToU16(span[2], span[3]);
+        var alertStatus = span[4];
         
         var numericData = new NumericDataItem[]
         {
-            new("battery", battery)
+            new("battery", battery),
+            new("byte4", alertStatus),
         };
-        var messages = ParseBits(statusBits, BitsDefinitions);
+        var messages = ParseBitsAndUpdateStatus(statusBits, BitsDefinitions);
 
         return new PackageData(numericData, messages);
     }

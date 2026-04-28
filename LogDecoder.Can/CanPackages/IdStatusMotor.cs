@@ -30,7 +30,7 @@ public class IdStatusMotor : BasePackageParsed
         var span = Data.Span;
 
         var numericData = Array.Empty<NumericDataItem>();
-        var messages = ParseBits(span[0], BitsDefinitions);
+        var messages = ParseBitsAndUpdateStatus(span[0], BitsDefinitions);
 
         return new PackageData(numericData, messages);
     }

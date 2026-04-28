@@ -28,7 +28,7 @@ public class IdWaveCapno2 : BasePackageParsed
             new("CO2_percent_x100", co2PercentRaw)
         };
 
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         // if (co2PressureRaw < 0)
         // {

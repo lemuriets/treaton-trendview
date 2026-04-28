@@ -34,7 +34,7 @@ public class IdCo2DataCapno1 : BasePackageParsed
             new("RespRate", rr)
         };
 
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         // if (rr == 0)
         // {

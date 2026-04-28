@@ -92,13 +92,13 @@ public class IdStatusSpo_v2_1 : BasePackageParsed
             messages.Add($"Тип датчика: резерв ({sensorType})");
         }
 
-        messages.AddRange(ParseBits(qualityByte, QualityBitsDefinitions));
+        messages.AddRange(ParseBitsAndUpdateStatus(qualityByte, QualityBitsDefinitions));
 
         if (((qualityByte >> 0) & 1) == 0)
         {
             messages.Add("качество PI: значение недостоверное");
         }
 
-        return new PackageData(numericData.ToArray(), messages.ToArray());
+        return new PackageData(numericData, messages);
     }
 }

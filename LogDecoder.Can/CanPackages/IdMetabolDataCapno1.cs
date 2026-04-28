@@ -32,8 +32,8 @@ public class IdMetabolDataCapno1 : BasePackageParsed
             new("RQ_x100", rq),
             new("REE_kcal_day", ree),
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
-        return new PackageData(numericData.ToArray(), messages.ToArray());
+        return new PackageData(numericData, messages);
     }
 }

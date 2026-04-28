@@ -19,7 +19,7 @@ public class IdOffPwr : BasePackageParsed
         }
 
         var numericData = Array.Empty<NumericDataItem>();
-        var messages = new[]
+        var messages = new List<string>
         {
             "выключения питания"
         };

@@ -36,7 +36,7 @@ public class IdStatusCivl2 : BasePackageParsed
         var span = Data.Span;
         var statusBits = BitUtil.ToU16(span[0], span[1]);
 
-        var messages = ParseBits(statusBits, BitsDefinitions);
+        var messages = ParseBitsAndUpdateStatus(statusBits, BitsDefinitions);
         var numericData = Array.Empty<NumericDataItem>();
 
         return new PackageData(numericData, messages);

@@ -22,7 +22,7 @@ public class IdFlowMix : BasePackageParsed
         var airFlow = airRaw * 0.01;
         var o2Flow  = o2Raw * 0.01;
 
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
         var numericData = new[]
         {
             new NumericDataItem("AirFlow", airFlow),

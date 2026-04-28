@@ -48,6 +48,6 @@ public class IdPar2Civl : BasePackageParsed
             numericData.Add(new NumericDataItem("Триггер окончания вдоха [% от Finsp_max]", expTrigger));
         }
 
-        return new PackageData(numericData.ToArray(), messages.ToArray());
+        return new PackageData(numericData, messages);
     }
 }

@@ -98,6 +98,6 @@ namespace LogDecoder.CAN.Packages;
                 ? "Режим работы: капнограф"
                 : "Режим работы: метаболограф");
 
-            return new PackageData(numericData, messages.ToArray());
+            return new PackageData(numericData, messages);
         }
     }

@@ -27,7 +27,7 @@ public class IdVexpCivl2 : BasePackageParsed
             new("Vexp_avg_ml_x10", vexpAvg),
             new("Vexp_raw_ml_x10", vexpRaw)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

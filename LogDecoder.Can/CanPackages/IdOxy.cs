@@ -24,7 +24,7 @@ public class IdOxy : BasePackageParsed
         {
             new("FiO2_percent", oxyPercent)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

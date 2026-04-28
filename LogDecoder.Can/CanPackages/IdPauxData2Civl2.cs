@@ -31,7 +31,7 @@ public class IdPauxData2Civl2 : BasePackageParsed
             new("Ptpm_mmH2O", ptpm),
             new("Ccw_ml_cmH2O", ccw)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

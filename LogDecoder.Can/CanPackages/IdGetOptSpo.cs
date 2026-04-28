@@ -27,7 +27,7 @@ public class IdGetOptSpo : BasePackageParsed
             new("sample_rate", sampleRate),
             new("current_analysis_settings", currentAnalysisSettings),
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

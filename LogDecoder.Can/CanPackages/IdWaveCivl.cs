@@ -31,7 +31,7 @@ public class IdWaveCivl : BasePackageParsed
             new("paw", paw),
             new("vol", vol)
         };;
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

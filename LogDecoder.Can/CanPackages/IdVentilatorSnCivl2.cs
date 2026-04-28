@@ -25,7 +25,7 @@ public class IdVentilatorSnCivl2 : BasePackageParsed
         {
             new("SerialNumber", serial)
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }

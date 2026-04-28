@@ -14,13 +14,14 @@ internal static class BitUtil
     public static bool IsBitSet(byte value, int bit) => ((value >> bit) & 1) == 1;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ushort ToU16(byte b0, byte b1) => (ushort)(b0 | (b1 << 8));
+    public static ushort ToU16(byte b0, byte b1) => 
+        (ushort)(b0 | (b1 << 8));
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint ToU32(byte b0, byte b1, byte b2, byte b3) => (uint)(b0 | (b1 << 8) | (b2 << 16) | (b3 << 24));
+    public static uint ToU32(byte b0, byte b1, byte b2, byte b3) => 
+        (uint)(b0 | (b1 << 8) | (b2 << 16) | (b3 << 24));
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong ToU64(params byte[] bytes)
+    public static ulong ToU64(ReadOnlySpan<byte> bytes)
     {
         var len = bytes.Length > 8 ? 8 : bytes.Length;
         ulong bits = 0;
@@ -32,20 +33,15 @@ internal static class BitUtil
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static short ToS16(byte b0, byte b1) =>
-        unchecked((short)(b0 | (b1 << 8)));
+    public static short ToS16(byte b0, byte b1) => 
+        unchecked((short)ToU16(b0, b1));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int ToS32(byte b0, byte b1, byte b2, byte b3) =>
-        unchecked((int)(b0 | (b1 << 8) | (b2 << 16) | (b3 << 24)));
+    public static int ToS32(byte b0, byte b1, byte b2, byte b3) => 
+        unchecked((int)ToU32(b0, b1, b2, b3));
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static long ToS64(params byte[] bytes)
+    public static long ToS64(ReadOnlySpan<byte> bytes)
     {
-        var len = bytes.Length > 8 ? 8 : bytes.Length;
-        long bits = 0;
-        for (var i = 0; i < len; i++)
-            bits |= (long)bytes[i] << (8 * i);
-        return bits;
+        return (long)ToU64(bytes);
     }
 }

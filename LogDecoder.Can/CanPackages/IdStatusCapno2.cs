@@ -48,16 +48,15 @@ public class IdStatusCapno2 : BasePackageParsed
 
         var priority = span[4];
         var presence = span[5];
-        var atm = BitUtil.ToU16(span[6], span[7]);
+        var atm = BitUtil.ToU16(span[6], span[7]);  // [мм рт.ст.]
 
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
         if (presence == 0x00)
         {
-            messages = ParseBits(statusBits, BitsDefinitions);
+            messages = ParseBitsAndUpdateStatus(statusBits, BitsDefinitions);
         }
         var numericData = new NumericDataItem[]
         {
-            new("status_bits", statusBits),
             new("priority", priority),
             new("presence", presence),
             new("atmospheric_pressure", atm)

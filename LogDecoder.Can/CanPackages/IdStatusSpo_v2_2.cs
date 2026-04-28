@@ -10,10 +10,9 @@ public class IdStatusSpo_v2_2 : BasePackageParsed
     
     public const int Id = 0x582;
     
-    // TODO: добавить кодов и доработать парсинг
     private static readonly Dictionary<int, (string, PackageTechStatus)> BitsDefinitions6 = new()
     {
-        { 0, ("Флаг PVI exception установлен", PackageTechStatus.Warning) }
+        { 0, ("PVI Exception. Поддержка измерений PVI", PackageTechStatus.Warning) }
     };
 
     private static readonly Dictionary<int, (string, PackageTechStatus)> BitsDefinitions7 = new()
@@ -49,10 +48,9 @@ public class IdStatusSpo_v2_2 : BasePackageParsed
             new("byte7", b7),
             new("mode", mode)
         };
-        var messages = new List<string>();
-        messages.AddRange(ParseBits(b6, BitsDefinitions6));
-        messages.AddRange(ParseBits(b7, BitsDefinitions7));
+        var messages = ParseBitsAndUpdateStatus(b6, BitsDefinitions6);
+        messages.AddRange(ParseBitsAndUpdateStatus(b7, BitsDefinitions7));
 
-        return new PackageData(numericData, messages.ToArray());
+        return new PackageData(numericData, messages);
     }
 }

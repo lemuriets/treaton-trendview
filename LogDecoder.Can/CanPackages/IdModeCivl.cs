@@ -118,9 +118,9 @@ public class IdModeCivl : BasePackageParsed
         {
             return null;
         }
-        var messages = ParseBits(Data.Span[0], BitsDefinitions);
+        var messages = ParseBitsAndUpdateStatus(Data.Span[0], BitsDefinitions);
         var numericData = Array.Empty<NumericDataItem>();
 
-        return new PackageData(numericData, messages.ToArray());
+        return new PackageData(numericData, messages);
     }
 }

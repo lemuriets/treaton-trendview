@@ -41,7 +41,7 @@ public class IdStatusSpo : BasePackageParsed
             new("pulseRate", pulseRate),
             new("spO2", spO2)
         };;
-        var messages = ParseBits(span[5], BitsDefinitions5);
+        var messages = ParseBitsAndUpdateStatus(span[5], BitsDefinitions5);
 
         return new PackageData(numericData, messages);
     }

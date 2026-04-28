@@ -27,7 +27,7 @@ public class IdRealSpeedMotor : BasePackageParsed
             new("speed_rpm_x10", speedRaw),
             new("status_value", status_value),
         };
-        var messages = Array.Empty<string>();
+        var messages = new List<string>();
 
         return new PackageData(numericData, messages);
     }
