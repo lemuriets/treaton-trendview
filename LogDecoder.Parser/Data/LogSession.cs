@@ -59,7 +59,7 @@ public class LogSessionsSequence
     }
 }
 
-public record LogSession(int StartOffset, int EndOffset, TimeRange TimeRange)
+public record LogSession(long StartOffset, long EndOffset, TimeRange TimeRange)
 {
     public readonly int TotalSeconds = (int)(TimeRange.To - TimeRange.From).TotalSeconds;
 

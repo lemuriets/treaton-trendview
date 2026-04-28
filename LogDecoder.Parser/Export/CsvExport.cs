@@ -1,13 +1,15 @@
-using System.Text;
+using System.Globalization;
 using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.General;
 using LogDecoder.CAN.Packages;
 using LogDecoder.Helpers.Csv;
+using Microsoft.Extensions.Logging;
 
 namespace LogDecoder.Parser.Export;
 
-public class CsvExport(LogParser logParser)
+public class CsvExport(ILogger logger, LogParser logParser)
 {
+    private const int RoundTo = 3;
     public void ToCsv(
         string logsFolder,
         string outputFolder,
@@ -21,15 +23,18 @@ public class CsvExport(LogParser logParser)
         Directory.CreateDirectory(outputFolder);
 
         var csvFilePath = Path.Combine(outputFolder, $"ИВЛ {DateTime.Now:dd.MM.yyyy HH-mm-ss}.csv");
-        Console.WriteLine($"Exporting data from: {logsFolder}. To: {csvFilePath}. Ids: [{string.Join(',', filterIds)}]");
+        logger.LogInformation("Exporting data from: {LogsFolder}. To: {CsvFilePath}. Ids: [{Ids}]",
+            logsFolder,
+            csvFilePath,
+            string.Join(',', filterIds));
 
         using var csvSession = new CsvSession(csvFilePath);
         var csvWriter = new CsvWriter(csvSession);
 
-        csvWriter.AddRow(["Id", "Имя", "Сообщения", "Данные"]);
+        csvWriter.AddRow(["Id", "Имя", "Время", "Сообщения", "Данные"]);
 
         var rowCounter = 0;
-        string[] prevMessages = [];
+        List<string> prevMessages = [];
         ICanPackageParsed? prevPackage = null;
         string lastDateTimeStr = "";
 
@@ -56,7 +61,7 @@ public class CsvExport(LogParser logParser)
             var packageMessages = packageData.Value.Messages;
             var packageNumericData = packageData.Value.NumericData;
 
-            if (packageMessages.Length == 0 && packageNumericData.Length == 0)
+            if (packageMessages.Count == 0 && packageNumericData.Count == 0)
             {
                 continue;
             }
@@ -66,7 +71,7 @@ public class CsvExport(LogParser logParser)
                 lastDateTimeStr = packageMessages[0];
             }
 
-            if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages) && packageNumericData.Length == 0)
+            if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages) && packageNumericData.Count == 0)
             {
                 continue;
             }
@@ -78,16 +83,13 @@ public class CsvExport(LogParser logParser)
             prevMessages = packageMessages;
         }
 
-        Console.WriteLine($"[INFO] Added {rowCounter} rows to csv.");
+        logger.LogInformation("Added {RowCounter} rows to csv.",
+            rowCounter);
     }
 
     private static bool ShouldExport(ICanPackageParsed package, PackageTechStatus[] techStatusesToParse)
     {
-        if (techStatusesToParse.Length == 0)
-        {
-            return true;
-        }
-        return techStatusesToParse.Contains(package.TechStatus);
+        return techStatusesToParse.Length == 0 || techStatusesToParse.Contains(package.TechStatus);
     }
 
     private static List<string> BuildRow(ICanPackageParsed package, string datetimeStr, IEnumerable<string> messages, IEnumerable<NumericDataItem> data)
@@ -96,16 +98,13 @@ public class CsvExport(LogParser logParser)
         {
             package.Id.ToString(),
             package.Name,
+            datetimeStr,
+            string.Join('\n', messages),
         };
-        var messagesStr = string.Join('\n', messages);
-        var packageTime = package.Id == IdSynchro.Id
-            ? messagesStr
-            : $"{datetimeStr}\n{messagesStr}";
-        row.Add(packageTime);
         foreach (var item in data)
         {
             row.Add(item.Name);
-            row.Add(Math.Round(item.Value, 3).ToString());
+            row.Add(Math.Round(item.Value, RoundTo).ToString(CultureInfo.InvariantCulture));
         }
         return row;
     }

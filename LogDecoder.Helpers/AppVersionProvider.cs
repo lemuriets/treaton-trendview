@@ -4,11 +4,11 @@ namespace LogDecoder.Helpers;
 
 public static class AppVersionProvider
 {
-    public static string GetProductVersion()
+    public static string GetVersion()
     {
         return Assembly.GetEntryAssembly()?
            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
            .InformationalVersion
-           ?? "unknown";
+           ?? "unknown version";
     }
 }

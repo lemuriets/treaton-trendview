@@ -4,19 +4,20 @@ using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data;
 using LogDecoder.Parser.Contracts;
+using Microsoft.Extensions.Logging;
 
 namespace LogDecoder.Parser;
 
 public partial class LogParser : ILogParser
 {
-    public LogParser(string logsFolder, ICanPackageFactory factory)
+    public LogParser(ILogger logger, string avlLogsFolder, ICanPackageFactory factory)
     {
-        _logsFolder = logsFolder;
-        _indexFolder = Path.Combine(logsFolder, "index");
-        _filesAggrerator = new LogFilesAggregator(_logsFolder, Path.GetFileName, FilenameTemplateRegex());
+        _logger = logger;
+        _indexFolder = Path.Combine(avlLogsFolder, "index");
+        _filesAggrerator = new LogFilesAggregator(avlLogsFolder, Path.GetFileName, FilenameTemplateRegex());
         _factory = factory;
-        _indexBuilder = new IndexBuilder(_factory);
-        _indexParser = new IndexParser();
+        _indexBuilder = new IndexBuilder(logger, _factory);
+        _indexParser = new IndexParser(logger);
 
         RegisteredIds = _factory.RegisteredIds;
         IdsWithNames = _factory.GetIdsWithNames();
@@ -28,9 +29,8 @@ public partial class LogParser : ILogParser
     public event Action? StartIndex;
     public event Action? FinishIndex;
 
-    private CivlMode _civlMode = CivlMode.Waiting;
+    private readonly ILogger _logger;
     private readonly ICanPackageFactory _factory;
-    private readonly string _logsFolder;
     private readonly string _indexFolder;
     private readonly LogFilesAggregator _filesAggrerator;
     private readonly IndexBuilder _indexBuilder;
@@ -51,7 +51,7 @@ public partial class LogParser : ILogParser
         StartIndex?.Invoke();
         foreach (var file in _filesAggrerator.SortedFiles)
         {
-            indexFiles.Add(_indexBuilder.CreateIndexFile(file, _indexFolder));
+            indexFiles.Add(_indexBuilder.Build(file, _indexFolder));
         }
         _indexParser.LoadAll(indexFiles.ToArray());
         FinishIndex?.Invoke();
@@ -68,7 +68,7 @@ public partial class LogParser : ILogParser
             foreach (var file in _filesAggrerator.SortedFiles)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                indexFiles.Add(_indexBuilder.CreateIndexFile(file, _indexFolder));
+                indexFiles.Add(_indexBuilder.Build(file, _indexFolder));
             }
             _indexParser.LoadAll(indexFiles.ToArray());
 
@@ -95,7 +95,11 @@ public partial class LogParser : ILogParser
 
         var context = new ParseContext();
         
-        Console.WriteLine($"[DEBUG] GetPackages(), start: ({startFilename}: {startIndex.Value.Offset}), end: ({endFilename}: {endIndex.Value.Offset})");
+        _logger.LogInformation("GetPackages(), start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
+            startFilename,
+            startIndex.Value.Offset,
+            endFilename,
+            endIndex.Value.Offset);
         foreach (var file in _filesAggrerator.GetRange(startFilename, endFilename))
         {
             var filename = Path.GetFileNameWithoutExtension(file);
@@ -109,7 +113,7 @@ public partial class LogParser : ILogParser
         }
     }
     
-    private (int offset, int count) ResolveScanRange(string filename, string startFilename, string endFilename, int startOffset, int endOffset)
+    private (long, long) ResolveScanRange(string filename, string startFilename, string endFilename, long startOffset, long endOffset)
     {
         if (startFilename == endFilename)
         {

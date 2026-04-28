@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.GUI.Avalonia", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Benchmark", "LogDecoder.Benchmark\LogDecoder.Benchmark.csproj", "{DD9E5604-86ED-4CF1-8D18-E9B5E067EAC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Infrastructure", "LogDecoder.Infrastructure\LogDecoder.Infrastructure.csproj", "{C07EB02E-1B74-4252-8CC9-0CDF64C93641}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{DD9E5604-86ED-4CF1-8D18-E9B5E067EAC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD9E5604-86ED-4CF1-8D18-E9B5E067EAC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD9E5604-86ED-4CF1-8D18-E9B5E067EAC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C07EB02E-1B74-4252-8CC9-0CDF64C93641}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C07EB02E-1B74-4252-8CC9-0CDF64C93641}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C07EB02E-1B74-4252-8CC9-0CDF64C93641}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C07EB02E-1B74-4252-8CC9-0CDF64C93641}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

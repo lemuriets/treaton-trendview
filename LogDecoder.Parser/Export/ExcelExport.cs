@@ -2,11 +2,21 @@ using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.General;
 using LogDecoder.CAN.Packages;
 using LogDecoder.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace LogDecoder.Parser.Export;
 
-public class ExcelExport(LogParser logParser) : IExcelExport
+public class ExcelExport : IExcelExport
 {
+    public ExcelExport(ILogger logger, LogParser logParser)
+    {
+        _logger = logger;
+        _logParser = logParser;
+    }
+
+    private readonly ILogger _logger;
+    private readonly LogParser _logParser;
+    
     public void ToExcel(
         string logsFolder,
         string outputFolder,
@@ -18,7 +28,10 @@ public class ExcelExport(LogParser logParser) : IExcelExport
         bool skipConsecutiveSynchroPackages = false)
     {
         var excelFilePath = Path.Combine(outputFolder, $"Errors Log {DateTime.Now:dd.MM.yyyy HH-mm-ss}.xlsx");
-        Console.WriteLine($"Exporting data from: {logsFolder}. To: {excelFilePath}. Ids: [{string.Join(',', filterIds)}]");
+        _logger.LogInformation("Exporting data from: {LogsFolder}. To: {ExcelFilePath}. Ids: [{Ids}]",
+            logsFolder,
+            excelFilePath,
+            string.Join(',', filterIds));
         using var excelSession = new ExcelSession(excelFilePath);
         using var excel = new ExcelHelper(excelSession.Package);
 
@@ -26,9 +39,9 @@ public class ExcelExport(LogParser logParser) : IExcelExport
         excel.GetOrCreateWorksheet(worksheetName);
 
         var rowCounter = 0;
-        string[] prevMessages = [];
+        List<string> prevMessages = [];
         ICanPackageParsed? prevPackage = null;
-        foreach (var package in logParser.GetPackages(filterIds, start, end))
+        foreach (var package in _logParser.GetPackages(filterIds, start, end))
         {
             if (skipConsecutiveSynchroPackages &&
                 prevPackage != null &&
@@ -44,11 +57,11 @@ public class ExcelExport(LogParser logParser) : IExcelExport
             }
             var packageMessages = packageData.Value.Messages;
             var packageNumericData = packageData.Value.NumericData;
-            if (packageMessages.Length == 0 && packageNumericData.Length == 0)
+            if (packageMessages.Count == 0 && packageNumericData.Count == 0)
             {
                 continue;
             }
-            if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages) && packageNumericData.Length == 0)
+            if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages) && packageNumericData.Count == 0)
             {
                 continue;
             }
