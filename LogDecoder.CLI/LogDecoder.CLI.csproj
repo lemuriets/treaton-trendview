@@ -9,11 +9,18 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LogDecoder.Helpers\LogDecoder.Helpers.csproj" />
+      <ProjectReference Include="..\LogDecoder.Infrastructure\LogDecoder.Infrastructure.csproj" />
       <ProjectReference Include="..\LogDecoder.Parser\LogDecoder.Parser.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="OxyPlot.Core" Version="2.2.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.7" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.7" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 </Project>
