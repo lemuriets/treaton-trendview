@@ -7,6 +7,9 @@ namespace LogDecoder.Infrastructure.Logging;
 
 public static class LoggerConfig
 {
+    private const string OutputTemplate =
+        "[{Level:u3}] ({Timestamp:yyyy-MM-dd HH:mm:ss}) {Message:lj}{NewLine}{Exception}";
+    
     public static ILoggerFactory CreateLoggerFactory()
     {
         var configuration = LoadConfiguration();
@@ -16,7 +19,8 @@ public static class LoggerConfig
             .ReadFrom.Configuration(configuration)
             .WriteTo.File(
                 path: logFilePath,
-                outputTemplate: "[{Level:u3}] ({Timestamp:yyyy-MM-dd HH:mm:ss}) {Message:lj}{NewLine}{Exception}")
+                rollingInterval: RollingInterval.Infinite,
+                outputTemplate: OutputTemplate)
             .CreateLogger();
 
         return LoggerFactory.Create(builder =>
