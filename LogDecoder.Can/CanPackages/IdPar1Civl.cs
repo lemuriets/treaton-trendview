@@ -1,5 +1,7 @@
 using LogDecoder.CAN.Attributes;
+using LogDecoder.CAN.CanPackages;
 using LogDecoder.CAN.General;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN.Packages;
 
@@ -11,12 +13,12 @@ public class IdPar1Civl : BasePackageParsed
     public const int Id = 0x4A3;
 
     // биты байта 0 (кроме режима)
-    private static readonly Dictionary<int, (string, PackageTechStatus)> BitDefinitions = new()
+    private static readonly Dictionary<int, BitMessage> BitDefinitions = new()
     {
-        { 7, ("Детский режим", PackageTechStatus.Info) },
-        { 6, ("Режим вдох активен", PackageTechStatus.Info) },
-        { 5, ("Убывающий поток", PackageTechStatus.Info) },
-        { 4, ("Триггер по потоку", PackageTechStatus.Info) },
+        { 7, BitMessage.Both("Взрослый режим", "Детский режим") },
+        { 6, BitMessage.Both("Нет режима вздох", "Режим вздох") },
+        { 5, BitMessage.Both("Поток прямоугольный", "Поток убывающий") },
+        { 4, BitMessage.Both("Активен триггер по давлению", "Активен триггер по потоку") },
     };
 
     // режимы (биты 3..0)

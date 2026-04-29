@@ -1,5 +1,7 @@
 ﻿using LogDecoder.CAN.Attributes;
+using LogDecoder.CAN.CanPackages;
 using LogDecoder.CAN.General;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN.Packages;
 
@@ -8,15 +10,15 @@ public class IdStatusMotor : BasePackageParsed
 {
     public const int Id = 0x5A9;
     
-    private static readonly Dictionary<int,(string,PackageTechStatus)> BitsDefinitions = new()
+    private static readonly Dictionary<int, BitMessage> BitsDefinitions = new()
     {
-        { 0, ("Отказ датчиков Холла", PackageTechStatus.Error) },
-        { 1, ("Отказ драйвера ЭД (OCTW)", PackageTechStatus.Error) },
-        { 2, ("Отказ драйвера ЭД (FAULT)", PackageTechStatus.Error) },
-        { 3, ("Флаг сброса", PackageTechStatus.Info) },
-        { 5, ("Отказ энкодера", PackageTechStatus.Error) },
-        { 6, ("Отказ привода", PackageTechStatus.Error) },
-        { 7, ("КРИТИЧЕСКИЙ ОТКАЗ (остановка мотора)", PackageTechStatus.Critical) }
+        { 0, BitMessage.One("Отказ датчиков Холла", PackageTechStatus.Error) },
+        { 1, BitMessage.One("Отказ драйвера ЭД (OCTW)", PackageTechStatus.Error) },
+        { 2, BitMessage.One("Отказ драйвера ЭД (FAULT)", PackageTechStatus.Error) },
+        { 3, BitMessage.One("Флаг сброса", PackageTechStatus.Info) },
+        { 5, BitMessage.One("Отказ энкодера", PackageTechStatus.Error) },
+        { 6, BitMessage.One("Отказ привода", PackageTechStatus.Error) },
+        { 7, BitMessage.One("КРИТИЧЕСКИЙ ОТКАЗ (остановка мотора)", PackageTechStatus.Critical) }
     };
 
     public IdStatusMotor(CanPackage p, string name) : base(p, name) { }

@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN;
 

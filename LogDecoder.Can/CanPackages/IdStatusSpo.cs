@@ -1,5 +1,7 @@
 ﻿using LogDecoder.CAN.Attributes;
+using LogDecoder.CAN.CanPackages;
 using LogDecoder.CAN.General;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN.Packages;
 
@@ -8,15 +10,16 @@ public class IdStatusSpo : BasePackageParsed
 {
     public const int Id = 0x4E1;
 
-    private static readonly Dictionary<int, (string msg, PackageTechStatus level)> BitsDefinitions5 = new()
+    private static readonly Dictionary<ulong, MessageDefinition> SensorStatusDefinitions = new()
     {
-        { 1, ("Модуль отключен", PackageTechStatus.Info) },
-        { 2, ("Модуль неисправен", PackageTechStatus.Error) },
-        { 3, ("Датчик отсоединен", PackageTechStatus.Warning) },
-        { 4, ("Датчик неисправен", PackageTechStatus.Error) },
-        { 5, ("Датчик сброшен", PackageTechStatus.Info)},
-        { 6, ("Слабый сигнал датчика ФПГ", PackageTechStatus.Warning)},
-        { 7, ("Деградация датчика", PackageTechStatus.Warning)}
+        [0] = new("Норма, нет сообщения", PackageTechStatus.Ok),
+        [1] = new("Модуль отключен", PackageTechStatus.Info),
+        [2] = new("Модуль неисправен", PackageTechStatus.Error),
+        [3] = new("Датчик отсоединен", PackageTechStatus.Warning),
+        [4] = new("Датчик неисправен", PackageTechStatus.Error),
+        [5] = new("Датчик сброшен", PackageTechStatus.Info),
+        [6] = new("Слабый сигнал датчика ФПГ", PackageTechStatus.Warning),
+        [7] = new("Деградация датчика", PackageTechStatus.Warning),
     };
 
     public IdStatusSpo(CanPackage p, string name) : base(p, name) { }
@@ -28,7 +31,8 @@ public class IdStatusSpo : BasePackageParsed
             return null;
         }
         var span = Data.Span;
-
+        
+        var sensorStatus = BitUtil.ExtractBits(span[5], 0, 3);
         // 0.1%
         var pleth = BitUtil.ToU16(span[0], span[1]);
         // уд/мин
@@ -41,7 +45,7 @@ public class IdStatusSpo : BasePackageParsed
             new("pulseRate", pulseRate),
             new("spO2", spO2)
         };;
-        var messages = ParseBitsAndUpdateStatus(span[5], BitsDefinitions5);
+        var messages = ParseValueMessageAndUpdateStatus(sensorStatus, SensorStatusDefinitions);
 
         return new PackageData(numericData, messages);
     }

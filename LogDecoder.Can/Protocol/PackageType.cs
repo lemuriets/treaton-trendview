@@ -1,4 +1,4 @@
-namespace LogDecoder.CAN;
+namespace LogDecoder.CAN.Protocol;
 
 public enum PackageType
 {

@@ -1,5 +1,7 @@
 using LogDecoder.CAN.Attributes;
+using LogDecoder.CAN.CanPackages;
 using LogDecoder.CAN.General;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN.Packages;
 
@@ -10,20 +12,20 @@ public class IdStatusCivl2 : BasePackageParsed
 
     public const int Id = 0x510;
 
-    private static readonly Dictionary<int, (string, PackageTechStatus)> BitsDefinitions = new()
+    private static readonly Dictionary<int, BitMessage> BitsDefinitions = new()
     {
-        { 0, ("Неисправность датчика потока Jet", PackageTechStatus.Error) },
-        { 1, ("Неисправность клапана безопасности Jet", PackageTechStatus.Error) },
-        { 2, ("Неисправность регулятора ШИМ Jet", PackageTechStatus.Error) },
-        { 3, ("Неисправность АЦП1", PackageTechStatus.Error) },
-        { 4, ("Неисправность модуля респираторной механики", PackageTechStatus.Error) },
-        { 5, ("Превышен предел давления nCPAP", PackageTechStatus.Warning) },
-        { 6, ("Неисправность датчика давления Aux1", PackageTechStatus.Error) },
-        { 7, ("Неисправность системного напряжения (27V)", PackageTechStatus.Error) },
-        { 8, ("Неисправность датчика температуры и атмосферного давления на плате КИВЛ", PackageTechStatus.Error) },
-        { 9, ("Заданный объём вдоха (Vt) недостижим", PackageTechStatus.Warning) },
-        { 10, ("Значение Paux не соответствует установленному значению", PackageTechStatus.Warning) },
-        { 11, ("Достигнуто давление 50 см.вод.ст.", PackageTechStatus.Warning) },
+        { 0, BitMessage.One("Неисправность датчика потока Jet", PackageTechStatus.Error) },
+        { 1, BitMessage.One("Неисправность клапана безопасности Jet", PackageTechStatus.Error) },
+        { 2, BitMessage.One("Неисправность регулятора ШИМ Jet", PackageTechStatus.Error) },
+        { 3, BitMessage.One("Неисправность АЦП1", PackageTechStatus.Error) },
+        { 4, BitMessage.One("Неисправность модуля респираторной механики", PackageTechStatus.Error) },
+        { 5, BitMessage.One("Превышен предел давления nCPAP", PackageTechStatus.Warning) },
+        { 6, BitMessage.One("Неисправность датчика давления Aux1", PackageTechStatus.Error) },
+        { 7, BitMessage.One("Неисправность системного напряжения (27V)", PackageTechStatus.Error) },
+        { 8, BitMessage.One("Неисправность датчика температуры и атмосферного давления на плате КИВЛ", PackageTechStatus.Error) },
+        { 9, BitMessage.One("Заданный объём вдоха (Vt) недостижим", PackageTechStatus.Warning) },
+        { 10, BitMessage.One("Значение Paux не соответствует установленному значению", PackageTechStatus.Warning) },
+        { 11, BitMessage.One("Достигнуто давление 50 см.вод.ст.", PackageTechStatus.Warning) },
     };
 
     public override PackageData? ParseData()

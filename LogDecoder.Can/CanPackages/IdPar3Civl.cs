@@ -1,5 +1,7 @@
 using LogDecoder.CAN.Attributes;
+using LogDecoder.CAN.CanPackages;
 using LogDecoder.CAN.General;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN.Packages;
 
@@ -10,11 +12,11 @@ public class IdPar3Civl : BasePackageParsed
 
     public const int Id = 0x4A5;
 
-    private static readonly Dictionary<int, (string, PackageTechStatus)> BitDefinitions = new()
+    private static readonly Dictionary<ulong, MessageDefinition> BytesDefinitions = new()
     {
-        { 0, ("вкл компенсацию утечки", PackageTechStatus.Info) },
-        { 1, ("вкл функцию \"свободное дыхание\"", PackageTechStatus.Info) },
-        { 2, ("неонатальный/детский режим ИВЛ", PackageTechStatus.Info) },
+        { 0, new ("вкл компенсацию утечки") },
+        { 1, new ("вкл функцию \"свободное дыхание\"") },
+        { 2, new ("неонатальный/детский режим ИВЛ") },
     };
 
     public override PackageData? ParseData()
@@ -49,7 +51,7 @@ public class IdPar3Civl : BasePackageParsed
             new("Приращение deltaPEEP", deltaPeep),
         };
 
-        var messages = ParseBitsAndUpdateStatus(flags, BitDefinitions).ToList();
+        var messages = ParseValueMessageAndUpdateStatus(flags, BytesDefinitions);
 
         return new PackageData(numericData, messages);
     }

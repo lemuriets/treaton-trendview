@@ -1,5 +1,6 @@
 ﻿using LogDecoder.CAN.Attributes;
 using LogDecoder.CAN.General;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN.Packages;
 

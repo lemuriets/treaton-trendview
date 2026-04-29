@@ -1,48 +1,76 @@
 ﻿using LogDecoder.CAN.Attributes;
+using LogDecoder.CAN.CanPackages;
 using LogDecoder.CAN.General;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN.Packages;
 
-[CanPackageAttr(0x581, "Состояние модуля пульсометрии Masimo 1")]
+[CanPackageAttr(0x581, "Состояние модуля пульсоксиметрии Masimo 1")]
 public class IdStatusSpo_v2_1 : BasePackageParsed
 {
-    public IdStatusSpo_v2_1(CanPackage p, string name) : base(p, name) { }
-
     public const int Id = 0x581;
 
-    private static readonly Dictionary<int, string> SensorStateDefinitions = new()
+    public IdStatusSpo_v2_1(CanPackage package, string name) : base(package, name) { }
+
+    private static readonly Dictionary<ulong, MessageDefinition> SensorStateDefinitions = new()
     {
-        { 0, "норма - нет сообщения" },
-        { 1, "датчик не подключен" },
-        { 2, "датчик сброшен" },
-        { 3, "датчик неисправен" },
-        { 4, "деградация датчика" },
-        { 5, "слабый сигнал ФПГ" },
-        { 6, "установка соединения с модулем" },
-        { 7, "модуль отсутствует" },
-        { 8, "высокий уровень помех" },
-        { 9, "калибровка датчика" },
-        { 10, "поиск пульса" },
-        { 11, "несовместимый датчик" },
-        { 12, "модуль неисправен" },
-        { 13, "измерения недостоверны" },
+        [0] = new("Норма, нет сообщения", PackageTechStatus.Ok),
+        [1] = new("Датчик не подключен", PackageTechStatus.Warning),
+        [2] = new("Датчик сброшен", PackageTechStatus.Info),
+        [3] = new("Датчик неисправен", PackageTechStatus.Error),
+        [4] = new("Деградация датчика", PackageTechStatus.Warning),
+        [5] = new("Слабый сигнал ФПГ", PackageTechStatus.Warning),
+        [6] = new("Установка соединения с модулем", PackageTechStatus.Info),
+        [7] = new("Модуль отсутствует", PackageTechStatus.Error),
+        [8] = new("Высокий уровень помех", PackageTechStatus.Warning),
+        [9] = new("Калибровка датчика", PackageTechStatus.Info),
+        [10] = new("Поиск пульса", PackageTechStatus.Info),
+        [11] = new("Несовместимый датчик", PackageTechStatus.Error),
+        [12] = new("Модуль неисправен", PackageTechStatus.Error),
+        [13] = new("Измерения недостоверны", PackageTechStatus.Warning),
     };
 
-    private static readonly Dictionary<int, string> SensorTypeDefinitions = new()
+    private static readonly Dictionary<ulong, MessageDefinition> SensorTypeDefinitions = new()
     {
-        { 0, "датчик не подключен" },
-        { 1, "Masimo LNOP Sensor" },
-        { 4, "Unknown Sensor" },
-        { 5, "Hi Fi (Trauma or Newborn) Sensor" },
+        [0] = new("Тип датчика: датчик не подключен", PackageTechStatus.Warning),
+        [1] = new("Тип датчика: Masimo LNOP Sensor", PackageTechStatus.Ok),
+        [2] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [3] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [4] = new("Тип датчика: Unknown Sensor", PackageTechStatus.Warning),
+        [5] = new("Тип датчика: Hi Fi (Trauma or Newborn) Sensor", PackageTechStatus.Ok),
+        [6] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [7] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [8] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [9] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [10] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [11] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [12] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [13] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [14] = new("Тип датчика: резерв", PackageTechStatus.Info),
+        [15] = new("Тип датчика: резерв", PackageTechStatus.Info),
     };
 
-    private static readonly Dictionary<int, (string, PackageTechStatus)> QualityBitsDefinitions = new()
+    private static readonly Dictionary<int, BitMessage> QualityBitDefinitions = new()
     {
-        { 0, ("качество PI: значение OK", PackageTechStatus.Ok) },
-        { 1, ("качество PR: значение OK", PackageTechStatus.Ok) },
-        { 2, ("качество SpO2: значение OK", PackageTechStatus.Ok) },
-        { 3, ("качество PVI: значение OK", PackageTechStatus.Ok) },
-        { 4, ("качество SType: значение OK", PackageTechStatus.Ok) },
+        [0] = BitMessage.Both(
+            "Качество PI: значение недостоверное, нужно вывести прочерки",
+            "Качество PI: значение OK"),
+
+        [1] = BitMessage.Both(
+            "Качество PR: значение недостоверное, нужно вывести прочерки",
+            "Качество PR: значение OK"),
+
+        [2] = BitMessage.Both(
+            "Качество SpO2: значение недостоверное, нужно вывести прочерки",
+            "Качество SpO2: значение OK"),
+
+        [3] = BitMessage.Both(
+            "Качество PVI: значение недостоверное, нужно вывести прочерки",
+            "Качество PVI: значение OK"),
+
+        [4] = BitMessage.Both(
+            "Качество SType: значение недостоверное",
+            "Качество SType: значение OK"),
     };
 
     public override PackageData? ParseData()
@@ -60,11 +88,11 @@ public class IdStatusSpo_v2_1 : BasePackageParsed
         var pvi = span[5];
 
         var sensorStatus = span[6];
-        var sensorState = sensorStatus & 0x0F;
-        var sensorType = (sensorStatus >> 4) & 0x0F;
+        var sensorState = BitUtil.ExtractBits(sensorStatus, 0, 3);
+        var sensorType = BitUtil.ExtractBits(sensorStatus, 4, 7);
 
-        var qualityByte = span[7];
-        var mode = (qualityByte >> 6) & 0x03;
+        var qualityStatus = span[7];
+        var workMode = BitUtil.ExtractBits(qualityStatus, 6, 7);
 
         var numericData = new List<NumericDataItem>
         {
@@ -72,32 +100,14 @@ public class IdStatusSpo_v2_1 : BasePackageParsed
             new("Частота пульса [уд/мин]", pulse),
             new("Сатурация [%]", spo2),
             new("PVI [%]", pvi),
-            new("Тип датчика (SType)", sensorType),
-            new("Режим работы блока", mode),
+            new("Режим работы блока", workMode),
         };
 
         var messages = new List<string>();
 
-        if (SensorStateDefinitions.TryGetValue(sensorState, out var sensorStateMessage) && sensorState != 0)
-        {
-            messages.Add(sensorStateMessage);
-        }
-
-        if (SensorTypeDefinitions.TryGetValue(sensorType, out var sensorTypeMessage))
-        {
-            messages.Add($"Тип датчика: {sensorTypeMessage}");
-        }
-        else
-        {
-            messages.Add($"Тип датчика: резерв ({sensorType})");
-        }
-
-        messages.AddRange(ParseBitsAndUpdateStatus(qualityByte, QualityBitsDefinitions));
-
-        if (((qualityByte >> 0) & 1) == 0)
-        {
-            messages.Add("качество PI: значение недостоверное");
-        }
+        messages.AddRange(ParseValueMessageAndUpdateStatus(sensorState, SensorStateDefinitions));
+        messages.AddRange(ParseValueMessageAndUpdateStatus(sensorType, SensorTypeDefinitions));
+        messages.AddRange(ParseBitsAndUpdateStatus(qualityStatus, QualityBitDefinitions));
 
         return new PackageData(numericData, messages);
     }

@@ -1,5 +1,7 @@
 using LogDecoder.CAN.Attributes;
+using LogDecoder.CAN.CanPackages;
 using LogDecoder.CAN.General;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.CAN.Packages;
 
@@ -43,33 +45,33 @@ public class IdModeCivl : BasePackageParsed
 
     public const int Id = 0x4A0;
 
-    private static readonly Dictionary<int, (string, PackageTechStatus)> BitsDefinitions = new()
+    private static readonly Dictionary<ulong, MessageDefinition> BytesDefinitions = new()
     {
-        { 0, ("ОЖИДАНИЕ", PackageTechStatus.Info) },
-        { 1, ("РАБОТА", PackageTechStatus.Info) },
-        { 2, ("Короткий Внутренний Тест", PackageTechStatus.Info) },
-        { 3, ("Полный Внутренний Тест", PackageTechStatus.Info) },
-        { 4, ("калибровка клапана выдоха", PackageTechStatus.Info) },
-        { 5, ("калибровка датчика кислорода на вдохе", PackageTechStatus.Info) },
-        { 6, ("калибровка FASTOXY в капнографе бокового отведения", PackageTechStatus.Info) },
-        { 7, ("калибровка датчиков давления", PackageTechStatus.Info) },
-        { 8, ("проверка ЭМКВ", PackageTechStatus.Info) },
-        { 9, ("калибровка датчика потока кислорода в СГ", PackageTechStatus.Info) },
-        { 10, ("калибровка генератора потока", PackageTechStatus.Info) },
-        { 11, ("генерация потока", PackageTechStatus.Info) },
-        { 12, ("проверка утечки", PackageTechStatus.Info) },
-        { 13, ("технологический детский режим", PackageTechStatus.Info) },
-        { 14, ("калибровка датчика потока воздуха в СГ", PackageTechStatus.Info) },
-        { 15, ("калибровка преобразователя поток-давление", PackageTechStatus.Info) },
-        { 16, ("АВАРИЙНЫЙ РЕЖИМ №1", PackageTechStatus.Warning) },
-        { 17, ("АВАРИЙНЫЙ РЕЖИМ №2", PackageTechStatus.Warning) },
-        { 18, ("АВАРИЙНЫЙ РЕЖИМ №3", PackageTechStatus.Warning) },
-        { 19, ("ПОЛНОСТЬЮ АВАРИЙНЫЙ РЕЖИМ", PackageTechStatus.Warning) },
-        { 21, ("замена датчика кислорода на вдохе", PackageTechStatus.Info) },
-        { 22, ("запуск загрузчика для обновления прошивки КИВЛ", PackageTechStatus.Info) },
-        { 23, ("Инициализация", PackageTechStatus.Info) },
-        { 24, ("калибровка нулей датчиков давления в зависимости от температуры", PackageTechStatus.Info) },
-        { 25, ("тест контура для режима nCPAP", PackageTechStatus.Info) },
+        { 0, new ("ОЖИДАНИЕ", PackageTechStatus.Info) },
+        { 1, new ("РАБОТА", PackageTechStatus.Info) },
+        { 2, new ("Короткий Внутренний Тест", PackageTechStatus.Info) },
+        { 3, new ("Полный Внутренний Тест", PackageTechStatus.Info) },
+        { 4, new ("калибровка клапана выдоха", PackageTechStatus.Info) },
+        { 5, new ("калибровка датчика кислорода на вдохе", PackageTechStatus.Info) },
+        { 6, new ("калибровка FASTOXY в капнографе бокового отведения", PackageTechStatus.Info) },
+        { 7, new ("калибровка датчиков давления", PackageTechStatus.Info) },
+        { 8, new ("проверка ЭМКВ", PackageTechStatus.Info) },
+        { 9, new ("калибровка датчика потока кислорода в СГ", PackageTechStatus.Info) },
+        { 10, new ("калибровка генератора потока", PackageTechStatus.Info) },
+        { 11, new ("генерация потока", PackageTechStatus.Info) },
+        { 12, new ("проверка утечки", PackageTechStatus.Info) },
+        { 13, new ("технологический детский режим", PackageTechStatus.Info) },
+        { 14, new ("калибровка датчика потока воздуха в СГ", PackageTechStatus.Info) },
+        { 15, new ("калибровка преобразователя поток-давление", PackageTechStatus.Info) },
+        { 16, new ("АВАРИЙНЫЙ РЕЖИМ №1", PackageTechStatus.Warning) },
+        { 17, new ("АВАРИЙНЫЙ РЕЖИМ №2", PackageTechStatus.Warning) },
+        { 18, new ("АВАРИЙНЫЙ РЕЖИМ №3", PackageTechStatus.Warning) },
+        { 19, new ("ПОЛНОСТЬЮ АВАРИЙНЫЙ РЕЖИМ", PackageTechStatus.Warning) },
+        { 21, new ("замена датчика кислорода на вдохе", PackageTechStatus.Info) },
+        { 22, new ("запуск загрузчика для обновления прошивки КИВЛ", PackageTechStatus.Info) },
+        { 23, new ("Инициализация", PackageTechStatus.Info) },
+        { 24, new ("калибровка нулей датчиков давления в зависимости от температуры", PackageTechStatus.Info) },
+        { 25, new ("тест контура для режима nCPAP", PackageTechStatus.Info) },
     };
     
     public CivlMode Mode { get; }
@@ -118,7 +120,7 @@ public class IdModeCivl : BasePackageParsed
         {
             return null;
         }
-        var messages = ParseBitsAndUpdateStatus(Data.Span[0], BitsDefinitions);
+        var messages = ParseValueMessageAndUpdateStatus(Data.Span[0], BytesDefinitions);
         var numericData = Array.Empty<NumericDataItem>();
 
         return new PackageData(numericData, messages);
