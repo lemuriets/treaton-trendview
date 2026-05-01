@@ -2,6 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Media;
 using LogDecoder.CAN.Packages;
+using LogDecoder.CAN.Protocol;
 
 namespace LogDecoder.GUI.Converters;
 

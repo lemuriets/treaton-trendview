@@ -6,8 +6,12 @@ using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Media;
 using LogDecoder.CAN.Contracts;
+using LogDecoder.CAN.Protocol;
 using LogDecoder.GUI.Services;
+using LogDecoder.Helpers;
+using LogDecoder.Infrastructure.Logging;
 using LogDecoder.Parser.Export;
+using Microsoft.Extensions.Logging;
 
 namespace LogDecoder.GUI
 {
@@ -21,14 +25,26 @@ namespace LogDecoder.GUI
         private LogParser _logParser;
         private CsvExport _csvExport;
         private readonly ICanPackageFactory _factory;
+        private readonly ILogger _logger;
         private readonly IReadOnlySet<int> _defaultSelectedIds = new HashSet<int>() { IdSynchro.Id };
         
         public MainWindow()
         {
+            using var loggerProvider = new LoggerProvider();
+            _logger = loggerProvider.CreateLogger<MainWindow>();
             _factory = new CanPackageFactory();
             InitializeComponent();
             FillWidgets();
+            SetWindowTitle();
             ConnectEvents();
+            _logger.LogInformation("GUI initialization finished");
+        }
+
+        private void SetWindowTitle()
+        {
+            var version = AppVersionProvider.GetVersion();
+            _logger.LogInformation("Current app version: {Version}", version);
+            Title = $"{Title} v{version}";
         }
 
         private void FillWidgets()
@@ -43,6 +59,8 @@ namespace LogDecoder.GUI
                 .ToList();
             
             PackageIdList.Loaded += (s, e) => PackageIdList.SelectAll();
+            
+            _logger.LogInformation("FillWidgets() completed");
         }
 
         private void ConnectEvents()
@@ -59,6 +77,8 @@ namespace LogDecoder.GUI
             
             ChkSelectAllPackages.Checked += ChkSelectAllPackages_Checked;
             ChkSelectAllPackages.Unchecked += ChkSelectAllPackages_Unchecked;
+            
+            _logger.LogInformation("ConnectEvents() completed");
         }
 
         private async void SelectInputFolder_Click(object sender, RoutedEventArgs e)
@@ -89,16 +109,14 @@ namespace LogDecoder.GUI
             }
             TxtSelectedInputFolder.Text = _selectedInputFolder;
             TxtSelectedInputFolder.Foreground = Brushes.Green;
-            _logParser = new LogParser(selectedFolder, _factory);
-            _csvExport = new CsvExport(_logParser);
+            _logParser = new LogParser(_logger, selectedFolder, _factory);
+            _csvExport = new CsvExport(_logger, _logParser);
             
             _logParser.StartIndex += OnIndexStart;
             _logParser.FinishIndex += OnIndexFinish;
 
             await _logParser.CreateOrLoadAllIndexesAsync();
 
-            Console.WriteLine(StartDateTime.Value);
-            Console.WriteLine(DateTime.MinValue);
             if (StartDateTime.Value == DateTime.MinValue)
             {
                 StartDateTime.Value = _logParser.GetStartDatetime();
@@ -113,7 +131,7 @@ namespace LogDecoder.GUI
             {
                 return;
             }
-            _selectedOutputFolder = SelectFolder();
+            _selectedOutputFolder = folder;
 
             TxtSelectedOutputFolder.Text = _selectedOutputFolder;
             TxtSelectedOutputFolder.Foreground = Brushes.Green;
@@ -212,13 +230,13 @@ namespace LogDecoder.GUI
                         selectedIds,
                         start,
                         end,
-                        [
+                        new HashSet<PackageTechStatus>{
                             PackageTechStatus.Warning,
                             PackageTechStatus.Error,
                             PackageTechStatus.Critical,
                             PackageTechStatus.Info,
                             PackageTechStatus.Ok
-                        ],
+                        },
                         ignoreDuplicates,
                         excludeEmptyTimestamps);
                 });
@@ -227,6 +245,7 @@ namespace LogDecoder.GUI
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while parsing IVL logs");
                 TxtExportStatus.Text = "Ошибка: " + ex.Message;
                 TxtExportStatus.Foreground = Brushes.Red;
             }
