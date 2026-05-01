@@ -19,16 +19,16 @@ public class IdClbrErrCivl : BasePackageParsed
 
     private static readonly Dictionary<ulong, MessageDefinition> OxygenSensorCalibrationDefinitions = new()
     {
-        [0] = new("начало калибровки", PackageTechStatus.Info),
+        [0] = new("начало калибровки"),
         [1] = new("успешное завершение калибровки", PackageTechStatus.Ok),
         [2] = new("успешное завершение калибровки, рекомендуется замена датчика кислорода", PackageTechStatus.Warning),
         [3] = new("датчик кислорода отсутствует или неисправен", PackageTechStatus.Error),
         [4] = new("нет информации об атмосферном давлении или информация некорректна", PackageTechStatus.Error),
         [5] = new("отмена калибровки", PackageTechStatus.Warning),
-        [6] = new("выдача напряжения с датчика кислорода", PackageTechStatus.Info),
+        [6] = new("выдача напряжения с датчика кислорода"),
         [7] = new("неисправен канал измерения кислорода в КИВЛ", PackageTechStatus.Error),
         [8] = new("ошибка записи во flash", PackageTechStatus.Error),
-        [9] = new("выдача информации с процентом завершения калибровки", PackageTechStatus.Info),
+        [9] = new("выдача информации с процентом завершения калибровки"),
         [10] = new("напряжение на датчике выше ранее запомненной величины", PackageTechStatus.Warning),
         [11] = new("вышел срок жизни датчика", PackageTechStatus.Warning),
         [12] = new("слишком низкое напряжение с нового датчика кислорода", PackageTechStatus.Warning),
@@ -38,7 +38,7 @@ public class IdClbrErrCivl : BasePackageParsed
 
     private static readonly Dictionary<ulong, MessageDefinition> ValveCalibrationDefinitions = new()
     {
-        [0] = new("начало калибровки", PackageTechStatus.Info),
+        [0] = new("начало калибровки"),
         [1] = new("калибровка ЭМКВ успешно завершена", PackageTechStatus.Ok),
         [2] = new("не удаётся достичь давления 10 см вод.ст.", PackageTechStatus.Error),
         [3] = new("не удаётся достичь давления 30 см вод.ст.", PackageTechStatus.Error),
@@ -57,9 +57,9 @@ public class IdClbrErrCivl : BasePackageParsed
 
     private static readonly Dictionary<ulong, MessageDefinition> FlowExhaleCalibrationDefinitions = new()
     {
-        [0] = new("начало калибровки", PackageTechStatus.Info),
+        [0] = new("начало калибровки"),
         [1] = new("калибровка успешно завершена", PackageTechStatus.Ok),
-        [2] = new("обновить процент завершения калибровки", PackageTechStatus.Info),
+        [2] = new("обновить процент завершения калибровки"),
         [3] = new("отказ смесителя газов", PackageTechStatus.Error),
         [4] = new("нет ответа от смесителя газов", PackageTechStatus.Error),
         [5] = new("поток не равен нулю", PackageTechStatus.Warning),
@@ -80,7 +80,7 @@ public class IdClbrErrCivl : BasePackageParsed
 
     private static readonly Dictionary<ulong, MessageDefinition> KvtCalibrationDefinitions = new()
     {
-        [0] = new("начало калибровки", PackageTechStatus.Info),
+        [0] = new("начало калибровки"),
         [1] = new("ошибка \"Датчик давления на вдохе не откалиброван\"", PackageTechStatus.Error),
         [2] = new("ошибка \"Датчик давления на выдохе не откалиброван\"", PackageTechStatus.Error),
         [3] = new("ошибка \"Нет ответа от смесителя газов\"", PackageTechStatus.Error),
@@ -90,12 +90,12 @@ public class IdClbrErrCivl : BasePackageParsed
         [7] = new("ошибка \"Отмена калибровки\"", PackageTechStatus.Warning),
         [8] = new("ошибка \"Неисправность смесителя газов\"", PackageTechStatus.Error),
         [9] = new("ошибка \"Высокое давление в магистрали вдоха\"", PackageTechStatus.Warning),
-        [10] = new("действовать далее", PackageTechStatus.Info),
+        [10] = new("действовать далее"),
         [11] = new("ошибка \"Ошибка монотонности во входных данных\"", PackageTechStatus.Error),
         [12] = new("ошибка \"Ошибка записи коэффициентов\"", PackageTechStatus.Error),
         [13] = new("ошибка \"Нет ответа от источника питания\"", PackageTechStatus.Error),
-        [14] = new("действовать далее", PackageTechStatus.Info),
-        [15] = new("обновить процент завершения калибровки", PackageTechStatus.Info),
+        [14] = new("действовать далее"),
+        [15] = new("обновить процент завершения калибровки"),
         [16] = new("ошибка \"Большой комплайнс контура\"", PackageTechStatus.Warning),
         [17] = new("ошибка \"Низкий комплайнс контура\"", PackageTechStatus.Warning),
         [18] = new("ошибка \"Большая утечка из контура\"", PackageTechStatus.Warning),
@@ -106,7 +106,7 @@ public class IdClbrErrCivl : BasePackageParsed
     private static readonly Dictionary<ulong, MessageDefinition> NcPapCalibrationDefinitions = new()
 
     {
-        [0] = new("начало калибровки", PackageTechStatus.Info),
+        [0] = new("начало калибровки"),
         [1] = new("успешное завершение калибровки", PackageTechStatus.Ok),
         [2] = new("Error: датчик Paux не подсоединён к тройнику", PackageTechStatus.Error),
         [3] = new("Error: High inspiratory pressure", PackageTechStatus.Error),
@@ -140,19 +140,19 @@ public class IdClbrErrCivl : BasePackageParsed
         var numericData = new List<NumericDataItem>();
 
         // согласно документации
-        if (_mode == 5 && responseCode == 1)
+        if (_mode == (byte)CivlMode.O2SensorCalibration && responseCode == 1)
         {
             numericData.Add(new("Resource", value));
         }
-        if (_mode == 5 && responseCode == 6)
+        else if (_mode == (byte)CivlMode.O2SensorCalibration && responseCode == 6)
         {
             numericData.Add(new("Voltage", value * 0.1));
         }
-        if (responseCode == 2 || responseCode == 9 || responseCode == 15)
+        else if (_mode == (byte)CivlMode.ShortInternalTest || _mode == (byte)CivlMode.AirFlowSensorCalibration && responseCode == 2)
         {
             numericData.Add(new("Progress", value));
         }
-        if (_mode == 14 && responseCode == 18)
+        else if (_mode == (byte)CivlMode.AirFlowSensorCalibration && responseCode == 18)
         {
             numericData.Add(new("MaxError", value));
         }
