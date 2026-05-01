@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using LogDecoder.CAN;
 using LogDecoder.CAN.Contracts;
 using LogDecoder.Parser.Data.Contracts;
+using Microsoft.Extensions.Logging;
 
 [assembly: InternalsVisibleTo("LogDecoder.Parser")]
 
@@ -9,14 +10,16 @@ namespace LogDecoder.Parser.Data;
 
 public class LogFileScanner: ILogFileScanner
 {
-    public LogFileScanner(string filePath)
+    public LogFileScanner(ILogger logger, string filePath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
         
+        _logger = logger;
         _filePath = filePath;
         _tempBuffer = new byte[LogBuffer.BufferWithHeaderSize];
     }
     
+    private readonly ILogger _logger;
     private readonly string _filePath;
     private readonly byte[] _tempBuffer;
     
@@ -25,7 +28,7 @@ public class LogFileScanner: ILogFileScanner
         IReadOnlySet<int> filterIds,
         ParseContext context,
         long startOffset = 0,
-        long? endOffset = null)
+        long endOffset = 0)
     {
         foreach (var (offset, package) in GetPackages(filterIds, startOffset, endOffset))
         {
@@ -40,17 +43,24 @@ public class LogFileScanner: ILogFileScanner
     public IEnumerable<(long, CanPackage)> GetPackages(
         IReadOnlySet<int> filterIds,
         long startOffset = 0,
-        long? endOffset = null)
+        long endOffset = 0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(startOffset);
+        ArgumentOutOfRangeException.ThrowIfNegative(endOffset);
 
         using var file = File.OpenRead(_filePath);
 
-        endOffset ??= file.Length;
-        ArgumentOutOfRangeException.ThrowIfNegative(endOffset.Value);
+        if (endOffset == 0)
+        {
+            endOffset = file.Length;
+        }
         
         if (startOffset > endOffset || endOffset > file.Length)
         {
+            _logger.LogError("LogFileScanner.GetPackages(). startOffset={StartOffser}; endOffset={endOffset} fileLen={FileLength}",
+                startOffset,
+                endOffset,
+                file.Length);
             throw new ArgumentException($"startOffset must be <= endOffset and endOffset <= file.Length ({file.Length})");
         }
         

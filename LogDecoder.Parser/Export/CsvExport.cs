@@ -17,7 +17,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
         IReadOnlySet<int> filterIds,
         DateTime start,
         DateTime end,
-        PackageTechStatus[] techStatusesToParse,
+        IReadOnlySet<PackageTechStatus> techStatusesToParse,
         bool ignoreDuplicates = false,
         bool excludeEmptyTimestamps = false)
     {
@@ -32,7 +32,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
         using var csvSession = new CsvSession(csvFilePath);
         var csvWriter = new CsvWriter(csvSession);
 
-        csvWriter.AddRow(["Id", "Имя", "Время", "Сообщения", "Данные"]);
+        csvWriter.AddRow(["Id", "Имя", "Время"]);
 
         var rowCounter = 0;
         List<string> prevMessages = [];
@@ -88,9 +88,9 @@ public class CsvExport(ILogger logger, LogParser logParser)
             rowCounter);
     }
 
-    private static bool ShouldExport(ICanPackageParsed package, PackageTechStatus[] techStatusesToParse)
+    private static bool ShouldExport(ICanPackageParsed package, IReadOnlySet<PackageTechStatus> techStatusesToParse)
     {
-        return techStatusesToParse.Length == 0 || techStatusesToParse.Contains(package.TechStatus);
+        return techStatusesToParse.Count == 0 || techStatusesToParse.Contains(package.TechStatus);
     }
 
     private static List<string> BuildRow(ICanPackageParsed package, string datetimeStr, IEnumerable<string> messages, IEnumerable<NumericDataItem> data)
@@ -100,8 +100,8 @@ public class CsvExport(ILogger logger, LogParser logParser)
             package.Id.ToString(),
             package.Name,
             datetimeStr,
-            string.Join('\n', messages),
         };
+        row.AddRange(messages);
         foreach (var item in data)
         {
             row.Add(item.Name);

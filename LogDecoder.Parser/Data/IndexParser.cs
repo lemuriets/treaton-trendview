@@ -47,7 +47,7 @@ public class IndexParser : IIndexParser
         FirstTime = _indexes.Min(i => i.Time);
         LastTime = _indexes.Max(i => i.Time);
         
-        FillSessions(_indexes);
+        // FillSessions(_indexes);
         _logger.LogInformation(
             "Created indexes. Count: {Count}. From: [{FirstTime}] To: [{LastTime}]",
             _indexes.Count,

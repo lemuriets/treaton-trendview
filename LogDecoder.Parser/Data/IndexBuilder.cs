@@ -56,7 +56,7 @@ public class IndexBuilder
 
     private List<string> CreateIndex(string logFile)
     {
-        var fileScanner = new LogFileScanner(logFile);
+        var fileScanner = new LogFileScanner(_logger, logFile);
         
         var indexes = new List<string>();
         var seenDates = new HashSet<string>();

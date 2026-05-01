@@ -95,7 +95,7 @@ public partial class LogParser : ILogParser
 
         var context = new ParseContext();
         
-        _logger.LogInformation("GetPackages(), start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
+        _logger.LogInformation("LogParser.GetPackages(), start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
             startFilename,
             startIndex.Value.Offset,
             endFilename,
@@ -141,7 +141,7 @@ public partial class LogParser : ILogParser
         {
             return scanner;
         }
-        scanner = new LogFileScanner(file);
+        scanner = new LogFileScanner(_logger, file);
         _scanners[file] = scanner;
         return scanner;
     }

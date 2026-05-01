@@ -26,9 +26,6 @@ class Program
         var logsFolder = "/Volumes/KINGSTON/SD";
         
         // win
-        
-
-
 
         var factory = new CanPackageFactory();
         var parser = new LogParser(logsFolder, factory);
