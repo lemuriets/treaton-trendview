@@ -1,0 +1,210 @@
+<Window
+    x:Class="LogDecoder.GUI.Avalonia.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="clr-namespace:LogDecoder.GUI.Avalonia.Models"
+    Title="TrendView_IVL"
+    Icon="/Assets/favicon.ico"
+    Height="500"
+    Width="700"
+    MinHeight="420"
+    MinWidth="700"
+    MaxHeight="700"
+    MaxWidth="900"
+    CanResize="True">
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="{Binding [MenuFile]}">
+                <MenuItem
+                    x:Name="MenuOpenLogsFolder"
+                    Header="{Binding [MenuOpenInputFolder]}"
+                    Click="OpenLogsFolder_Click"/>
+
+                <MenuItem
+                    x:Name="MenuOpenExportFolder"
+                    Header="{Binding [MenuOpenOutputFolder]}"
+                    Click="OpenExportFolder_Click"/>
+
+                <Separator/>
+
+                <MenuItem
+                    Header="{Binding [MenuExit]}"
+                    Click="Exit_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="{Binding [MenuLanguage]}" IsEnabled="False">
+                <MenuItem
+                    Header="{Binding [LanguageRussian]}"
+                    Tag="ru"
+                    Click="ChangeLanguage_Click"/>
+
+                <MenuItem
+                    Header="{Binding [LanguageEnglish]}"
+                    Tag="en"
+                    Click="ChangeLanguage_Click"/>
+            </MenuItem>
+
+            <MenuItem
+                Header="{Binding [MenuAbout]}"
+                Click="About_Click"/>
+        </Menu>
+
+        <Grid
+            Margin="20"
+            ColumnDefinitions="*,Auto,*"
+            RowDefinitions="*"
+            ColumnSpacing="20">
+
+            <Grid
+                Grid.Column="0"
+                RowDefinitions="Auto,Auto,Auto,*,Auto"
+                RowSpacing="8"
+                MinWidth="300"
+                VerticalAlignment="Stretch">
+
+                <StackPanel Grid.Row="0" Margin="0,0,0,4">
+                    <TextBlock Text="{Binding [InputFolderLabel]}"/>
+
+                    <TextBlock
+                        x:Name="TxtSelectedInputFolder"
+                        Text="{Binding [InputFolderNotSelected]}"
+                        Foreground="Gray"
+                        TextWrapping="Wrap"
+                        TextTrimming="CharacterEllipsis"
+                        PointerPressed="SelectedInputFolder_Click"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Margin="0,0,0,4">
+                    <TextBlock Text="{Binding [OutputFolderLabel]}"/>
+
+                    <TextBlock
+                        x:Name="TxtSelectedOutputFolder"
+                        Text="{Binding [OutputFolderNotSelected]}"
+                        Foreground="Gray"
+                        TextWrapping="Wrap"
+                        TextTrimming="CharacterEllipsis"
+                        PointerPressed="SelectedOutputFolder_Click"/>
+                </StackPanel>
+
+                <TextBlock
+                    Grid.Row="2"
+                    Text="{Binding [PackageIdsForParsing]}"
+                    FontWeight="Bold"
+                    Margin="0,6,0,0"/>
+
+                <ListBox
+                    Grid.Row="3"
+                    x:Name="PackageIdList"
+                    SelectionMode="Multiple, Toggle"
+                    MinHeight="120"
+                    Margin="0,0,0,4">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="models:PackageItem">
+                            <TextBlock
+                                TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="({0}) {1}">
+                                        <Binding Path="Id"/>
+                                        <Binding Path="Name"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <CheckBox
+                    Grid.Row="4"
+                    x:Name="ChkSelectAllPackages"
+                    Content="{Binding [SelectAllPackages]}"
+                    IsChecked="False"
+                    Margin="0,2,0,0"/>
+            </Grid>
+
+            <Border
+                Grid.Column="1"
+                Width="1"
+                Background="LightGray"/>
+
+            <Grid
+                Grid.Column="2"
+                RowDefinitions="Auto,Auto,Auto,*"
+                RowSpacing="8"
+                MinWidth="280"
+                VerticalAlignment="Stretch">
+
+                <TextBlock
+                    Grid.Row="0"
+                    Text="{Binding [StartDateTimeLabel]}"
+                    FontWeight="Bold"
+                    Margin="0,8,0,0"/>
+
+                <TextBox
+                    Grid.Row="1"
+                    x:Name="StartDateTime"
+                    HorizontalAlignment="Stretch"
+                    Watermark="dd.MM.yyyy HH:mm:ss"/>
+
+                <TextBlock
+                    Grid.Row="2"
+                    Text="{Binding [EndDateTimeLabel]}"
+                    FontWeight="Bold"
+                    Margin="0,8,0,0"/>
+
+                <StackPanel
+                    Grid.Row="3"
+                    Spacing="8">
+
+                    <TextBox
+                        x:Name="EndDateTime"
+                        HorizontalAlignment="Stretch"
+                        Watermark="dd.MM.yyyy HH:mm:ss"/>
+
+                    <TextBlock
+                        x:Name="TxtErrorDateTime"
+                        Foreground="Red"
+                        TextWrapping="Wrap"/>
+
+                    <CheckBox
+                        x:Name="ChkIgnoreDuplicates"
+                        IsChecked="True"
+                        Content="{Binding [IgnoreDuplicates]}"/>
+
+                    <CheckBox
+                        x:Name="ChkExcludeEmptyTimestamps"
+                        IsChecked="True"
+                        Content="{Binding [ExcludeEmptyTimestamps]}"/>
+
+                    <Button
+                        x:Name="BtnExportCsv"
+                        Content="{Binding [ExportCsv]}"
+                        Width="150"
+                        HorizontalAlignment="Left"
+                        IsEnabled="False"
+                        Margin="0,8,0,0"/>
+                    
+                    <Button
+                        x:Name="BtnCancelExport"
+                        Content="{Binding [CancelExport]}"
+                        Width="150"
+                        HorizontalAlignment="Left"
+                        IsEnabled="False"
+                        Margin="0,8,0,0"/>
+
+                    <TextBlock
+                        x:Name="TxtExportStatus"
+                        Foreground="Red"
+                        TextWrapping="Wrap"/>
+
+                    <TextBlock
+                        x:Name="TxtIndexStatus"
+                        Foreground="ForestGreen"
+                        TextWrapping="Wrap"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>

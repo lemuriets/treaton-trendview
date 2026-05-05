@@ -49,7 +49,7 @@ public class IndexParser : IIndexParser
         
         // FillSessions(_indexes);
         _logger.LogInformation(
-            "Created indexes. Count: {Count}. From: [{FirstTime}] To: [{LastTime}]",
+            "Indexes loaded. Count: {Count}. From: [{FirstTime}] To: [{LastTime}]",
             _indexes.Count,
             FirstTime,
             LastTime);

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+
+    <data name="MenuLanguage" xml:space="preserve"><value>_Язык</value></data>
+    <data name="LanguageRussian" xml:space="preserve"><value>_Русский</value></data>
+    <data name="LanguageEnglish" xml:space="preserve"><value>_Английский</value></data>
+    <data name="AboutTitle" xml:space="preserve"><value>О программе</value></data>
+    <data name="AboutText" xml:space="preserve"><value>TrendView_IVL
+
+Версия: {0}
+
+Программа для парсинга и экспорта логов АИВЛ.</value></data>
+
+    <data name="MenuFile" xml:space="preserve"><value>_Файл</value></data>
+    <data name="MenuOpenInputFolder" xml:space="preserve"><value>_Открыть папку с логами</value></data>
+    <data name="MenuOpenOutputFolder" xml:space="preserve"><value>_Открыть папку экспорта</value></data>
+    <data name="MenuExit" xml:space="preserve"><value>_Выйти</value></data>
+    <data name="MenuEdit" xml:space="preserve"><value>_Изменить</value></data>
+    <data name="MenuSettings" xml:space="preserve"><value>_Настройки</value></data>
+    <data name="MenuHelp" xml:space="preserve"><value>_Помощь</value></data>
+    <data name="MenuAbout" xml:space="preserve"><value>_О программе</value></data>
+
+    <data name="SelectInputFolder" xml:space="preserve"><value>Выбрать папку с логами</value></data>
+    <data name="InputFolderNotSelected" xml:space="preserve"><value>Папка не выбрана</value></data>
+    <data name="PackageIdsForParsing" xml:space="preserve"><value>ID пакетов для парсинга:</value></data>
+    <data name="SelectAllPackages" xml:space="preserve"><value>Выбрать все пакеты</value></data>
+    <data name="StartDateTimeLabel" xml:space="preserve"><value>Дата и время начала расшифровки:</value></data>
+    <data name="EndDateTimeLabel" xml:space="preserve"><value>Дата и время конца расшифровки:</value></data>
+
+    <data name="SelectOutputFolder" xml:space="preserve"><value>Выходная папка</value></data>
+    <data name="OutputFolderNotSelected" xml:space="preserve"><value>Папка не выбрана</value></data>
+    <data name="IgnoreDuplicates" xml:space="preserve"><value>Исключить дубликаты сообщений</value></data>
+    <data name="ExcludeEmptyTimestamps" xml:space="preserve"><value>Исключить подряд идущие IdSynchro</value></data>
+    <data name="ExportCsv" xml:space="preserve"><value>Экспорт в CSV</value></data>
+
+    <data name="SelectFolderDialogTitle" xml:space="preserve"><value>Выберите папку</value></data>
+    <data name="SelectingLogsFolder" xml:space="preserve"><value>Выбор папки с логами...</value></data>
+    <data name="NoLogFilesInFolder" xml:space="preserve"><value>В данной папке нет файлов с логами</value></data>
+    <data name="InputFolderSelectionError" xml:space="preserve"><value>Ошибка выбора папки: {0}</value></data>
+    <data name="OutputFolderSelectionError" xml:space="preserve"><value>Ошибка выбора папки: {0}</value></data>
+
+    <data name="InvalidDateFormat" xml:space="preserve"><value>Неверный формат даты. Используйте {0}</value></data>
+    <data name="EndBeforeStart" xml:space="preserve"><value>Дата конца раньше даты начала!</value></data>
+    <data name="ExportingWait" xml:space="preserve"><value>Экспорт журнала ошибок. Подождите...</value></data>
+    <data name="ExportError" xml:space="preserve"><value>Ошибка: {0}</value></data>
+    <data name="IndexingWait" xml:space="preserve"><value>Индексирование... Подождите</value></data>
+    <data name="InputFolderLabel" xml:space="preserve">
+        <value>Папка с логами: </value>
+    </data>
+    <data name="OutputFolderLabel" xml:space="preserve">
+        <value>Папка экспорта: </value>
+    </data>
+    <data name="CancelExport" xml:space="preserve">
+        <value>Отмена экспорта</value>
+    </data>
+</root>

@@ -1,0 +1,35 @@
+<UserControl x:Class="LogDecoder.GUI.Avalonia.Views.PlotBox"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:oxy="clr-namespace:OxyPlot.Avalonia;assembly=OxyPlot.Avalonia"
+             xmlns:conv="clr-namespace:LogDecoder.GUI.Avalonia.Converters">
+    <UserControl.Resources>
+        <conv:NaNToPlaceholderConverter x:Key="NaNToPlaceholderConverter"/>
+    </UserControl.Resources>
+
+    <Border Margin="8" BorderBrush="#CCC" BorderThickness="1" CornerRadius="4" Padding="4">
+        <Grid ColumnDefinitions="4*,*">
+            <oxy:PlotView Model="{Binding Model}" Padding="2,0,2,0"/>
+            <Grid Grid.Column="1" Margin="8,0,0,0" RowDefinitions="*,Auto">
+                <TextBlock Grid.Row="0"
+                           Text="{Binding YValue, Converter={StaticResource NaNToPlaceholderConverter}}"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                <ComboBox Grid.Row="1"
+                          Width="120"
+                          Margin="0,8,0,0"
+                          VerticalAlignment="Bottom"
+                          ItemsSource="{Binding AvailablePlots}"
+                          SelectedItem="{Binding SelectedPlot, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

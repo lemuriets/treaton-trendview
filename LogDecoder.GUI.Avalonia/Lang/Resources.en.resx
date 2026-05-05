@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+
+    <data name="MenuLanguage" xml:space="preserve"><value>_Language</value></data>
+    <data name="LanguageRussian" xml:space="preserve"><value>_Russian</value></data>
+    <data name="LanguageEnglish" xml:space="preserve"><value>_English</value></data>
+    <data name="AboutTitle" xml:space="preserve"><value>About</value></data>
+    <data name="AboutText" xml:space="preserve"><value>TrendView_IVL
+
+Version: {0}
+
+Application for parsing and export logs from AVL.</value></data>
+    
+    <data name="MenuFile" xml:space="preserve"><value>_File</value></data>
+    <data name="MenuOpenInputFolder" xml:space="preserve"><value>_Open logs folder</value></data>
+    <data name="MenuOpenOutputFolder" xml:space="preserve"><value>_Open export folder</value></data>
+    <data name="MenuExit" xml:space="preserve"><value>E_xit</value></data>
+    <data name="MenuEdit" xml:space="preserve"><value>_Edit</value></data>
+    <data name="MenuSettings" xml:space="preserve"><value>_Settings</value></data>
+    <data name="MenuHelp" xml:space="preserve"><value>_Help</value></data>
+    <data name="MenuAbout" xml:space="preserve"><value>_About</value></data>
+
+    <data name="SelectInputFolder" xml:space="preserve"><value>Select logs folder</value></data>
+    <data name="InputFolderNotSelected" xml:space="preserve"><value>Folder is not selected</value></data>
+    <data name="PackageIdsForParsing" xml:space="preserve"><value>Package IDs to parse:</value></data>
+    <data name="SelectAllPackages" xml:space="preserve"><value>Select all packages</value></data>
+    <data name="StartDateTimeLabel" xml:space="preserve"><value>Decode start date and time:</value></data>
+    <data name="EndDateTimeLabel" xml:space="preserve"><value>Decode end date and time:</value></data>
+
+    <data name="SelectOutputFolder" xml:space="preserve"><value>Output folder</value></data>
+    <data name="OutputFolderNotSelected" xml:space="preserve"><value>Folder is not selected</value></data>
+    <data name="IgnoreDuplicates" xml:space="preserve"><value>Exclude duplicate messages</value></data>
+    <data name="ExcludeEmptyTimestamps" xml:space="preserve"><value>Exclude sequential IdSynchro</value></data>
+    <data name="ExportCsv" xml:space="preserve"><value>Export to CSV</value></data>
+
+    <data name="SelectFolderDialogTitle" xml:space="preserve"><value>Select folder</value></data>
+    <data name="SelectingLogsFolder" xml:space="preserve"><value>Selecting logs folder...</value></data>
+    <data name="NoLogFilesInFolder" xml:space="preserve"><value>This folder does not contain log files</value></data>
+    <data name="InputFolderSelectionError" xml:space="preserve"><value>Input folder selection error: {0}</value></data>
+    <data name="OutputFolderSelectionError" xml:space="preserve"><value>Output folder selection error: {0}</value></data>
+
+    <data name="InvalidDateFormat" xml:space="preserve"><value>Invalid date format. Use {0}</value></data>
+    <data name="EndBeforeStart" xml:space="preserve"><value>End date is earlier than start date!</value></data>
+    <data name="ExportingWait" xml:space="preserve"><value>Exporting error log. Please wait...</value></data>
+    <data name="ExportError" xml:space="preserve"><value>Error: {0}</value></data>
+    <data name="IndexingWait" xml:space="preserve"><value>Indexing... Please wait</value></data>
+    <data name="InputFolderLabel" xml:space="preserve">
+        <value>Logs folder: </value>
+    </data>
+    <data name="OutputFolderLabel" xml:space="preserve">
+        <value>Export folder: </value>
+    </data>
+    <data name="CancelExport" xml:space="preserve">
+        <value>Cancel export</value>
+    </data>
+</root>

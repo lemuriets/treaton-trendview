@@ -19,7 +19,8 @@ public class CsvExport(ILogger logger, LogParser logParser)
         DateTime end,
         IReadOnlySet<PackageTechStatus> techStatusesToParse,
         bool ignoreDuplicates = false,
-        bool excludeEmptyTimestamps = false)
+        bool excludeEmptyTimestamps = false,
+        CancellationToken cancellationToken = default)
     {
         Directory.CreateDirectory(outputFolder);
 
@@ -41,6 +42,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
 
         foreach (var package in logParser.GetPackages(filterIds, start, end))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (excludeEmptyTimestamps &&
                 prevPackage != null &&
                 package.Id == IdSynchro.Id &&
@@ -84,8 +86,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
             prevMessages = packageMessages;
         }
 
-        logger.LogInformation("Added {RowCounter} rows to csv.",
-            rowCounter);
+        logger.LogInformation("Added {RowCounter} rows to csv.", rowCounter);
     }
 
     private static bool ShouldExport(ICanPackageParsed package, IReadOnlySet<PackageTechStatus> techStatusesToParse)
