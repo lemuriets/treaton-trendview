@@ -59,7 +59,7 @@
 
     <data name="InvalidDateFormat" xml:space="preserve"><value>Неверный формат даты. Используйте {0}</value></data>
     <data name="EndBeforeStart" xml:space="preserve"><value>Дата конца раньше даты начала!</value></data>
-    <data name="ExportingWait" xml:space="preserve"><value>Экспорт журнала ошибок. Подождите...</value></data>
+    <data name="ExportingWait" xml:space="preserve"><value>Экспорт логов. Подождите...</value></data>
     <data name="ExportError" xml:space="preserve"><value>Ошибка: {0}</value></data>
     <data name="IndexingWait" xml:space="preserve"><value>Индексирование... Подождите</value></data>
     <data name="InputFolderLabel" xml:space="preserve">
@@ -70,5 +70,11 @@
     </data>
     <data name="CancelExport" xml:space="preserve">
         <value>Отмена экспорта</value>
+    </data>
+    <data name="ExportSuccess" xml:space="preserve">
+        <value>Успешный экспорт</value>
+    </data>
+    <data name="ExportCancelled" xml:space="preserve">
+        <value>Экспорт отменен</value>
     </data>
 </root>

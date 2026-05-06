@@ -422,7 +422,8 @@ public partial class MainWindow : Window
                     cancellationToken);
             }, cancellationToken);
 
-            TxtExportStatus.Text = string.Empty;
+            TxtExportStatus.Text = Localizer.L("ExportSuccess");
+            TxtExportStatus.Foreground = Brushes.Green;
         }
         catch (OperationCanceledException)
         {
@@ -484,8 +485,11 @@ public partial class MainWindow : Window
 
         BtnCancelExport.IsEnabled = isBusy && canCancel;
 
-        TxtExportStatus.Text = status;
-        TxtExportStatus.Foreground = Brushes.Green;
+        if (status != string.Empty)
+        {
+            TxtExportStatus.Text = status;
+            TxtExportStatus.Foreground = Brushes.Green;
+        }
 
         BtnExportCsv.IsEnabled = !isBusy && CanExport();
     }

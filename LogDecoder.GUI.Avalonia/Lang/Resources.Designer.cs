@@ -266,5 +266,17 @@ namespace LogDecoder.GUI.Avalonia.Lang {
                 return ResourceManager.GetString("CancelExport", resourceCulture);
             }
         }
+        
+        internal static string ExportSuccess {
+            get {
+                return ResourceManager.GetString("ExportSuccess", resourceCulture);
+            }
+        }
+        
+        internal static string ExportCancelled {
+            get {
+                return ResourceManager.GetString("ExportCancelled", resourceCulture);
+            }
+        }
     }
 }

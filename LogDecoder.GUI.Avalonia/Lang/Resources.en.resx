@@ -59,7 +59,7 @@ Application for parsing and export logs from AVL.</value></data>
 
     <data name="InvalidDateFormat" xml:space="preserve"><value>Invalid date format. Use {0}</value></data>
     <data name="EndBeforeStart" xml:space="preserve"><value>End date is earlier than start date!</value></data>
-    <data name="ExportingWait" xml:space="preserve"><value>Exporting error log. Please wait...</value></data>
+    <data name="ExportingWait" xml:space="preserve"><value>Exporting logs. Please wait...</value></data>
     <data name="ExportError" xml:space="preserve"><value>Error: {0}</value></data>
     <data name="IndexingWait" xml:space="preserve"><value>Indexing... Please wait</value></data>
     <data name="InputFolderLabel" xml:space="preserve">
@@ -70,5 +70,11 @@ Application for parsing and export logs from AVL.</value></data>
     </data>
     <data name="CancelExport" xml:space="preserve">
         <value>Cancel export</value>
+    </data>
+    <data name="ExportSuccess" xml:space="preserve">
+        <value>Export success</value>
+    </data>
+    <data name="ExportCancelled" xml:space="preserve">
+        <value>Export was canceled</value>
     </data>
 </root>
