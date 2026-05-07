@@ -323,6 +323,18 @@ public partial class MainWindow : Window
 
     private bool CanExport()
     {
+        if (!TryGetDateTime(StartDateTime.Text, out var start) || !TryGetDateTime(EndDateTime.Text, out var end))
+        {
+            TxtErrorDateTime.Text = Localizer.F("InvalidDateFormat", DateTimeFormat);
+            return false;
+        }
+
+        if (end < start)
+        {
+            TxtErrorDateTime.Text = Localizer.L("EndBeforeStart");
+            return false;
+        }
+        
         if (_isBusy)
         {
             return false;
@@ -342,19 +354,7 @@ public partial class MainWindow : Window
         {
             return false;
         }
-
-        if (!TryGetDateTime(StartDateTime.Text, out var start) || !TryGetDateTime(EndDateTime.Text, out var end))
-        {
-            TxtErrorDateTime.Text = Localizer.F("InvalidDateFormat", DateTimeFormat);
-            return false;
-        }
-
-        if (end < start)
-        {
-            TxtErrorDateTime.Text = Localizer.L("EndBeforeStart");
-            return false;
-        }
-
+        
         _startDateTime = start;
         _endDateTime = end;
 
@@ -469,7 +469,7 @@ public partial class MainWindow : Window
         return selectedIds;
     }
 
-    private void SetBusy(bool isBusy, string status = "", bool canCancel = false)
+    private void SetBusy(bool isBusy, string? status = null, bool canCancel = false)
     {
         _isBusy = isBusy;
 
@@ -485,7 +485,7 @@ public partial class MainWindow : Window
 
         BtnCancelExport.IsEnabled = isBusy && canCancel;
 
-        if (status != string.Empty)
+        if (status is not null)
         {
             TxtExportStatus.Text = status;
             TxtExportStatus.Foreground = Brushes.Green;
@@ -580,6 +580,9 @@ public partial class MainWindow : Window
                 return;
             }
 
+            TxtExportStatus.Text = "";
+            TxtExportStatus.Foreground = Brushes.Green;
+            
             SetInputFolder(selectedFolder);
             SetDefaultOutputFolderIfEmpty(selectedFolder);
             CreateParser(selectedFolder);
@@ -594,7 +597,7 @@ public partial class MainWindow : Window
         }
         finally
         {
-            SetBusy(false);
+            SetBusy(false, "");
             CheckInputs();
         }
     }
