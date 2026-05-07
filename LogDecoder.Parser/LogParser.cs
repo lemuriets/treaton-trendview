@@ -83,10 +83,12 @@ public partial class LogParser : ILogParser
         var endIndex = _indexParser.FindFloor(end);
         if (startIndex is null)
         {
+            _logger.LogWarning("Unable to find {Start} in index.", start);
             throw new Exception($"Unable to find {start} in index.");
         }
         if (endIndex is null)
         {
+            _logger.LogWarning("Unable to find {End} in index.", end);
             throw new Exception($"Unable to find {end} in index.");
         }
         
