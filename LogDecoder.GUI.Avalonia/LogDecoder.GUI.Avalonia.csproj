@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>LogDecoder.GUI.Avalonia</AssemblyName>
@@ -46,18 +47,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.en.resx</DependentUpon>
     </Compile>
-    <Compile Update="Lang\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

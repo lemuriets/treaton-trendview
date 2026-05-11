@@ -302,7 +302,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        var start = _logParser.GetStartDatetime();
+        var start = _logParser.MinDatetime;
         if (start.HasValue)
         {
             StartDateTime.Text = start.Value.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
@@ -475,13 +475,6 @@ public partial class MainWindow : Window
 
         MenuOpenLogsFolder.IsEnabled = !isBusy;
         MenuOpenExportFolder.IsEnabled = !isBusy;
-
-        // StartDateTime.IsEnabled = !isBusy;
-        // EndDateTime.IsEnabled = !isBusy;
-        // PackageIdList.IsEnabled = !isBusy;
-        // ChkSelectAllPackages.IsEnabled = !isBusy;
-        // ChkIgnoreDuplicates.IsEnabled = !isBusy;
-        // ChkExcludeEmptyTimestamps.IsEnabled = !isBusy;
 
         BtnCancelExport.IsEnabled = isBusy && canCancel;
 
