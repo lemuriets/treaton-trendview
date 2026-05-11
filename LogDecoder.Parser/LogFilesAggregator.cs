@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 using LogDecoder.Parser.Contracts;
 
@@ -29,19 +28,23 @@ public class LogFilesAggregator : ILogFilesAggregator
         _sortedFilenames = _sortedFiles.Select(Path.GetFileNameWithoutExtension).ToList();
     }
     
-    public IReadOnlyList<string> GetRange(string startFilename, string endFilename)
+    public IReadOnlyList<string> GetWrappedRange(string startFilename, string endFilename)
     {
         var startIndex = _sortedFilenames.IndexOf(startFilename);
         var endIndex = _sortedFilenames.IndexOf(endFilename);
-
         if (startIndex == -1 || endIndex == -1)
         {
-            throw new InvalidOperationException($"Range files not found. Start: {startFilename}, End: {endFilename}");
+            throw new ArgumentException($"Range files not found. Start: {startFilename}, End: {endFilename}");
         }
-        if (startIndex > endIndex)
+
+        if (startIndex <= endIndex)
         {
-            throw new ArgumentOutOfRangeException($"Start file goes after end file. ({startFilename} > {endFilename})");
+            return _sortedFilenames.GetRange(startIndex, endIndex - startIndex + 1);
         }
-        return _sortedFiles.GetRange(startIndex, endIndex - startIndex + 1);
+
+        return [
+            .._sortedFilenames.GetRange(startIndex, _sortedFilenames.Count),
+            .._sortedFilenames.GetRange(0, endIndex + 1)
+        ];
     }
 }

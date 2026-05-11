@@ -25,13 +25,11 @@ public class IndexBuilder
             return indexFilePath;
         }
 
-        _logger.LogInformation($"Creating index for: {logFile}");
-
         var indexes = CreateIndex(logFile);
         var header = new IndexFileHeader(IndexFormatVersion, baseFilename);
         File.WriteAllLines(indexFilePath, [header.ToString(), ..indexes]);
     
-        _logger.LogInformation($"Created log file with {indexes.Count} indexes");
+        _logger.LogInformation("Created index with {Count} indexes for {BaseFilename}", indexes.Count, baseFilename);
         
         return indexFilePath;
     }

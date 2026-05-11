@@ -20,8 +20,6 @@ public partial class LogParser : ILogParser
         _indexParser = new IndexParser(logger);
 
         RegisteredIds = _factory.RegisteredIds;
-        IdsWithNames = _factory.GetIdsWithNames();
-        SortedBinFiles = _filesAggrerator.SortedFiles;
         
         Directory.CreateDirectory(_indexFolder);
     }
@@ -38,12 +36,10 @@ public partial class LogParser : ILogParser
     private readonly Dictionary<string, LogFileScanner> _scanners = new();
 
     public readonly IReadOnlySet<int> RegisteredIds;
-    public readonly List<(int Id, string Name)> IdsWithNames;
-    public readonly IReadOnlyList<string> SortedBinFiles;
     
     public bool IsDateTimeExists(DateTime target) => _indexParser.IsDateTimeExists(target);
-    public DateTime? GetStartDatetime() => _indexParser.FirstTime;
-    public DateTime? GetLastDatetime() => _indexParser.LastTime;
+    public DateTime? MinDatetime => _indexParser.MinTime;
+    public DateTime? MaxDatetime => _indexParser.MaxTime;
     
     public void CreateOrLoadAllIndexes()
     {
@@ -102,7 +98,7 @@ public partial class LogParser : ILogParser
             startIndex.Value.Offset,
             endFilename,
             endIndex.Value.Offset);
-        foreach (var file in _filesAggrerator.GetRange(startFilename, endFilename))
+        foreach (var file in _filesAggrerator.GetWrappedRange(startFilename, endFilename))
         {
             var filename = Path.GetFileNameWithoutExtension(file);
             var scanner = GetScanner(file);
@@ -117,13 +113,9 @@ public partial class LogParser : ILogParser
     
     private (long, long) ResolveScanRange(string filename, string startFilename, string endFilename, long startOffset, long endOffset)
     {
-        if (startFilename == endFilename)
+        if (startFilename == endFilename && filename == startFilename)
         {
-            if (filename == startFilename)
-            {
-                return (startOffset, endOffset);
-            }
-            return (0, 0);
+            return (startOffset, endOffset);
         }
         if (filename == startFilename)
         {

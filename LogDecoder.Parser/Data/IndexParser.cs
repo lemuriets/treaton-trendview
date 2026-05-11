@@ -13,14 +13,14 @@ public class IndexParser : IIndexParser
     }
 
     private const int HeaderLinesQuantity = 1;
-    private const int MinSessionIntervalSeconds = 20;
+    private const int MinIntervalBetweenSessionsSeconds = 20;
     private readonly ILogger _logger;
-    private List<IndexEntry> _indexes = [];
-    private LogSessionsSequence _sessions = new LogSessionsSequence();
+    private readonly List<IndexEntry> _indexes = [];
+    private readonly LogSessionsSequence _sessions = new LogSessionsSequence();
     public LogSessionsSequence Sessions => _sessions;
 
-    public DateTime? FirstTime { get; private set; }
-    public DateTime? LastTime { get; private set; }
+    public DateTime? MinTime { get; private set; }
+    public DateTime? MaxTime { get; private set; }
     
     public bool IsDateTimeExists(DateTime target)
     {
@@ -31,8 +31,8 @@ public class IndexParser : IIndexParser
     {
         _indexes.Clear();
         _sessions.Clear();
-        FirstTime = null;
-        LastTime = null;
+        MinTime = null;
+        MaxTime = null;
         foreach (var file in indexFiles)
         {
             _indexes.AddRange(LoadIndexFile(file));
@@ -44,15 +44,17 @@ public class IndexParser : IIndexParser
             return;
         }
 
-        FirstTime = _indexes.Min(i => i.Time);
-        LastTime = _indexes.Max(i => i.Time);
+        MinTime = _indexes.Min(i => i.Time);
+        MaxTime =_indexes.Max(i => i.Time);
         
-        // FillSessions(_indexes);
+        _indexes.Sort((x, y) => x.Time.CompareTo(y.Time));
+        
+        FillSessions(_indexes);
         _logger.LogInformation(
-            "Indexes loaded. Count: {Count}. From: [{FirstTime}] To: [{LastTime}]",
+            "Indexes loaded. Count: {Count}. From: [{MinTime}] To: [{MaxTime}]",
             _indexes.Count,
-            FirstTime,
-            LastTime);
+            MinTime,
+            MaxTime);
     }
 
     private void FillSessions(List<IndexEntry> indexes)
@@ -69,7 +71,7 @@ public class IndexParser : IIndexParser
             {
                 throw new InvalidOperationException("Indexes are not sorted by time.");
             }
-            var minTimeDiff = TimeSpan.FromSeconds(MinSessionIntervalSeconds);
+            var minTimeDiff = TimeSpan.FromSeconds(MinIntervalBetweenSessionsSeconds);
             if (timeDiff <= minTimeDiff)
             {
                 continue;
@@ -98,35 +100,6 @@ public class IndexParser : IIndexParser
         }
         return result;
     }
-    
-    // public IndexEntry? FindFloor(DateTime target)
-    // {
-    //     var left = 0;
-    //     var right = _indexes.Count - 1;
-    //     IndexEntry? result = null;
-    //
-    //     while (left <= right)
-    //     {
-    //         var mid = left + (right - left) / 2;
-    //         var current = _indexes[mid];
-    //
-    //         if (current.Time == target)
-    //         {
-    //             return current;
-    //         }
-    //
-    //         if (current.Time < target)
-    //         {
-    //             result = current;
-    //             left = mid + 1;
-    //         }
-    //         else
-    //         {
-    //             right = mid - 1;
-    //         }
-    //     }
-    //     return result;
-    // }
     
     private List<IndexEntry> LoadIndexFile(string indexFile)
     {
