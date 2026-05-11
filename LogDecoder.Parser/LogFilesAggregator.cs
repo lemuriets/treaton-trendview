@@ -43,7 +43,7 @@ public class LogFilesAggregator : ILogFilesAggregator
         }
 
         return [
-            .._sortedFilenames.GetRange(startIndex, _sortedFilenames.Count),
+            .._sortedFilenames.GetRange(startIndex, _sortedFilenames.Count - startIndex),
             .._sortedFilenames.GetRange(0, endIndex + 1)
         ];
     }
