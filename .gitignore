@@ -63,8 +63,10 @@ desktop.ini
 
 # User-specific files
 *.userprefs
+*.zip
 
 # Tests
+LogDecoder.Benchmark/
 TestResults/
 *.TestResults/
 test_*/
