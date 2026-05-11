@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Parser", "LogDec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Helpers", "LogDecoder.Helpers\LogDecoder.Helpers.csproj", "{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.GUI", "LogDecoder.GUI\LogDecoder.GUI.csproj", "{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Parser.Tests", "LogDecoder.Parser.Tests\LogDecoder.Parser.Tests.csproj", "{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDecoder.Can.Tests", "LogDecoder.Can.Tests\LogDecoder.Can.Tests.csproj", "{ED718A63-3609-427F-94B0-DD700E6F3200}"
@@ -45,10 +43,6 @@ Global
 		{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F6ACED4-AE4B-4066-AFD3-2A65174F6F8E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9C7A91B-70A2-4429-8EB6-3DF675B254BF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5AC4EB7-8865-4EE0-B43E-0DD25CDA538F}.Release|Any CPU.ActiveCfg = Release|Any CPU
