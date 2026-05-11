@@ -2,6 +2,7 @@ using LogDecoder.Infrastructure.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 
 namespace LogDecoder.Infrastructure.Logging;
 
@@ -14,14 +15,26 @@ public static class LoggerConfig
     {
         var configuration = LoadConfiguration();
         var logFilePath = CreateLogFilePath();
+        
+#if DEBUG
+        const LogEventLevel minimumLevel = LogEventLevel.Debug;
+#else
+        const LogEventLevel minimumLevel = LogEventLevel.Warning;
+#endif
 
-        Log.Logger = new LoggerConfiguration()
+        var loggerConfig = new LoggerConfiguration()
+            .MinimumLevel.Is(minimumLevel)
             .ReadFrom.Configuration(configuration)
+            .WriteTo.Console(outputTemplate: OutputTemplate);
+            
+#if !DEBUG
+        loggerConfig
             .WriteTo.File(
                 path: logFilePath,
                 rollingInterval: RollingInterval.Infinite,
-                outputTemplate: OutputTemplate)
-            .CreateLogger();
+                outputTemplate: OutputTemplate);
+#endif
+        Log.Logger = loggerConfig.CreateLogger();
 
         return LoggerFactory.Create(builder =>
         {
@@ -34,7 +47,7 @@ public static class LoggerConfig
     {
         return new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
     }
 
