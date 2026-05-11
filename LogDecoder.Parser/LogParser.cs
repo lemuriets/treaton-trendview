@@ -93,7 +93,9 @@ public partial class LogParser : ILogParser
 
         var context = new ParseContext();
         
-        _logger.LogInformation("LogParser.GetPackages(), start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
+        _logger.LogInformation(
+            "LogParser.GetPackages(), " +
+            "start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
             startFilename,
             startIndex.Value.Offset,
             endFilename,
@@ -103,15 +105,32 @@ public partial class LogParser : ILogParser
             var filename = Path.GetFileNameWithoutExtension(file);
             var scanner = GetScanner(file);
             
-            var (startOffset, endOffset) = ResolveScanRange(filename, startFilename, endFilename, startIndex.Value.Offset, endIndex.Value.Offset);
-            foreach (var (_, package) in scanner.GetPackagesParsed(_factory, filterIds, context, startOffset, endOffset))
+            var (startOffset, endOffset) = ResolveScanRange(
+                filename, startFilename, endFilename, startIndex.Value.Offset, endIndex.Value.Offset);
+            foreach (var (_, pkg) in scanner.GetPackagesParsed(_factory, filterIds, context, startOffset, endOffset))
             {
-                yield return package;
+                yield return pkg;
             }
         }
     }
     
-    private (long, long) ResolveScanRange(string filename, string startFilename, string endFilename, long startOffset, long endOffset)
+    private LogFileScanner GetScanner(string file)
+    {
+        if (_scanners.TryGetValue(file, out var scanner))
+        {
+            return scanner;
+        }
+        scanner = new LogFileScanner(_logger, file);
+        _scanners[file] = scanner;
+        return scanner;
+    }
+    
+    private static (long, long) ResolveScanRange(
+        string filename,
+        string startFilename,
+        string endFilename,
+        long startOffset,
+        long endOffset)
     {
         if (startFilename == endFilename && filename == startFilename)
         {
@@ -126,18 +145,6 @@ public partial class LogParser : ILogParser
             return (0, endOffset);
         }
         return (0, 0);
-    }
-
-    
-    private LogFileScanner GetScanner(string file)
-    {
-        if (_scanners.TryGetValue(file, out var scanner))
-        {
-            return scanner;
-        }
-        scanner = new LogFileScanner(_logger, file);
-        _scanners[file] = scanner;
-        return scanner;
     }
 
     [GeneratedRegex(@"^[0-1][0-9]$")]

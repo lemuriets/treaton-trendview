@@ -11,7 +11,7 @@ public class LogFilesAggregator : ILogFilesAggregator
     public IReadOnlyList<string> SortedFiles => _sortedFiles;
     public IReadOnlyList<string> SortedFilenames => _sortedFilenames;
 
-    public LogFilesAggregator(string folder, Func<string, object> sortKeySelector, Regex fileNamePattern) 
+    public LogFilesAggregator(string folder, Func<string, IComparable> sortKeySelector, Regex fileNamePattern) 
     {
         if (!Directory.Exists(folder))
         {
@@ -25,7 +25,9 @@ public class LogFilesAggregator : ILogFilesAggregator
             .Select(Path.GetFullPath)
             .ToList();
 
-        _sortedFilenames = _sortedFiles.Select(Path.GetFileNameWithoutExtension).ToList();
+        _sortedFilenames = _sortedFiles
+            .Select(Path.GetFileName)
+            .ToList()!;
     }
     
     public IReadOnlyList<string> GetWrappedRange(string startFilename, string endFilename)
