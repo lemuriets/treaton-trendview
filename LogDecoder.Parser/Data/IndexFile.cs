@@ -6,6 +6,7 @@ public readonly record struct IndexFile(
     IndexFileHeader Header,
     IReadOnlyList<IndexEntry> Entries);
 
+// mb should make init validation and ToString for IndexBuilder
 public readonly record struct IndexEntry(
     string Filename,
     long Offset,

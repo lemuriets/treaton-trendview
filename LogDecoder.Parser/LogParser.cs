@@ -13,14 +13,15 @@ public partial class LogParser : ILogParser
     public LogParser(ILogger logger, string avlLogsFolder, ICanPackageFactory factory)
     {
         _logger = logger;
+        _avlLogsFolder = avlLogsFolder;
         _indexFolder = Path.Combine(avlLogsFolder, "index");
-        _filesAggrerator = new LogFilesAggregator(avlLogsFolder, Path.GetFileName, FilenameTemplateRegex());
+        _filesAggregator = new LogFilesAggregator(avlLogsFolder, Path.GetFileName, FilenameTemplateRegex());
         _factory = factory;
         _indexBuilder = new IndexBuilder(logger, _factory);
         _indexParser = new IndexParser(logger);
 
         RegisteredIds = _factory.RegisteredIds;
-        
+
         Directory.CreateDirectory(_indexFolder);
     }
 
@@ -29,13 +30,14 @@ public partial class LogParser : ILogParser
 
     private readonly ILogger _logger;
     private readonly ICanPackageFactory _factory;
+    private readonly string _avlLogsFolder;
     private readonly string _indexFolder;
-    private readonly LogFilesAggregator _filesAggrerator;
+    private readonly LogFilesAggregator _filesAggregator;
     private readonly IndexBuilder _indexBuilder;
     private readonly IndexParser _indexParser;
     private readonly Dictionary<string, LogFileScanner> _scanners = new();
 
-    public readonly IReadOnlySet<int> RegisteredIds;
+    public IReadOnlySet<int> RegisteredIds { get; }
     
     public bool IsDateTimeExists(DateTime target) => _indexParser.IsDateTimeExists(target);
     public DateTime? MinDatetime => _indexParser.MinTime;
@@ -45,7 +47,7 @@ public partial class LogParser : ILogParser
     {
         var indexFiles = new List<string>();
         StartIndex?.Invoke();
-        foreach (var file in _filesAggrerator.SortedFiles)
+        foreach (var file in _filesAggregator.SortedFiles)
         {
             indexFiles.Add(_indexBuilder.Build(file, _indexFolder));
         }
@@ -61,7 +63,7 @@ public partial class LogParser : ILogParser
 
         await Task.Run(() =>
         {
-            foreach (var file in _filesAggrerator.SortedFiles)
+            foreach (var file in _filesAggregator.SortedFiles)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 indexFiles.Add(_indexBuilder.Build(file, _indexFolder));
@@ -75,43 +77,109 @@ public partial class LogParser : ILogParser
     
     public IEnumerable<ICanPackageParsed> GetPackages(IReadOnlySet<int> filterIds, DateTime start, DateTime end)
     {
-        var startIndex = _indexParser.FindFloor(start);
-        var endIndex = _indexParser.FindFloor(end);
-        if (startIndex is null)
-        {
-            _logger.LogWarning("Unable to find {Start} in index.", start);
-            throw new Exception($"Unable to find {start} in index.");
-        }
-        if (endIndex is null)
-        {
-            _logger.LogWarning("Unable to find {End} in index.", end);
-            throw new Exception($"Unable to find {end} in index.");
-        }
-        
-        var startFilename = startIndex.Value.Filename;
-        var endFilename = endIndex.Value.Filename;
+        // var startIndex = _indexParser.FindFloor(start);
+        // var endIndex = _indexParser.FindFloor(end);
+        // if (startIndex is null)
+        // {
+        //     _logger.LogWarning("Unable to find {Start} in index.", start);
+        //     throw new Exception($"Unable to find {start} in index.");
+        // }
+        // if (endIndex is null)
+        // {
+        //     _logger.LogWarning("Unable to find {End} in index.", end);
+        //     throw new Exception($"Unable to find {end} in index.");
+        // }
+        //
+        // var startFilename = startIndex.Value.Filename;
+        // var endFilename = endIndex.Value.Filename;
+        //
+        // var context = new ParseContext();
+        //
+        // _logger.LogInformation(
+        //     "LogParser.GetPackages(), " +
+        //     "start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
+        //     startFilename,
+        //     startIndex.Value.Offset,
+        //     endFilename,
+        //     endIndex.Value.Offset);
+        // foreach (var file in _filesAggregator.GetWrappedRange(startFilename, endFilename))
+        // {
+        //     var filename = Path.GetFileName(file);
+        //     var scanner = GetScanner(file);
+        //     
+        //     var (startOffset, endOffset) = ResolveScanRange(
+        //         filename, startFilename, endFilename, startIndex.Value.Offset, endIndex.Value.Offset);
+        //     foreach (var (_, pkg) in scanner.GetPackagesParsed(_factory, filterIds, context, startOffset, endOffset))
+        //     {
+        //         yield return pkg;
+        //     }
+        // }
 
-        var context = new ParseContext();
-        
-        _logger.LogInformation(
-            "LogParser.GetPackages(), " +
-            "start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
-            startFilename,
-            startIndex.Value.Offset,
-            endFilename,
-            endIndex.Value.Offset);
-        foreach (var file in _filesAggrerator.GetWrappedRange(startFilename, endFilename))
+        var timeRange = new TimeRange(start, end);
+        var sessions = _indexParser.Sessions.GetRange(timeRange);
+        if (sessions.Count == 0)
         {
-            var filename = Path.GetFileNameWithoutExtension(file);
-            var scanner = GetScanner(file);
-            
-            var (startOffset, endOffset) = ResolveScanRange(
-                filename, startFilename, endFilename, startIndex.Value.Offset, endIndex.Value.Offset);
-            foreach (var (_, pkg) in scanner.GetPackagesParsed(_factory, filterIds, context, startOffset, endOffset))
+            _logger.LogInformation("LogParser.GetPackages() -> No sessions overlap [{Start}, {End}]", start, end);
+            yield break;
+        }
+
+        foreach (var session in sessions)
+        {
+            var startIdx = FindFloorIndexInSession(session, start);
+            var endIdx = FindCeilingIndexInSession(session, end);
+            var context = new ParseContext();
+
+            foreach (var filename in session.Filenames)
             {
-                yield return pkg;
+                var isStartFile = filename == startIdx.Filename;
+                var isEndFile = filename == endIdx?.Filename;
+                var isLastFile = filename == session.Filenames[^1];
+
+                var fileStart = isStartFile ? startIdx.Offset : 0L;
+                var fileEnd =
+                    isEndFile ? endIdx!.Value.Offset
+                    : isLastFile ? (session.PhysicalEndOffsetInLastFile ?? 0L)
+                    : 0L;
+
+                var filePath = Path.Combine(_avlLogsFolder, filename);
+                var scanner = GetScanner(filePath);
+                foreach (var (_, package) in scanner.GetPackagesParsed(_factory, filterIds, context, fileStart, fileEnd))
+                {
+                    yield return package;
+                }
+
+                if (isEndFile)
+                {
+                    break;
+                }
             }
         }
+    }
+
+    private static IndexEntry FindFloorIndexInSession(LogSession session, DateTime target)
+    {
+        var result = session.Indexes[0];
+        foreach (var index in session.Indexes)
+        {
+            if (index.Time > target)
+            {
+                break;
+            }
+            result = index;
+        }
+        return result;
+    }
+
+    private static IndexEntry? FindCeilingIndexInSession(LogSession session, DateTime target)
+    {
+        foreach (var index in session.Indexes)
+        {
+            if (index.Time > target)
+            {
+                return index;
+            }
+        }
+        return null;
     }
     
     private LogFileScanner GetScanner(string file)

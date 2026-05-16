@@ -183,7 +183,7 @@ public class LogFilesAggregatorTests
     {
         return new LogFilesAggregator(
             _tempDirectory,
-            Path.GetFileNameWithoutExtension,
+            Path.GetFileName,
             _ivlLogFilenameTemplate);
     }
 

@@ -46,7 +46,7 @@ public class IndexBuilder
             var header = new IndexFileHeader(firstLine);
             return header.FormatVersion == IndexFormatVersion;
         }
-        catch
+        catch (Exception ex) when (ex is IOException or FormatException or ArgumentException)
         {
             return false;
         }

@@ -1,79 +1,156 @@
 namespace LogDecoder.Parser.Data;
 
-public class LogSessionsSequence
+public class LogSessionsSorted
 {
-    private readonly List<LogSession> _sessions = [];
+    private readonly SortedList<DateTime, LogSession> _sessions = [];
 
     public int TotalSeconds { get; private set; }
     public int Count => _sessions.Count;
-
+    public LogSession this[int index] => _sessions.GetValueAtIndex(index);
+    
     public void Add(LogSession session)
     {
-        if (_sessions.Count > 0)
+        var key = session.Start;
+        var index = GetInsertionIndex(key);
+        
+        ValidatePrev(index, session);
+        ValidateNext(index, session);
+        
+        _sessions.Add(key, session);
+    }
+    
+    public List<LogSession> GetRange(TimeRange timeRange)
+    {
+        var result = new List<LogSession>();
+        foreach (var (_, session) in _sessions)
         {
-            if (_sessions[^1].TimeRange.To > session.TimeRange.From)
+            if (session.Start > timeRange.End)
             {
-                throw new ArgumentException("Previous session ending time must be less than or equal to start of new one");
+                break;
+            }
+            if (session.End >= timeRange.Start && session.Start <= timeRange.End)
+            {
+                result.Add(session);
             }
         }
-        _sessions.Add(session);
-        TotalSeconds += session.TotalSeconds;
-    }
-
-    public bool TryAdd(LogSession session)
-    {
-        try
-        {
-            Add(session);
-            return true;
-        }
-        catch (ArgumentException)
-        {
-            return false;
-        }
-    }
-
-    public bool Contains(DateTime target)
-    {
-        return _sessions.Any(s => s.Contains(target));
+        return result;
     }
     
     public LogSession? GetSessionByTime(DateTime target)
     {
-        return _sessions.FirstOrDefault(s => s.Contains(target));
+        return _sessions.Values.FirstOrDefault(s => s.Contains(target));
     }
-
-    public int IndexOf(DateTime target)
+    
+    public bool Contains(DateTime target)
     {
-        var session = GetSessionByTime(target);
-        if (session is null)
-        {
-            return -1;
-        }
-        return session.IndexOf(target);
+        return _sessions.Values.Any(s => s.Contains(target));
     }
 
     public void Clear()
     {
         _sessions.Clear();
     }
+    
+    private int GetInsertionIndex(DateTime key)
+    {
+        var keys = _sessions.Keys.ToList();
+        var index = keys.BinarySearch(key);
+        if (index < 0)
+        {
+            index = ~index;
+        }
+        return index;
+    }
+    
+    private void ValidatePrev(int index, LogSession session)
+    {
+        if (index == 0)
+        {
+            return;
+        }
+        var prevSession = _sessions.GetValueAtIndex(index - 1);
+        if (prevSession.End > session.Start)
+        {
+            throw new ArgumentException("Session overlaps previous session");
+        }
+    }
+    
+    private void ValidateNext(int index, LogSession session)
+    {
+        if (index >= _sessions.Count)
+        {
+            return;
+        }
+        var nextSession = _sessions.GetValueAtIndex(index);
+        if (nextSession.Start < session.End)
+        {
+            throw new ArgumentException("Session overlaps next session");
+        }
+    }
 }
 
-public record LogSession(long StartOffset, long EndOffset, TimeRange TimeRange)
+public readonly struct LogSession
 {
-    public readonly int TotalSeconds = (int)(TimeRange.To - TimeRange.From).TotalSeconds;
+    public LogSession(
+        TimeRange timeRange,
+        IReadOnlyList<IndexEntry> indexes,
+        long? physicalEndOffsetInLastFile = null)
+    {
+        if (indexes.Count == 0)
+        {
+            throw new ArgumentException("Indexes cannot be empty");
+        }
 
+        TimeRange = timeRange;
+        Indexes = indexes;
+        Filenames = CollectFilenames(indexes);
+        PhysicalEndOffsetInLastFile = physicalEndOffsetInLastFile;
+    }
+
+    public TimeRange TimeRange { get; }
+    public IReadOnlyList<IndexEntry> Indexes { get; }
+    public IReadOnlyList<string> Filenames { get; }
+    public long? PhysicalEndOffsetInLastFile { get; }
+    public int TotalSeconds => (int)(TimeRange.Duration).TotalSeconds;
+    public DateTime Start => TimeRange.Start;
+    public DateTime End => TimeRange.End;
+    public long StartOffset => Indexes[0].Offset;
+    public long EndOffset => Indexes[^1].Offset;
+
+    private static IReadOnlyList<string> CollectFilenames(IReadOnlyList<IndexEntry> indexes)
+    {
+        var result = new List<string>();
+        string? last = null;
+        foreach (var index in indexes)
+        {
+            if (index.Filename != last)
+            {
+                result.Add(index.Filename);
+                last = index.Filename;
+            }
+        }
+        return result;
+    }
+    
     public bool Contains(DateTime target)
     {
-        return TimeRange.Contains(target);
+        return target >= Start && target <= End;
     }
 
-    public int IndexOf(DateTime target)
+    public IndexEntry? FindLastBeforeIndex(DateTime target)
     {
-        if (!Contains(target))
+        IndexEntry? result = null;
+
+        foreach (var index in Indexes)
         {
-            return -1;
+            if (index.Time > target)
+            {
+                break;
+            }
+            result = index;
         }
-        return (int)(target - TimeRange.From).TotalSeconds;
+        return result;
     }
 }
+
+internal readonly struct OffsetRange(string File, long Start, long End);

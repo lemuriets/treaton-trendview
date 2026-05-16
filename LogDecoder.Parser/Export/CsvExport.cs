@@ -33,7 +33,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
         using var csvSession = new CsvSession(csvFilePath);
         var csvWriter = new CsvWriter(csvSession);
 
-        csvWriter.AddRow(["Id", "Имя", "Время"]);
+        csvWriter.AddRow(["Id", "Имя", "Время последнего IdSynchro"]);
 
         var rowCounter = 0;
         List<string> prevMessages = [];

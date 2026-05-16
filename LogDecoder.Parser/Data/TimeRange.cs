@@ -2,22 +2,23 @@
 
 public readonly struct TimeRange
 {
-    public TimeRange(DateTime from, DateTime to)
+    public TimeRange(DateTime start, DateTime end)
     {
-        if (from >= to)
+        if (start >= end)
         {
             throw new ArgumentException("from must be < to");
         }
 
-        From = from;
-        To = to;
+        Start = start;
+        End = end;
     }
     
-    public DateTime From { get; }
-    public DateTime To { get; }
+    public DateTime Start { get; }
+    public DateTime End { get; }
+    public TimeSpan Duration => End - Start; 
 
     public bool Contains(DateTime t)
     {
-        return t >= From && t < To;
+        return t >= Start && t < End;
     }
 }
