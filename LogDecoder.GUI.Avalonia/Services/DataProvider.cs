@@ -19,8 +19,9 @@ public class DataProvider(LogParser parser)
             {
                 prevHrc = pkg.Hrc;
             }
-            var hrcDelta = CanUtils.CalcHrcDelta(prevHrc, pkg.Hrc);
-            var shift = hrcDelta / TimeHelper.MicrosecondsPerSecond;
+            var shift = CanUtils.TryComputeHrcDelta(prevHrc, pkg.Hrc, out var hrcDelta)
+                ? hrcDelta / TimeHelper.MicrosecondsPerSecond
+                : 0d;
             
             x += shift;
             prevHrc = pkg.Hrc;

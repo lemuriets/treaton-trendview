@@ -238,15 +238,21 @@ public partial class MainWindow : Window
             return;
         }
 
-        var launcher = TopLevel.GetTopLevel(this)?.Launcher;
-        if (launcher is null)
-        {
-            _logger.LogWarning("Launcher is not available");
-            return;
-        }
-        var uri = new Uri(folderSelection.Path);
+        try {
+            var launcher = TopLevel.GetTopLevel(this)?.Launcher;
+            if (launcher is null)
+            {
+                _logger.LogWarning("Launcher is not available");
+                return;
+            }
+            var uri = new Uri(folderSelection.Path);
 
-        await launcher.LaunchUriAsync(uri);
+            await launcher.LaunchUriAsync(uri);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed OpenFolderAsync({Folder})", folderSelection.Path);
+        }
     }
 
     private async void SelectedInputFolder_Click(object? sender, PointerPressedEventArgs e)
@@ -632,11 +638,6 @@ public partial class MainWindow : Window
             @enum: ButtonEnum.Ok);
 
         await box.ShowWindowDialogAsync(this);
-    }
-
-    private void Exit_Click(object? sender, RoutedEventArgs e)
-    {
-        Close();
     }
 
     private void ChangeLanguage_Click(object? sender, RoutedEventArgs e)
