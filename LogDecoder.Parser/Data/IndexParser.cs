@@ -50,7 +50,7 @@ public class IndexParser : IIndexParser
         MinTime = _sessions[0].Start;
         MaxTime = _sessions[^1].End;
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Sessions loaded. Count: {Count}. From: [{MinTime}] To: [{MaxTime}]",
             _sessions.Count,
             MinTime,
@@ -75,7 +75,7 @@ public class IndexParser : IIndexParser
             {
                 long? physicalEnd = entry.Filename == current[^1].Filename ? entry.Offset : null;
                 yield return CreateSession(current, physicalEnd);
-                current = new List<IndexEntry>();
+                current = [];
             }
             current.Add(entry);
             previous = entry;
@@ -109,22 +109,23 @@ public class IndexParser : IIndexParser
         {
             throw new FileNotFoundException($"Specified index file was not found '{indexFile}'");
         }
-        _logger.LogInformation("Loading index file {IndexFile}", indexFile);
+        _logger.LogDebug("Loading index file {IndexFile}", indexFile);
 
         var lines = File.ReadLines(indexFile);
-        var header = new IndexFileHeader(lines.FirstOrDefault());
-        var sourceFile = header.SourceFile;
+        var enumerable = lines as string[] ?? lines.ToArray();
+        var header = new IndexFileHeader(enumerable.FirstOrDefault());
+        var sourceFileName = header.SourceFileName;
         var result = new List<IndexEntry>();
 
-        foreach (var line in lines.Skip(HeaderLinesQuantity))
+        foreach (var line in enumerable.Skip(HeaderLinesQuantity))
         {
             var (offset, dt) = ParseLine(line);
             if (dt > DateTime.Now)
             {
-                _logger.LogWarning("Found incorrect date in {SourceFile}: {Dt}", sourceFile, dt);
+                _logger.LogWarning("Found incorrect date in {SourceFile}: {Dt}", sourceFileName, dt);
                 continue;
             }
-            result.Add(new IndexEntry(sourceFile, offset, dt));
+            result.Add(new IndexEntry(sourceFileName, offset, dt));
         }
         return result;
     }

@@ -14,7 +14,7 @@ public readonly record struct IndexEntry(
 
 public readonly record struct IndexFileHeader(
     int FormatVersion,
-    string SourceFile)
+    string SourceFileName)
 {
     public IndexFileHeader(string? header)
         : this(Parse(header))
@@ -24,13 +24,15 @@ public readonly record struct IndexFileHeader(
     private IndexFileHeader(Dictionary<string, string> values)
         : this(
             int.Parse(values[nameof(FormatVersion)], CultureInfo.InvariantCulture),
-            values[nameof(SourceFile)])
+            values[nameof(SourceFileName)])
     {
     }
 
     public override string ToString()
     {
-        return string.Join("; ", $"FormatVersion {FormatVersion}", $"SourceFile {SourceFile}");
+        return string.Join(
+            "; ",
+            $"{nameof(FormatVersion)} {FormatVersion}", $"{nameof(SourceFileName)} {SourceFileName}");
     }
 
     private static Dictionary<string, string> Parse(string? header)
@@ -59,9 +61,9 @@ public readonly record struct IndexFileHeader(
         {
             throw new FormatException($"Header does not contain {nameof(FormatVersion)}.");
         }
-        if (!result.ContainsKey(nameof(SourceFile)))
+        if (!result.ContainsKey(nameof(SourceFileName)))
         {
-            throw new FormatException($"Header does not contain {nameof(SourceFile)}.");
+            throw new FormatException($"Header does not contain {nameof(SourceFileName)}.");
         }
 
         return result;

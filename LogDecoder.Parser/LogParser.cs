@@ -1,7 +1,5 @@
 using System.Text.RegularExpressions;
-using LogDecoder.CAN;
 using LogDecoder.CAN.Contracts;
-using LogDecoder.CAN.Packages;
 using LogDecoder.Parser.Data;
 using LogDecoder.Parser.Contracts;
 using Microsoft.Extensions.Logging;
@@ -65,8 +63,7 @@ public partial class LogParser : ILogParser
         {
             foreach (var file in _filesAggregator.SortedFiles)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                indexFiles.Add(_indexBuilder.Build(file, _indexFolder));
+                indexFiles.Add(_indexBuilder.Build(file, _indexFolder, cancellationToken));
             }
             _indexParser.LoadAll(indexFiles.ToArray());
 
@@ -95,7 +92,7 @@ public partial class LogParser : ILogParser
         //
         // var context = new ParseContext();
         //
-        // _logger.LogInformation(
+        // _logger.LogDebug(
         //     "LogParser.GetPackages(), " +
         //     "start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
         //     startFilename,
@@ -119,9 +116,10 @@ public partial class LogParser : ILogParser
         var sessions = _indexParser.Sessions.GetRange(timeRange);
         if (sessions.Count == 0)
         {
-            _logger.LogInformation("LogParser.GetPackages() -> No sessions overlap [{Start}, {End}]", start, end);
+            _logger.LogDebug("LogParser.GetPackages() -> No sessions overlap [{Start}, {End}]", start, end);
             yield break;
         }
+        _logger.LogDebug("GetPackages() -> found {SessionsCount} sessions", sessions.Count);
 
         foreach (var session in sessions)
         {

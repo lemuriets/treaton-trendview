@@ -16,7 +16,7 @@ public class IndexBuilder
     private readonly ILogger _logger;
     private readonly ICanPackageFactory _factory;
     
-    public string Build(string logFile, string folderToSave)
+    public string Build(string logFile, string folderToSave, CancellationToken cancellationToken = default)
     {
         var baseFilename = Path.GetFileName(logFile);
         var indexFilePath = Path.Combine(folderToSave, baseFilename + ".txt");
@@ -25,11 +25,11 @@ public class IndexBuilder
             return indexFilePath;
         }
 
-        var indexes = CreateIndex(logFile);
+        var indexes = CreateIndex(logFile, cancellationToken);
         var header = new IndexFileHeader(IndexFormatVersion, baseFilename);
         File.WriteAllLines(indexFilePath, [header.ToString(), ..indexes]);
     
-        _logger.LogInformation("Created index with {Count} indexes for {BaseFilename}", indexes.Count, baseFilename);
+        _logger.LogDebug("Created index with {Count} indexes for {BaseFilename}", indexes.Count, baseFilename);
         
         return indexFilePath;
     }
@@ -52,7 +52,7 @@ public class IndexBuilder
         }
     }
 
-    private List<string> CreateIndex(string logFile)
+    private List<string> CreateIndex(string logFile, CancellationToken cancellationToken = default)
     {
         var fileScanner = new LogFileScanner(_logger, logFile);
         
@@ -61,6 +61,7 @@ public class IndexBuilder
         var context = new ParseContext();
         foreach (var (offset, package) in fileScanner.GetPackagesParsed(_factory, new HashSet<int>{IdSynchro.Id}, context))
         {
+            // cancellationToken.ThrowIfCancellationRequested();
             var packageData = package.ParseData();
             if (packageData is null)
             {

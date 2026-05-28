@@ -62,6 +62,8 @@
     <data name="ExportingWait" xml:space="preserve"><value>Экспорт логов. Подождите...</value></data>
     <data name="ExportError" xml:space="preserve"><value>Ошибка: {0}</value></data>
     <data name="IndexingWait" xml:space="preserve"><value>Индексирование... Подождите</value></data>
+    <data name="IndexingCancelling" xml:space="preserve"><value>Отмена индексирования...</value></data>
+    <data name="IndexingCancelled" xml:space="preserve"><value>Индексирование отменено</value></data>
     <data name="InputFolderLabel" xml:space="preserve">
         <value>Папка с логами: </value>
     </data>

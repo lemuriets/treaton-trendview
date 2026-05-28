@@ -123,11 +123,12 @@ public readonly struct LogSession
         string? last = null;
         foreach (var index in indexes)
         {
-            if (index.Filename != last)
+            if (index.Filename == last)
             {
-                result.Add(index.Filename);
-                last = index.Filename;
+                continue;
             }
+            result.Add(index.Filename);
+            last = index.Filename;
         }
         return result;
     }

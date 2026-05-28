@@ -25,7 +25,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
         Directory.CreateDirectory(outputFolder);
 
         var csvFilePath = Path.Combine(outputFolder, $"ИВЛ {DateTime.Now:dd.MM.yyyy HH-mm-ss}.csv");
-        logger.LogInformation("Exporting data from: {LogsFolder}. To: {CsvFilePath}. Ids: [{Ids}]",
+        logger.LogDebug("Exporting data from: {LogsFolder}. To: {CsvFilePath}. Ids: [{Ids}]",
             logsFolder,
             csvFilePath,
             string.Join(',', filterIds));
@@ -43,14 +43,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
         foreach (var package in logParser.GetPackages(filterIds, start, end))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (excludeEmptyTimestamps &&
-                prevPackage != null &&
-                package.Id == IdSynchro.Id &&
-                prevPackage.Id == package.Id)
-            {
-                continue;
-            }
-            
+
             var packageData = package.ParseData();
             if (packageData is null)
             {
@@ -60,7 +53,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
             // {
             //     continue;
             // }
-            
+
             var packageMessages = packageData.Value.Messages;
             var packageNumericData = packageData.Value.NumericData;
 
@@ -68,10 +61,19 @@ public class CsvExport(ILogger logger, LogParser logParser)
             {
                 continue;
             }
+
             
             if (package.Id == IdSynchro.Id)
             {
                 lastDateTimeStr = packageMessages[0];
+            }
+
+            if (excludeEmptyTimestamps &&
+                prevPackage != null &&
+                package.Id == IdSynchro.Id &&
+                prevPackage.Id == package.Id)
+            {
+                continue;
             }
 
             if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages) && packageNumericData.Count == 0)
@@ -86,7 +88,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
             prevMessages = packageMessages;
         }
 
-        logger.LogInformation("Added {RowCounter} rows to csv.", rowCounter);
+        logger.LogDebug("Added {RowCounter} rows to csv.", rowCounter);
     }
 
     private static bool ShouldExport(ICanPackageParsed package, IReadOnlySet<PackageTechStatus> techStatusesToParse)

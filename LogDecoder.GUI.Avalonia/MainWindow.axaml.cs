@@ -37,18 +37,22 @@ public partial class MainWindow : Window
     private readonly ICanPackageFactory _factory;
     private readonly ILogger _logger;
     private readonly LoggerProvider _loggerProvider;
+    private readonly string _appVersion = AppVersionProvider.GetVersion();
     private readonly IReadOnlySet<int> _requiredExportIds = new HashSet<int> { IdSynchro.Id };
 
-    private bool _isBusy;
+    private bool _isIndexing;
+    private bool _isExporting;
     private bool _isUpdatingSelectAll;
+
+    private bool IsBusy => _isIndexing || _isExporting;
+
     private readonly FolderSelection _inputFolder = new();
     private readonly FolderSelection _outputFolder = new();
-    private DateTime _startDateTime;
-    private DateTime _endDateTime;
-    private LogParser? _logParser;
-    private CsvExport? _csvExport;
+    private ParserSession? _session;
     private List<PackageItem> _packageItems = [];
     private CancellationTokenSource? _exportCancellationTokenSource;
+    private Task? _exportTask;
+    private CancellationTokenSource? _indexCancellationTokenSource;
 
     public MainWindow()
     {
@@ -65,13 +69,28 @@ public partial class MainWindow : Window
         SetWindowTitle();
         ConnectEvents();
 
-        _logger.LogInformation("GUI initialization finished");
+        _logger.LogDebug("GUI initialization finished");
     }
 
     protected override void OnClosed(EventArgs e)
     {
         LocalizationManager.Instance.PropertyChanged -= LocalizationChanged;
-        UnsubscribeParserEvents();
+        UnsubscribeParserEvents(_session);
+
+        _indexCancellationTokenSource?.Cancel();
+        _exportCancellationTokenSource?.Cancel();
+        var pendingExport = _exportTask;
+        if (pendingExport is not null)
+        {
+            try
+            {
+                pendingExport.Wait(TimeSpan.FromSeconds(2));
+            }
+            catch (AggregateException)
+            {
+            }
+        }
+
         _loggerProvider.Dispose();
 
         base.OnClosed(e);
@@ -86,11 +105,7 @@ public partial class MainWindow : Window
 
     private void SetWindowTitle()
     {
-        var version = AppVersionProvider.GetVersion();
-
-        _logger.LogInformation("Current app version: {Version}", version);
-
-        Title = $"{AppName} v{version}";
+        Title = $"{AppName} v{_appVersion}";
     }
 
     private void RefreshLocalizedTexts()
@@ -125,7 +140,7 @@ public partial class MainWindow : Window
 
         RefreshLocalizedTexts();
 
-        _logger.LogInformation("FillWidgets() completed");
+        _logger.LogDebug("FillWidgets() completed");
     }
 
     private void ConnectEvents()
@@ -140,7 +155,7 @@ public partial class MainWindow : Window
         ChkSelectAllPackages.Checked += ChkSelectAllPackagesChecked;
         ChkSelectAllPackages.Unchecked += ChkSelectAllPackagesUnchecked;
 
-        _logger.LogInformation("ConnectEvents() completed");
+        _logger.LogDebug("ConnectEvents() completed");
     }
 
     private async Task<string> SelectFolderAsync()
@@ -179,8 +194,8 @@ public partial class MainWindow : Window
     {
         ResetFolder(_inputFolder, TxtSelectedInputFolder, message, foreground);
 
-        _logParser = null;
-        _csvExport = null;
+        UnsubscribeParserEvents(_session);
+        _session = null;
     }
 
     private void SetOutputFolder(string folder)
@@ -196,7 +211,6 @@ public partial class MainWindow : Window
     private void SetFolder(FolderSelection selection, TextBlock textBlock, string folder)
     {
         selection.Path = folder;
-        selection.IsSelected = true;
 
         textBlock.Text = folder;
         textBlock.Foreground = Brushes.Green;
@@ -207,7 +221,6 @@ public partial class MainWindow : Window
     private void ResetFolder(FolderSelection selection, TextBlock textBlock, string message, IBrush foreground)
     {
         selection.Path = string.Empty;
-        selection.IsSelected = false;
 
         textBlock.Text = message;
         textBlock.Foreground = foreground;
@@ -245,7 +258,12 @@ public partial class MainWindow : Window
                 _logger.LogWarning("Launcher is not available");
                 return;
             }
-            var uri = new Uri(folderSelection.Path);
+
+            if (!Uri.TryCreate(folderSelection.Path, UriKind.Absolute, out var uri))
+            {
+                _logger.LogWarning("Cannot build Uri from folder path: {Folder}", folderSelection.Path);
+                return;
+            }
 
             await launcher.LaunchUriAsync(uri);
         }
@@ -257,12 +275,26 @@ public partial class MainWindow : Window
 
     private async void SelectedInputFolder_Click(object? sender, PointerPressedEventArgs e)
     {
-        await OpenFolderAsync(_inputFolder);
+        try
+        {
+            await OpenFolderAsync(_inputFolder);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unhandled error in SelectedInputFolder_Click");
+        }
     }
 
     private async void SelectedOutputFolder_Click(object? sender, PointerPressedEventArgs e)
     {
-        await OpenFolderAsync(_outputFolder);
+        try
+        {
+            await OpenFolderAsync(_outputFolder);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unhandled error in SelectedOutputFolder_Click");
+        }
     }
 
     private void SetDefaultOutputFolderIfEmpty(string folder)
@@ -274,41 +306,39 @@ public partial class MainWindow : Window
         SetOutputFolder(folder);
     }
 
-    private void CreateParser(string selectedFolder)
+    private ParserSession CreateSession(string selectedFolder)
     {
-        UnsubscribeParserEvents();
+        UnsubscribeParserEvents(_session);
 
-        _logParser = new LogParser(_logger, selectedFolder, _factory);
-        _csvExport = new CsvExport(_logger, _logParser);
+        var parser = new LogParser(_logger, selectedFolder, _factory);
+        var session = new ParserSession(parser, new CsvExport(_logger, parser));
 
-        _logParser.StartIndex += OnIndexStart;
-        _logParser.FinishIndex += OnIndexFinish;
+        parser.StartIndex += OnIndexStart;
+        parser.FinishIndex += OnIndexFinish;
+
+        _session = session;
+        return session;
     }
 
-    private void UnsubscribeParserEvents()
+    private void UnsubscribeParserEvents(ParserSession? session)
     {
-        if (_logParser is null)
+        if (session is null)
         {
             return;
         }
 
-        _logParser.StartIndex -= OnIndexStart;
-        _logParser.FinishIndex -= OnIndexFinish;
+        session.Parser.StartIndex -= OnIndexStart;
+        session.Parser.FinishIndex -= OnIndexFinish;
     }
 
-    private void FillStartDateTimeFromLogsIfNeeded()
+    private void FillStartDateTimeFromLogsIfNeeded(ParserSession session)
     {
-        if (_logParser is null)
-        {
-            return;
-        }
-
         if (!TryGetDateTime(StartDateTime.Text, out var currentStart) || currentStart != DateTime.MinValue)
         {
             return;
         }
 
-        var start = _logParser.MinDatetime;
+        var start = session.Parser.MinDatetime;
         if (start.HasValue)
         {
             StartDateTime.Text = start.Value.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
@@ -323,30 +353,39 @@ public partial class MainWindow : Window
 
     private void CheckInputs()
     {
-        TxtErrorDateTime.Text = string.Empty;
-        BtnExportCsv.IsEnabled = CanExport();
+        var hasValidRange = TryGetValidatedRange(out _, out _, out var error);
+        TxtErrorDateTime.Text = error ?? string.Empty;
+        BtnExportCsv.IsEnabled = hasValidRange && CanExport();
     }
 
-    private bool CanExport()
+    private bool TryGetValidatedRange(out DateTime start, out DateTime end, out string? error)
     {
-        if (!TryGetDateTime(StartDateTime.Text, out var start) || !TryGetDateTime(EndDateTime.Text, out var end))
+        var startOk = TryGetDateTime(StartDateTime.Text, out start);
+        var endOk = TryGetDateTime(EndDateTime.Text, out end);
+        if (!startOk || !endOk)
         {
-            TxtErrorDateTime.Text = Localizer.F("InvalidDateFormat", DateTimeFormat);
+            error = Localizer.F("InvalidDateFormat", DateTimeFormat);
             return false;
         }
 
         if (end < start)
         {
-            TxtErrorDateTime.Text = Localizer.L("EndBeforeStart");
+            error = Localizer.L("EndBeforeStart");
             return false;
         }
-        
-        if (_isBusy)
+
+        error = null;
+        return true;
+    }
+
+    private bool CanExport()
+    {
+        if (IsBusy)
         {
             return false;
         }
 
-        if (_csvExport is null)
+        if (_session is null)
         {
             return false;
         }
@@ -360,9 +399,6 @@ public partial class MainWindow : Window
         {
             return false;
         }
-        
-        _startDateTime = start;
-        _endDateTime = end;
 
         return true;
     }
@@ -391,7 +427,8 @@ public partial class MainWindow : Window
 
     private async void BtnExportCsvClick(object? sender, RoutedEventArgs e)
     {
-        if (_csvExport is null || !CanExport())
+        var session = _session;
+        if (!TryGetValidatedRange(out var start, out var end, out _) || !CanExport() || session is null)
         {
             CheckInputs();
             return;
@@ -400,23 +437,22 @@ public partial class MainWindow : Window
         var selectedIds = GetSelectedIds();
         var inputFolder = _inputFolder.Path;
         var outputFolder = _outputFolder.Path;
-        var start = _startDateTime;
-        var end = _endDateTime;
         var ignoreDuplicates = ChkIgnoreDuplicates.IsChecked == true;
         var excludeEmptyTimestamps = ChkExcludeEmptyTimestamps.IsChecked == true;
 
         _exportCancellationTokenSource?.Dispose();
-        _exportCancellationTokenSource = new CancellationTokenSource();
+        var cts = new CancellationTokenSource();
+        _exportCancellationTokenSource = cts;
 
-        var cancellationToken = _exportCancellationTokenSource.Token;
+        var cancellationToken = cts.Token;
 
-        SetBusy(true, Localizer.L("ExportingWait"), canCancel: true);
+        SetExporting(true, Localizer.L("ExportingWait"));
 
         try
         {
-            await Task.Run(() =>
+            _exportTask = Task.Run(() =>
             {
-                _csvExport.ToCsv(
+                session.Export.ToCsv(
                     inputFolder,
                     outputFolder,
                     selectedIds,
@@ -427,13 +463,14 @@ public partial class MainWindow : Window
                     excludeEmptyTimestamps,
                     cancellationToken);
             }, cancellationToken);
+            await _exportTask;
 
             TxtExportStatus.Text = Localizer.L("ExportSuccess");
             TxtExportStatus.Foreground = Brushes.Green;
         }
         catch (OperationCanceledException)
         {
-            _logger.LogInformation("CSV export cancelled");
+            _logger.LogDebug("CSV export cancelled");
 
             TxtExportStatus.Text = Localizer.L("ExportCancelled");
             TxtExportStatus.Foreground = Brushes.Orange;
@@ -447,17 +484,23 @@ public partial class MainWindow : Window
         }
         finally
         {
-            _exportCancellationTokenSource.Dispose();
             _exportCancellationTokenSource = null;
+            _exportTask = null;
+            cts.Dispose();
 
-            SetBusy(false);
-            CheckInputs();
+            SetExporting(false);
         }
     }
     
     private void BtnCancelExport_Click(object? sender, RoutedEventArgs e)
     {
-        _exportCancellationTokenSource?.Cancel();
+        var cts = _exportCancellationTokenSource;
+        if (cts is null)
+        {
+            return;
+        }
+
+        cts.Cancel();
 
         TxtExportStatus.Text = Localizer.L("ExportCancelling");
         TxtExportStatus.Foreground = Brushes.Orange;
@@ -465,32 +508,51 @@ public partial class MainWindow : Window
 
     private HashSet<int> GetSelectedIds()
     {
-        var selectedIds = PackageIdList.SelectedItems!
-            .Cast<PackageItem>()
-            .Select(p => p.Id)
-            .ToHashSet();
+        var selectedIds = new HashSet<int>(_requiredExportIds);
+        if (PackageIdList.SelectedItems is null)
+        {
+            return selectedIds;
+        }
 
-        selectedIds.UnionWith(_requiredExportIds);
+        foreach (var item in PackageIdList.SelectedItems.OfType<PackageItem>())
+        {
+            selectedIds.Add(item.Id);
+        }
 
         return selectedIds;
     }
 
-    private void SetBusy(bool isBusy, string? status = null, bool canCancel = false)
+    private void SetIndexing(bool value, string? status = null)
     {
-        _isBusy = isBusy;
+        _isIndexing = value;
+        SetExportStatusIfProvided(status);
+        RefreshBusyUi();
+    }
 
-        MenuOpenLogsFolder.IsEnabled = !isBusy;
-        MenuOpenExportFolder.IsEnabled = !isBusy;
+    private void SetExporting(bool value, string? status = null)
+    {
+        _isExporting = value;
+        SetExportStatusIfProvided(status);
+        RefreshBusyUi();
+    }
 
-        BtnCancelExport.IsEnabled = isBusy && canCancel;
-
-        if (status is not null)
+    private void SetExportStatusIfProvided(string? status)
+    {
+        if (status is null)
         {
-            TxtExportStatus.Text = status;
-            TxtExportStatus.Foreground = Brushes.Green;
+            return;
         }
+        TxtExportStatus.Text = status;
+        TxtExportStatus.Foreground = Brushes.Green;
+    }
 
-        BtnExportCsv.IsEnabled = !isBusy && CanExport();
+    private void RefreshBusyUi()
+    {
+        var busy = IsBusy;
+        MenuOpenLogsFolder.IsEnabled = !busy;
+        MenuOpenExportFolder.IsEnabled = !busy;
+        BtnCancelExport.IsEnabled = _isExporting;
+        CheckInputs();
     }
 
     private void ChkSelectAllPackagesChecked(object? sender, RoutedEventArgs e)
@@ -541,8 +603,7 @@ public partial class MainWindow : Window
         Dispatcher.UIThread.Post(() =>
         {
             TxtIndexStatus.Text = Localizer.L("IndexingWait");
-            SetBusy(true);
-            CheckInputs();
+            SetIndexing(true);
         });
     }
 
@@ -551,19 +612,18 @@ public partial class MainWindow : Window
         Dispatcher.UIThread.Post(() =>
         {
             TxtIndexStatus.Text = string.Empty;
-            SetBusy(false);
-            CheckInputs();
+            SetIndexing(false);
         });
     }
 
     private async void OpenLogsFolder_Click(object? sender, RoutedEventArgs e)
     {
-        if (_isBusy)
+        if (IsBusy)
         {
             return;
         }
 
-        SetBusy(true, Localizer.L("SelectingLogsFolder"));
+        SetIndexing(true, Localizer.L("SelectingLogsFolder"));
 
         try
         {
@@ -573,7 +633,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            if (!HasLogFiles(selectedFolder))
+            if (!await Task.Run(() => HasLogFiles(selectedFolder)))
             {
                 ResetInputFolder(Localizer.L("NoLogFilesInFolder"), Brushes.Red);
                 return;
@@ -581,13 +641,31 @@ public partial class MainWindow : Window
 
             TxtExportStatus.Text = "";
             TxtExportStatus.Foreground = Brushes.Green;
-            
+
             SetInputFolder(selectedFolder);
             SetDefaultOutputFolderIfEmpty(selectedFolder);
-            CreateParser(selectedFolder);
+            var session = CreateSession(selectedFolder);
 
-            await _logParser!.CreateOrLoadAllIndexesAsync();
-            FillStartDateTimeFromLogsIfNeeded();
+            _indexCancellationTokenSource?.Dispose();
+            var cts = new CancellationTokenSource();
+            _indexCancellationTokenSource = cts;
+
+            try
+            {
+                await session.Parser.CreateOrLoadAllIndexesAsync(cts.Token);
+                FillStartDateTimeFromLogsIfNeeded(session);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogDebug("Indexing cancelled");
+                TxtIndexStatus.Text = Localizer.L("IndexingCancelled");
+                ResetInputFolder(Localizer.L("InputFolderNotSelected"), Brushes.Gray);
+            }
+            finally
+            {
+                _indexCancellationTokenSource = null;
+                cts.Dispose();
+            }
         }
         catch (Exception ex)
         {
@@ -596,14 +674,13 @@ public partial class MainWindow : Window
         }
         finally
         {
-            SetBusy(false, "");
-            CheckInputs();
+            SetIndexing(false, "");
         }
     }
 
     private async void OpenExportFolder_Click(object? sender, RoutedEventArgs e)
     {
-        if (_isBusy)
+        if (IsBusy)
         {
             return;
         }
@@ -634,7 +711,7 @@ public partial class MainWindow : Window
     {
         var box = MessageBoxManager.GetMessageBoxStandard(
             title: Localizer.L("AboutTitle"),
-            text: Localizer.F("AboutText", AppVersionProvider.GetVersion()),
+            text: Localizer.F("AboutText", _appVersion),
             @enum: ButtonEnum.Ok);
 
         await box.ShowWindowDialogAsync(this);
@@ -652,7 +729,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        _logger.LogInformation("App language changed to {Lang}", cultureName);
+        _logger.LogDebug("App language changed to {Lang}", cultureName);
         SetLanguage(cultureName);
     }
 
@@ -665,5 +742,7 @@ public partial class MainWindow : Window
 internal sealed class FolderSelection
 {
     public string Path { get; set; } = string.Empty;
-    public bool IsSelected { get; set; }
+    public bool IsSelected => !string.IsNullOrEmpty(Path);
 }
+
+internal sealed record ParserSession(LogParser Parser, CsvExport Export);
