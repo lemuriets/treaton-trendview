@@ -15,5 +15,6 @@ public interface IIndexParser
 
     void LoadAll(string[] indexFiles);
 
-    IndexEntry? FindFloor(DateTime target);
+    IndexEntry FindFloor(LogSession session, DateTime target);
+    IndexEntry? FindCeiling(LogSession session, DateTime target);
 }

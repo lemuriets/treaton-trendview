@@ -16,7 +16,7 @@ public partial class LogParser : ILogParser
         _filesAggregator = new LogFilesAggregator(avlLogsFolder, Path.GetFileName, FilenameTemplateRegex());
         _factory = factory;
         _indexBuilder = new IndexBuilder(logger, _factory);
-        _indexParser = new IndexParser(logger);
+        _indexParser = new IndexParser(logger, _filesAggregator);
 
         RegisteredIds = _factory.RegisteredIds;
 
@@ -123,12 +123,22 @@ public partial class LogParser : ILogParser
 
         foreach (var session in sessions)
         {
-            var startIdx = FindFloorIndexInSession(session, start);
-            var endIdx = FindCeilingIndexInSession(session, end);
+            var startIdx = _indexParser.FindFloor(session, start);
+            var endIdx = _indexParser.FindCeiling(session, end);
             var context = new ParseContext();
 
+            var reachedStartFile = false;
             foreach (var filename in session.Filenames)
             {
+                if (!reachedStartFile)
+                {
+                    if (filename != startIdx.Filename)
+                    {
+                        continue;
+                    }
+                    reachedStartFile = true;
+                }
+
                 var isStartFile = filename == startIdx.Filename;
                 var isEndFile = filename == endIdx?.Filename;
                 var isLastFile = filename == session.Filenames[^1];
@@ -136,7 +146,7 @@ public partial class LogParser : ILogParser
                 var fileStart = isStartFile ? startIdx.Offset : 0L;
                 var fileEnd =
                     isEndFile ? endIdx!.Value.Offset
-                    : isLastFile ? (session.PhysicalEndOffsetInLastFile ?? 0L)
+                    : isLastFile ? (session.EndOffset ?? 0L)
                     : 0L;
 
                 var filePath = Path.Combine(_avlLogsFolder, filename);
@@ -152,32 +162,6 @@ public partial class LogParser : ILogParser
                 }
             }
         }
-    }
-
-    private static IndexEntry FindFloorIndexInSession(LogSession session, DateTime target)
-    {
-        var result = session.Indexes[0];
-        foreach (var index in session.Indexes)
-        {
-            if (index.Time > target)
-            {
-                break;
-            }
-            result = index;
-        }
-        return result;
-    }
-
-    private static IndexEntry? FindCeilingIndexInSession(LogSession session, DateTime target)
-    {
-        foreach (var index in session.Indexes)
-        {
-            if (index.Time > target)
-            {
-                return index;
-            }
-        }
-        return null;
     }
     
     private LogFileScanner GetScanner(string file)

@@ -331,7 +331,7 @@ public partial class MainWindow : Window
         session.Parser.FinishIndex -= OnIndexFinish;
     }
 
-    private void FillStartDateTimeFromLogsIfNeeded(ParserSession session)
+    private void FillStartAndEndDateTimeFromLogsIfNeeded(ParserSession session)
     {
         if (!TryGetDateTime(StartDateTime.Text, out var currentStart) || currentStart != DateTime.MinValue)
         {
@@ -342,6 +342,11 @@ public partial class MainWindow : Window
         if (start.HasValue)
         {
             StartDateTime.Text = start.Value.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
+        }
+        var end = session.Parser.MaxDatetime;
+        if (end.HasValue)
+        {
+            EndDateTime.Text = end.Value.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
         }
     }
 
@@ -653,7 +658,7 @@ public partial class MainWindow : Window
             try
             {
                 await session.Parser.CreateOrLoadAllIndexesAsync(cts.Token);
-                FillStartDateTimeFromLogsIfNeeded(session);
+                FillStartAndEndDateTimeFromLogsIfNeeded(session);
             }
             catch (OperationCanceledException)
             {

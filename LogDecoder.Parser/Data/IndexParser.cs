@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using LogDecoder.CAN;
+using LogDecoder.Parser.Contracts;
 using LogDecoder.Parser.Data.Contracts;
 using Microsoft.Extensions.Logging;
 
@@ -10,15 +11,18 @@ namespace LogDecoder.Parser.Data;
 
 public class IndexParser : IIndexParser
 {
-    public IndexParser(ILogger logger)
+    public IndexParser(ILogger logger, ILogFilesAggregator filesAggregator)
     {
         _logger = logger;
+        _filesAggregator = filesAggregator;
     }
 
     private const int HeaderLinesQuantity = 1;
     private static readonly TimeSpan MinIntervalBetweenSessions = TimeSpan.FromSeconds(15);
     private readonly ILogger _logger;
+    private readonly ILogFilesAggregator _filesAggregator;
     private readonly LogSessionsSorted _sessions = new LogSessionsSorted();
+    private readonly Dictionary<DateTime, IReadOnlyList<IndexEntry>> _entriesByStart = new();
     public LogSessionsSorted Sessions => _sessions;
 
     public DateTime? MinTime { get; private set; }
@@ -32,13 +36,21 @@ public class IndexParser : IIndexParser
     public void LoadAll(string[] indexFiles)
     {
         _sessions.Clear();
+        _entriesByStart.Clear();
         MinTime = null;
         MaxTime = null;
 
         var entries = indexFiles.SelectMany(LoadIndexFile);
-        foreach (var session in BuildSessions(entries))
+        var groups = BuildSessions(entries).ToList();
+
+        for (var i = 0; i < groups.Count; i++)
         {
+            var group = groups[i];
+            var nextGroup = i + 1 < groups.Count ? groups[i + 1] : null;
+
+            var session = BuildSession(group, nextGroup);
             _sessions.Add(session);
+            _entriesByStart[session.StartDT] = group;
         }
 
         if (_sessions.Count == 0)
@@ -47,8 +59,8 @@ public class IndexParser : IIndexParser
             return;
         }
 
-        MinTime = _sessions[0].Start;
-        MaxTime = _sessions[^1].End;
+        MinTime = _sessions[0].StartDT;
+        MaxTime = _sessions[^1].EndDT;
 
         _logger.LogDebug(
             "Sessions loaded. Count: {Count}. From: [{MinTime}] To: [{MaxTime}]",
@@ -57,14 +69,35 @@ public class IndexParser : IIndexParser
             MaxTime);
     }
 
-    public IndexEntry? FindFloor(DateTime target)
+    public IndexEntry FindFloor(LogSession session, DateTime target)
     {
-        return _sessions
-            .GetSessionByTime(target)?
-            .FindLastBeforeIndex(target);
+        var entries = _entriesByStart[session.StartDT];
+        var result = entries[0];
+        foreach (var entry in entries)
+        {
+            if (entry.Time > target)
+            {
+                break;
+            }
+            result = entry;
+        }
+        return result;
     }
 
-    internal static IEnumerable<LogSession> BuildSessions(IEnumerable<IndexEntry> entries)
+    public IndexEntry? FindCeiling(LogSession session, DateTime target)
+    {
+        var entries = _entriesByStart[session.StartDT];
+        foreach (var entry in entries)
+        {
+            if (entry.Time > target)
+            {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    internal static IEnumerable<IReadOnlyList<IndexEntry>> BuildSessions(IEnumerable<IndexEntry> entries)
     {
         var current = new List<IndexEntry>();
         IndexEntry? previous = null;
@@ -73,8 +106,7 @@ public class IndexParser : IIndexParser
         {
             if (previous is not null && IsSessionBoundary(previous.Value.Time, entry.Time))
             {
-                long? physicalEnd = entry.Filename == current[^1].Filename ? entry.Offset : null;
-                yield return CreateSession(current, physicalEnd);
+                yield return current;
                 current = [];
             }
             current.Add(entry);
@@ -83,24 +115,27 @@ public class IndexParser : IIndexParser
 
         if (current.Count > 0)
         {
-            yield return CreateSession(current, null);
+            yield return current;
         }
+    }
+
+    private LogSession BuildSession(IReadOnlyList<IndexEntry> group, IReadOnlyList<IndexEntry>? nextGroup)
+    {
+        var first = group[0];
+        var last = group[^1];
+
+        long? endOffset = nextGroup is not null && nextGroup[0].Filename == last.Filename
+            ? nextGroup[0].Offset
+            : null;
+
+        var filenames = _filesAggregator.GetWrappedRange(first.Filename, last.Filename);
+
+        return new LogSession(first.Offset, endOffset, first.Time, last.Time, filenames);
     }
 
     private static bool IsSessionBoundary(DateTime previous, DateTime current)
     {
         return (current - previous).Duration() >= MinIntervalBetweenSessions;
-    }
-
-    private static LogSession CreateSession(IReadOnlyList<IndexEntry> indexes, long? physicalEndOffsetInLastFile)
-    {
-        var start = indexes[0].Time;
-        var end = indexes[^1].Time;
-        if (start >= end)
-        {
-            end = start.AddSeconds(1);
-        }
-        return new LogSession(new TimeRange(start, end), indexes, physicalEndOffsetInLastFile);
     }
 
     private List<IndexEntry> LoadIndexFile(string indexFile)

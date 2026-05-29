@@ -134,6 +134,28 @@ public class LogParserIntegrationTests
     }
 
     [Test]
+    public void GetPackages_CrossFileSession_StartInSecondFile_DoesNotReturnEarlierFile()
+    {
+        var t = new DateTime(2025, 1, 1, 12, 0, 0);
+        WriteLogFile("00",
+            LogFixture.Buffer(
+                LogFixture.SynchroPackage(t),
+                LogFixture.SynchroPackage(t.AddSeconds(1))));
+        WriteLogFile("01",
+            LogFixture.Buffer(
+                LogFixture.SynchroPackage(t.AddSeconds(2)),
+                LogFixture.SynchroPackage(t.AddSeconds(3))));
+
+        InitParser();
+
+        var packages = _parser
+            .GetPackages(SynchroOnly(), t.AddSeconds(2), t.AddSeconds(3))
+            .ToList();
+
+        packages.Should().HaveCount(2);
+    }
+
+    [Test]
     public void GetPackages_RangeOutsideAllSessions_ReturnsEmpty()
     {
         var t = new DateTime(2025, 1, 1, 12, 0, 0);

@@ -19,15 +19,7 @@ public class LogSessionsSortedTests
         var start = new DateTime(2026, 1, 1).AddMinutes(startMin);
         var end = new DateTime(2026, 1, 1).AddMinutes(endMin);
 
-        var timeRange = new TimeRange(start, end);
-
-        var indexes = new List<IndexEntry>
-        {
-            new("00", 0, start),
-            new("00", 0, end),
-        };
-
-        return new LogSession(timeRange, indexes);
+        return new LogSession(0, null, start, end, new[] { "00" });
     }
 
     [Test]
@@ -108,7 +100,7 @@ public class LogSessionsSortedTests
 
         _storage.Add(session);
 
-        var result = _storage.GetSessionByTime(session.Start);
+        var result = _storage.GetSessionByTime(session.StartDT);
 
         result.Should().NotBeNull();
     }
@@ -120,29 +112,9 @@ public class LogSessionsSortedTests
 
         _storage.Add(session);
 
-        var result = _storage.GetSessionByTime(session.End);
+        var result = _storage.GetSessionByTime(session.EndDT);
 
         result.Should().NotBeNull();
-    }
-
-    [Test]
-    public void FindLastBeforeIndex_ExactMatch_ShouldReturnIndex()
-    {
-        var session = CreateSession(0, 10);
-
-        var index = session.FindLastBeforeIndex(session.Start);
-
-        index.Should().NotBeNull();
-    }
-
-    [Test]
-    public void FindLastBeforeIndex_BeforeAll_ShouldReturnNull()
-    {
-        var session = CreateSession(10, 20);
-
-        var result = session.FindLastBeforeIndex(DateTime.MinValue);
-
-        result.Should().BeNull();
     }
 
     [Test]

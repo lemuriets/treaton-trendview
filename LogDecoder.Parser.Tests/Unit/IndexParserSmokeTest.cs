@@ -1,4 +1,6 @@
+using System.Text.RegularExpressions;
 using FluentAssertions;
+using LogDecoder.Parser;
 using LogDecoder.Parser.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -13,7 +15,7 @@ public class IndexParserSmokeTests
     private static readonly DateTime WindowEnd = new(2025, 10, 16, 18, 9, 30);
     private static readonly DateTime FirstEntryTime = new(2025, 11, 18, 2, 11, 27);
     private static readonly DateTime LastEntryTime = new(2026, 3, 16, 23, 38, 1);
-    private const long WindowPhysicalEndOffset = 1172734238L;
+    private const long WindowFollowingSynchroOffset = 1172734238L;
 
     [Test]
     public void LoadAll_RealIndexFile_DetectsWindowSessionAndChronologicalOrder()
@@ -24,7 +26,10 @@ public class IndexParserSmokeTests
             Assert.Inconclusive($"Fixture not found: {FixtureRelativePath}");
         }
 
-        var parser = new IndexParser(NullLogger.Instance);
+        var logsFolder = Path.GetDirectoryName(Path.GetDirectoryName(fixturePath))!;
+        var aggregator = new LogFilesAggregator(logsFolder, Path.GetFileName, new Regex(@"^[0-1][0-9]$"));
+
+        var parser = new IndexParser(NullLogger.Instance, aggregator);
         parser.LoadAll(new[] { fixturePath });
 
         parser.Sessions.Count.Should().Be(49);
@@ -32,16 +37,16 @@ public class IndexParserSmokeTests
         parser.MaxTime.Should().Be(LastEntryTime);
 
         var window = parser.Sessions[0];
-        window.Start.Should().Be(WindowStart);
-        window.End.Should().Be(WindowEnd);
+        window.StartDT.Should().Be(WindowStart);
+        window.EndDT.Should().Be(WindowEnd);
         window.Filenames.Should().Equal("00");
-        window.PhysicalEndOffsetInLastFile.Should().Be(WindowPhysicalEndOffset);
+        window.EndOffset.Should().Be(WindowFollowingSynchroOffset);
 
-        parser.Sessions[1].Start.Should().Be(FirstEntryTime);
+        parser.Sessions[1].StartDT.Should().Be(FirstEntryTime);
 
         for (var i = 1; i < parser.Sessions.Count; i++)
         {
-            parser.Sessions[i].Start.Should().BeAfter(parser.Sessions[i - 1].Start);
+            parser.Sessions[i].StartDT.Should().BeAfter(parser.Sessions[i - 1].StartDT);
         }
     }
 

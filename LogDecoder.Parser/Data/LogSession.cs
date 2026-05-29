@@ -4,43 +4,42 @@ public class LogSessionsSorted
 {
     private readonly SortedList<DateTime, LogSession> _sessions = [];
 
-    public int TotalSeconds { get; private set; }
     public int Count => _sessions.Count;
     public LogSession this[int index] => _sessions.GetValueAtIndex(index);
-    
+
     public void Add(LogSession session)
     {
-        var key = session.Start;
+        var key = session.StartDT;
         var index = GetInsertionIndex(key);
-        
+
         ValidatePrev(index, session);
         ValidateNext(index, session);
-        
+
         _sessions.Add(key, session);
     }
-    
+
     public List<LogSession> GetRange(TimeRange timeRange)
     {
         var result = new List<LogSession>();
         foreach (var (_, session) in _sessions)
         {
-            if (session.Start > timeRange.End)
+            if (session.StartDT > timeRange.End)
             {
                 break;
             }
-            if (session.End >= timeRange.Start && session.Start <= timeRange.End)
+            if (session.EndDT >= timeRange.Start && session.StartDT <= timeRange.End)
             {
                 result.Add(session);
             }
         }
         return result;
     }
-    
+
     public LogSession? GetSessionByTime(DateTime target)
     {
         return _sessions.Values.FirstOrDefault(s => s.Contains(target));
     }
-    
+
     public bool Contains(DateTime target)
     {
         return _sessions.Values.Any(s => s.Contains(target));
@@ -50,7 +49,7 @@ public class LogSessionsSorted
     {
         _sessions.Clear();
     }
-    
+
     private int GetInsertionIndex(DateTime key)
     {
         var keys = _sessions.Keys.ToList();
@@ -61,7 +60,7 @@ public class LogSessionsSorted
         }
         return index;
     }
-    
+
     private void ValidatePrev(int index, LogSession session)
     {
         if (index == 0)
@@ -69,12 +68,12 @@ public class LogSessionsSorted
             return;
         }
         var prevSession = _sessions.GetValueAtIndex(index - 1);
-        if (prevSession.End > session.Start)
+        if (prevSession.EndDT > session.StartDT)
         {
             throw new ArgumentException("Session overlaps previous session");
         }
     }
-    
+
     private void ValidateNext(int index, LogSession session)
     {
         if (index >= _sessions.Count)
@@ -82,7 +81,7 @@ public class LogSessionsSorted
             return;
         }
         var nextSession = _sessions.GetValueAtIndex(index);
-        if (nextSession.Start < session.End)
+        if (nextSession.StartDT < session.EndDT)
         {
             throw new ArgumentException("Session overlaps next session");
         }
@@ -92,66 +91,45 @@ public class LogSessionsSorted
 public readonly struct LogSession
 {
     public LogSession(
-        TimeRange timeRange,
-        IReadOnlyList<IndexEntry> indexes,
-        long? physicalEndOffsetInLastFile = null)
+        long startOffset,
+        long? endOffset,
+        DateTime startDt,
+        DateTime endDt,
+        IReadOnlyList<string> filenames)
     {
-        if (indexes.Count == 0)
+        if (filenames.Count == 0)
         {
-            throw new ArgumentException("Indexes cannot be empty");
+            throw new ArgumentException("Filenames cannot be empty");
+        }
+        if (startDt > endDt)
+        {
+            throw new ArgumentException("StartDT must be <= EndDT");
+        }
+        ArgumentOutOfRangeException.ThrowIfNegative(startOffset);
+        if (endOffset is < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(endOffset), "EndOffset cannot be negative");
+        }
+        if (filenames.Count == 1 && endOffset is { } singleFileEnd && startOffset > singleFileEnd)
+        {
+            throw new ArgumentException("StartOffset must be <= EndOffset within a single file");
         }
 
-        TimeRange = timeRange;
-        Indexes = indexes;
-        Filenames = CollectFilenames(indexes);
-        PhysicalEndOffsetInLastFile = physicalEndOffsetInLastFile;
+        StartOffset = startOffset;
+        EndOffset = endOffset;
+        StartDT = startDt;
+        EndDT = endDt;
+        Filenames = filenames;
     }
 
-    public TimeRange TimeRange { get; }
-    public IReadOnlyList<IndexEntry> Indexes { get; }
+    public long StartOffset { get; }
+    public long? EndOffset { get; }
+    public DateTime StartDT { get; }
+    public DateTime EndDT { get; }
     public IReadOnlyList<string> Filenames { get; }
-    public long? PhysicalEndOffsetInLastFile { get; }
-    public int TotalSeconds => (int)(TimeRange.Duration).TotalSeconds;
-    public DateTime Start => TimeRange.Start;
-    public DateTime End => TimeRange.End;
-    public long StartOffset => Indexes[0].Offset;
-    public long EndOffset => Indexes[^1].Offset;
 
-    private static IReadOnlyList<string> CollectFilenames(IReadOnlyList<IndexEntry> indexes)
-    {
-        var result = new List<string>();
-        string? last = null;
-        foreach (var index in indexes)
-        {
-            if (index.Filename == last)
-            {
-                continue;
-            }
-            result.Add(index.Filename);
-            last = index.Filename;
-        }
-        return result;
-    }
-    
     public bool Contains(DateTime target)
     {
-        return target >= Start && target <= End;
-    }
-
-    public IndexEntry? FindLastBeforeIndex(DateTime target)
-    {
-        IndexEntry? result = null;
-
-        foreach (var index in Indexes)
-        {
-            if (index.Time > target)
-            {
-                break;
-            }
-            result = index;
-        }
-        return result;
+        return StartDT <= target && target <= EndDT;
     }
 }
-
-internal readonly struct OffsetRange(string File, long Start, long End);
