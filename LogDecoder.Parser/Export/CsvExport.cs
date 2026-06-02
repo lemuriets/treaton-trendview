@@ -104,12 +104,12 @@ public class CsvExport(ILogger logger, LogParser logParser)
             package.Name,
             datetimeStr,
         };
-        row.AddRange(messages);
         foreach (var item in data)
         {
             row.Add(item.Name);
             row.Add(Math.Round(item.Value, RoundTo).ToString(CultureInfo.InvariantCulture));
         }
+        row.AddRange(messages);
         return row;
     }
 }

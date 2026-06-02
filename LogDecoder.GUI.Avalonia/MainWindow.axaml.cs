@@ -354,6 +354,7 @@ public partial class MainWindow : Window
     {
         UpdateSelectAllCheckbox();
         CheckInputs();
+        TxtExportStatus.Text = "";
     }
 
     private void CheckInputs()
@@ -645,7 +646,6 @@ public partial class MainWindow : Window
             }
 
             TxtExportStatus.Text = "";
-            TxtExportStatus.Foreground = Brushes.Green;
 
             SetInputFolder(selectedFolder);
             SetDefaultOutputFolderIfEmpty(selectedFolder);
