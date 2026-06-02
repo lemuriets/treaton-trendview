@@ -25,6 +25,12 @@
                     x:Name="MenuOpenExportFolder"
                     Header="{Binding [MenuOpenOutputFolder]}"
                     Click="OpenExportFolder_Click"/>
+
+                <MenuItem
+                    x:Name="MenuTrends"
+                    Header="{Binding [MenuTrends]}"
+                    IsEnabled="False"
+                    Click="OpenTrends_Click"/>
             </MenuItem>
 
             <MenuItem Header="{Binding [MenuLanguage]}" IsEnabled="False">

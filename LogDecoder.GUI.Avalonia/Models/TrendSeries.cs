@@ -26,4 +26,25 @@ public class TrendSeries(string name)
         }
         return Points[idx].Y;
     }
+
+    public double GetValueNearestX(double x)
+    {
+        if (Points.Count == 0)
+        {
+            return double.NaN;
+        }
+
+        var nearest = Points[0];
+        var bestDist = Math.Abs(Points[0].X - x);
+        for (var i = 1; i < Points.Count; i++)
+        {
+            var dist = Math.Abs(Points[i].X - x);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                nearest = Points[i];
+            }
+        }
+        return nearest.Y;
+    }
 }

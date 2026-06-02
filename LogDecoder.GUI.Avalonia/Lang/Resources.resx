@@ -32,6 +32,7 @@
     <data name="MenuFile" xml:space="preserve"><value>_Файл</value></data>
     <data name="MenuOpenInputFolder" xml:space="preserve"><value>_Открыть папку с логами</value></data>
     <data name="MenuOpenOutputFolder" xml:space="preserve"><value>_Открыть папку экспорта</value></data>
+    <data name="MenuTrends" xml:space="preserve"><value>_Тренды</value></data>
     <data name="MenuExit" xml:space="preserve"><value>_Выйти</value></data>
     <data name="MenuEdit" xml:space="preserve"><value>_Изменить</value></data>
     <data name="MenuSettings" xml:space="preserve"><value>_Настройки</value></data>

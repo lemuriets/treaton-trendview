@@ -32,6 +32,7 @@ Application for parsing and export logs from AVL.</value></data>
     <data name="MenuFile" xml:space="preserve"><value>_File</value></data>
     <data name="MenuOpenInputFolder" xml:space="preserve"><value>_Open logs folder</value></data>
     <data name="MenuOpenOutputFolder" xml:space="preserve"><value>_Open export folder</value></data>
+    <data name="MenuTrends" xml:space="preserve"><value>_Trends</value></data>
     <data name="MenuExit" xml:space="preserve"><value>E_xit</value></data>
     <data name="MenuEdit" xml:space="preserve"><value>_Edit</value></data>
     <data name="MenuSettings" xml:space="preserve"><value>_Settings</value></data>

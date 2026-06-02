@@ -557,6 +557,7 @@ public partial class MainWindow : Window
         var busy = IsBusy;
         MenuOpenLogsFolder.IsEnabled = !busy;
         MenuOpenExportFolder.IsEnabled = !busy;
+        MenuTrends.IsEnabled = !busy && _session?.Parser.IndexTimes.Count > 0;
         BtnCancelExport.IsEnabled = _isExporting;
         CheckInputs();
     }
@@ -710,6 +711,18 @@ public partial class MainWindow : Window
         {
             CheckInputs();
         }
+    }
+
+    private void OpenTrends_Click(object? sender, RoutedEventArgs e)
+    {
+        var session = _session;
+        if (IsBusy || session is null || session.Parser.IndexTimes.Count == 0)
+        {
+            return;
+        }
+
+        var trends = new Trends(session.Parser);
+        trends.Show(this);
     }
 
     private async void About_Click(object? sender, RoutedEventArgs e)

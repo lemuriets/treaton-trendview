@@ -8,6 +8,7 @@ public interface IIndexBuilder
 public interface IIndexParser
 {
     LogSessionsSorted Sessions { get; }
+    IReadOnlyList<DateTime> IndexTimes { get; }
     DateTime? MinTime { get; }
     DateTime? MaxTime { get; }
 

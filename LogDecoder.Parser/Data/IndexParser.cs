@@ -23,7 +23,9 @@ public class IndexParser : IIndexParser
     private readonly ILogFilesAggregator _filesAggregator;
     private readonly LogSessionsSorted _sessions = new LogSessionsSorted();
     private readonly Dictionary<DateTime, IReadOnlyList<IndexEntry>> _entriesByStart = new();
+    private readonly List<DateTime> _indexTimes = new();
     public LogSessionsSorted Sessions => _sessions;
+    public IReadOnlyList<DateTime> IndexTimes => _indexTimes;
 
     public DateTime? MinTime { get; private set; }
     public DateTime? MaxTime { get; private set; }
@@ -37,6 +39,7 @@ public class IndexParser : IIndexParser
     {
         _sessions.Clear();
         _entriesByStart.Clear();
+        _indexTimes.Clear();
         MinTime = null;
         MaxTime = null;
 
@@ -51,6 +54,11 @@ public class IndexParser : IIndexParser
             var session = BuildSession(group, nextGroup);
             _sessions.Add(session);
             _entriesByStart[session.StartDT] = group;
+
+            foreach (var entry in group)
+            {
+                _indexTimes.Add(entry.Time);
+            }
         }
 
         if (_sessions.Count == 0)

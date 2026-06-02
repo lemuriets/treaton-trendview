@@ -8,6 +8,7 @@ public interface ILogParser
     event Action? FinishIndex;
 
     IReadOnlySet<int> RegisteredIds { get; }
+    IReadOnlyList<DateTime> IndexTimes { get; }
     DateTime? MinDatetime { get; }
     DateTime? MaxDatetime { get; }
 

@@ -16,11 +16,26 @@ public class TrendsData
     public TrendSeries Vt { get; } = new("Vt");
     public TrendSeries RB1 { get; } = new("RB1");
     public TrendSeries RB2 { get; } = new("RB2");
-    public TrendSeries Cst { get; } = new("Cst");
-    public TrendSeries Rst { get; } = new("Rst");
+    // public TrendSeries Cst { get; } = new("Cst");
+    // public TrendSeries Rst { get; } = new("Rst");
     public TrendSeries Leak { get; } = new("Leak");
 
-    public IEnumerable<TrendSeries> AllSeries => [Battery, Flow, Paw, Vol, PIP, PEEP, MVTotal, MVMachine, Vt, RB1, RB2, Cst, Rst, Leak];
+    public IEnumerable<TrendSeries> AllSeries => [
+        Battery,
+        Flow,
+        Paw,
+        Vol,
+        PIP,
+        PEEP,
+        MVTotal,
+        MVMachine,
+        Vt,
+        RB1,
+        RB2,
+        // Cst,
+        // Rst,
+        Leak
+    ];
 
     public TrendSeries? GetSeriesByName(string name)
     {

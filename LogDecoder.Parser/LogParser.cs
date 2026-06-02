@@ -38,6 +38,7 @@ public partial class LogParser : ILogParser
     public IReadOnlySet<int> RegisteredIds { get; }
     
     public bool IsDateTimeExists(DateTime target) => _indexParser.IsDateTimeExists(target);
+    public IReadOnlyList<DateTime> IndexTimes => _indexParser.IndexTimes;
     public DateTime? MinDatetime => _indexParser.MinTime;
     public DateTime? MaxDatetime => _indexParser.MaxTime;
     
