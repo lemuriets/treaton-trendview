@@ -3,8 +3,13 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="clr-namespace:LogDecoder.GUI.Avalonia.Models"
+    xmlns:vm="clr-namespace:LogDecoder.GUI.Avalonia.ViewModels"
+    xmlns:conv="clr-namespace:LogDecoder.GUI.Avalonia.Converters"
+    xmlns:loc="clr-namespace:LogDecoder.GUI.Avalonia.Localization"
+    x:DataType="vm:MainWindowViewModel"
+    x:CompileBindings="True"
     Icon="avares://LogDecoder.GUI.Avalonia/Assets/favicon.ico"
-    Title="TrendView_IVL"
+    Title="{Binding Title}"
     Height="500"
     Width="700"
     MinHeight="420"
@@ -13,43 +18,44 @@
     MaxWidth="900"
     CanResize="True">
 
+    <Window.Resources>
+        <conv:BoolToHandCursorConverter x:Key="BoolToHandCursor"/>
+        <conv:BoolToUnderlineConverter x:Key="BoolToUnderline"/>
+    </Window.Resources>
+
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="{Binding [MenuFile]}">
+            <MenuItem Header="{loc:Localize MenuFile}">
                 <MenuItem
-                    x:Name="MenuOpenLogsFolder"
-                    Header="{Binding [MenuOpenInputFolder]}"
-                    Click="OpenLogsFolder_Click"/>
+                    Header="{loc:Localize MenuOpenInputFolder}"
+                    Command="{Binding OpenLogsFolderCommand}"/>
 
                 <MenuItem
-                    x:Name="MenuOpenExportFolder"
-                    Header="{Binding [MenuOpenOutputFolder]}"
-                    Click="OpenExportFolder_Click"/>
+                    Header="{loc:Localize MenuOpenOutputFolder}"
+                    Command="{Binding OpenExportFolderCommand}"/>
 
                 <MenuItem
-                    x:Name="MenuTrends"
-                    Header="{Binding [MenuTrends]}"
-                    IsEnabled="False"
-                    Click="OpenTrends_Click"/>
+                    Header="{loc:Localize MenuTrends}"
+                    Command="{Binding OpenTrendsCommand}"/>
             </MenuItem>
 
-            <MenuItem Header="{Binding [MenuLanguage]}">
+            <MenuItem Header="{loc:Localize MenuLanguage}">
                 <MenuItem
                     x:Name="MenuLangRu"
-                    Header="{Binding [LanguageRussian]}"
-                    Tag="ru"
-                    Click="ChangeLanguage_Click"/>
+                    Header="{loc:Localize LanguageRussian}"
+                    Command="{Binding ChangeLanguageCommand}"
+                    CommandParameter="ru"/>
 
                 <MenuItem
                     x:Name="MenuLangEn"
-                    Header="{Binding [LanguageEnglish]}"
-                    Tag="en"
-                    Click="ChangeLanguage_Click"/>
+                    Header="{loc:Localize LanguageEnglish}"
+                    Command="{Binding ChangeLanguageCommand}"
+                    CommandParameter="en"/>
             </MenuItem>
 
             <MenuItem
-                Header="{Binding [MenuAbout]}"
-                Click="About_Click"/>
+                Header="{loc:Localize MenuAbout}"
+                Command="{Binding AboutCommand}"/>
         </Menu>
 
         <Grid
@@ -66,25 +72,26 @@
                 VerticalAlignment="Stretch">
 
                 <StackPanel Grid.Row="0" Margin="0,0,0,4">
-                    <TextBlock Text="{Binding [InputFolderLabel]}"/>
+                    <TextBlock Text="{loc:Localize InputFolderLabel}"/>
 
-                    <!-- Text is managed in code-behind (folder path or a localized message);
-                         no {Binding [..]} here, or it would overwrite the path on language change. -->
                     <TextBlock
-                        x:Name="TxtSelectedInputFolder"
-                        Foreground="Gray"
+                        Text="{Binding InputFolderText}"
+                        Foreground="{Binding InputFolderBrush}"
+                        Cursor="{Binding InputFolderIsLink, Converter={StaticResource BoolToHandCursor}}"
+                        TextDecorations="{Binding InputFolderIsLink, Converter={StaticResource BoolToUnderline}}"
                         TextWrapping="Wrap"
                         TextTrimming="CharacterEllipsis"
                         PointerPressed="SelectedInputFolder_Click"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Margin="0,0,0,4">
-                    <TextBlock Text="{Binding [OutputFolderLabel]}"/>
+                    <TextBlock Text="{loc:Localize OutputFolderLabel}"/>
 
-                    <!-- Text is managed in code-behind (folder path or a localized message). -->
                     <TextBlock
-                        x:Name="TxtSelectedOutputFolder"
-                        Foreground="Gray"
+                        Text="{Binding OutputFolderText}"
+                        Foreground="{Binding OutputFolderBrush}"
+                        Cursor="{Binding OutputFolderIsLink, Converter={StaticResource BoolToHandCursor}}"
+                        TextDecorations="{Binding OutputFolderIsLink, Converter={StaticResource BoolToUnderline}}"
                         TextWrapping="Wrap"
                         TextTrimming="CharacterEllipsis"
                         PointerPressed="SelectedOutputFolder_Click"/>
@@ -92,13 +99,14 @@
 
                 <TextBlock
                     Grid.Row="2"
-                    Text="{Binding [PackageIdsForParsing]}"
+                    Text="{loc:Localize PackageIdsForParsing}"
                     FontWeight="Bold"
                     Margin="0,6,0,0"/>
 
                 <ListBox
                     Grid.Row="3"
                     x:Name="PackageIdList"
+                    ItemsSource="{Binding Packages}"
                     SelectionMode="Multiple, Toggle"
                     MinHeight="120"
                     Margin="0,0,0,4">
@@ -122,7 +130,7 @@
                 <CheckBox
                     Grid.Row="4"
                     x:Name="ChkSelectAllPackages"
-                    Content="{Binding [SelectAllPackages]}"
+                    Content="{loc:Localize SelectAllPackages}"
                     IsChecked="False"
                     Margin="0,2,0,0"/>
             </Grid>
@@ -141,19 +149,19 @@
 
                 <TextBlock
                     Grid.Row="0"
-                    Text="{Binding [StartDateTimeLabel]}"
+                    Text="{loc:Localize StartDateTimeLabel}"
                     FontWeight="Bold"
                     Margin="0,8,0,0"/>
 
                 <TextBox
                     Grid.Row="1"
-                    x:Name="StartDateTime"
+                    Text="{Binding StartDateTimeText, Mode=TwoWay}"
                     HorizontalAlignment="Stretch"
                     Watermark="dd.MM.yyyy HH:mm:ss"/>
 
                 <TextBlock
                     Grid.Row="2"
-                    Text="{Binding [EndDateTimeLabel]}"
+                    Text="{loc:Localize EndDateTimeLabel}"
                     FontWeight="Bold"
                     Margin="0,8,0,0"/>
 
@@ -162,48 +170,44 @@
                     Spacing="8">
 
                     <TextBox
-                        x:Name="EndDateTime"
+                        Text="{Binding EndDateTimeText, Mode=TwoWay}"
                         HorizontalAlignment="Stretch"
                         Watermark="dd.MM.yyyy HH:mm:ss"/>
 
                     <TextBlock
-                        x:Name="TxtErrorDateTime"
+                        Text="{Binding DateErrorText}"
                         Foreground="Red"
                         TextWrapping="Wrap"/>
 
                     <CheckBox
-                        x:Name="ChkIgnoreDuplicates"
-                        IsChecked="True"
-                        Content="{Binding [IgnoreDuplicates]}"/>
+                        IsChecked="{Binding IgnoreDuplicates}"
+                        Content="{loc:Localize IgnoreDuplicates}"/>
 
                     <CheckBox
-                        x:Name="ChkExcludeEmptyTimestamps"
-                        IsChecked="True"
-                        Content="{Binding [ExcludeEmptyTimestamps]}"/>
+                        IsChecked="{Binding ExcludeEmptyTimestamps}"
+                        Content="{loc:Localize ExcludeEmptyTimestamps}"/>
 
                     <Button
-                        x:Name="BtnExportCsv"
-                        Content="{Binding [ExportCsv]}"
+                        Content="{loc:Localize ExportCsv}"
+                        Command="{Binding ExportCommand}"
                         Width="150"
                         HorizontalAlignment="Left"
-                        IsEnabled="False"
                         Margin="0,8,0,0"/>
-                    
+
                     <Button
-                        x:Name="BtnCancelExport"
-                        Content="{Binding [CancelExport]}"
+                        Content="{loc:Localize CancelExport}"
+                        Command="{Binding CancelExportCommand}"
                         Width="150"
                         HorizontalAlignment="Left"
-                        IsEnabled="False"
                         Margin="0,8,0,0"/>
 
                     <TextBlock
-                        x:Name="TxtExportStatus"
-                        Foreground="Red"
+                        Text="{Binding ExportStatusText}"
+                        Foreground="{Binding ExportStatusBrush}"
                         TextWrapping="Wrap"/>
 
                     <TextBlock
-                        x:Name="TxtIndexStatus"
+                        Text="{Binding IndexStatusText}"
                         Foreground="ForestGreen"
                         TextWrapping="Wrap"/>
                 </StackPanel>
