@@ -6,16 +6,12 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.Packages;
-using LogDecoder.CAN.Protocol;
 using LogDecoder.GUI.Avalonia.Localization;
 using LogDecoder.GUI.Avalonia.Models;
 using LogDecoder.GUI.Avalonia.Services;
 using LogDecoder.Helpers;
 using LogDecoder.Infrastructure.Logging;
-using LogDecoder.Parser;
-using LogDecoder.Parser.Export;
 using Microsoft.Extensions.Logging;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
@@ -27,20 +23,15 @@ public partial class MainWindow : Window
     private const string DateTimeFormat = "dd.MM.yyyy HH:mm:ss";
     private const string AppName = "TrendView_IVL";
 
-    private static readonly HashSet<PackageTechStatus> ExportTechStatuses =
-    [
-        PackageTechStatus.Warning,
-        PackageTechStatus.Error,
-        PackageTechStatus.Critical,
-        PackageTechStatus.Info,
-        PackageTechStatus.Ok
-    ];
-
-    private readonly ICanPackageFactory _factory;
     private readonly ILogger _logger;
     private readonly LoggerProvider _loggerProvider;
     private readonly string _appVersion = AppVersionProvider.GetVersion();
-    private readonly IReadOnlySet<int> _requiredExportIds = new HashSet<int> { IdSynchro.Id };
+
+    private readonly PackageCatalog _packageCatalog;
+    private readonly IndexingService _indexing;
+    private readonly ExportService _export;
+    private readonly LogFolderService _logFolders;
+    private readonly LanguageService _language;
 
     private bool _isIndexing;
     private bool _isExporting;
@@ -50,16 +41,11 @@ public partial class MainWindow : Window
 
     private readonly FolderSelection _inputFolderSelection = new();
     private readonly FolderSelection _outputFolderSelection = new();
-    private ParserSession? _session;
-    private List<PackageItem> _packageItems = [];
+    private IReadOnlyList<PackageItem> _packageItems = [];
     private CancellationTokenSource? _exportCancellationTokenSource;
     private Task? _exportTask;
     private CancellationTokenSource? _indexCancellationTokenSource;
 
-    private readonly LanguageSettingsService _languageSettings;
-
-    // Persistent, re-localizable UI state: store the resource key + args (not the
-    // formatted string) so these labels can be re-rendered when the language changes.
     private StatusText? _exportStatus;
     private IBrush _exportStatusBrush = Brushes.Green;
     private StatusText? _indexStatus;
@@ -72,8 +58,13 @@ public partial class MainWindow : Window
     {
         _loggerProvider = new LoggerProvider();
         _logger = _loggerProvider.CreateLogger<MainWindow>();
-        _factory = new CanPackageFactory();
-        _languageSettings = new LanguageSettingsService(_logger);
+
+        var factory = new CanPackageFactory();
+        _packageCatalog = new PackageCatalog(factory);
+        _indexing = new IndexingService(_logger, factory);
+        _export = new ExportService();
+        _logFolders = new LogFolderService();
+        _language = new LanguageService(new LanguageSettingsService(_logger));
 
         InitializeComponent();
 
@@ -91,7 +82,9 @@ public partial class MainWindow : Window
     protected override void OnClosed(EventArgs e)
     {
         LocalizationManager.Instance.PropertyChanged -= LocalizationChanged;
-        UnsubscribeParserEvents(_session);
+        _indexing.IndexStarted -= OnIndexStart;
+        _indexing.IndexFinished -= OnIndexFinish;
+        _indexing.Reset();
 
         _indexCancellationTokenSource?.Cancel();
         _exportCancellationTokenSource?.Cancel();
@@ -198,11 +191,7 @@ public partial class MainWindow : Window
         StartDateTime.Text = DateTime.MinValue.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
         EndDateTime.Text = DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
 
-        _packageItems = _factory
-            .GetIdsWithNames(excludeIds: _requiredExportIds)
-            .Select(p => new PackageItem { Id = p.Id, Name = p.Name })
-            .OrderBy(p => p.Id)
-            .ToList();
+        _packageItems = _packageCatalog.GetExportablePackages();
 
         PackageIdList.ItemsSource = _packageItems;
 
@@ -222,6 +211,9 @@ public partial class MainWindow : Window
 
         ChkSelectAllPackages.Checked += ChkSelectAllPackagesChecked;
         ChkSelectAllPackages.Unchecked += ChkSelectAllPackagesUnchecked;
+
+        _indexing.IndexStarted += OnIndexStart;
+        _indexing.IndexFinished += OnIndexFinish;
 
         _logger.LogDebug("ConnectEvents() completed");
     }
@@ -247,12 +239,6 @@ public partial class MainWindow : Window
         return folders[0].TryGetLocalPath() ?? string.Empty;
     }
 
-    private static bool HasLogFiles(string folder)
-    {
-        var filesAggregator = new LogFilesAggregator(folder, Path.GetFileName, LogParser.FilenameTemplateRegex());
-        return filesAggregator.SortedFiles.Count > 0;
-    }
-    
     private void SetInputFolder(string folder)
     {
         _inputFolderMessage = null;
@@ -265,8 +251,7 @@ public partial class MainWindow : Window
         _inputFolderBrush = foreground;
         ApplyInputFolderLabel();
 
-        UnsubscribeParserEvents(_session);
-        _session = null;
+        _indexing.Reset();
     }
 
     private void SetOutputFolder(string folder)
@@ -348,44 +333,19 @@ public partial class MainWindow : Window
         SetOutputFolder(folder);
     }
 
-    private ParserSession CreateSession(string selectedFolder)
-    {
-        UnsubscribeParserEvents(_session);
-
-        var parser = new LogParser(_logger, selectedFolder, _factory);
-        var session = new ParserSession(parser, new CsvExport(_logger, parser));
-
-        parser.StartIndex += OnIndexStart;
-        parser.FinishIndex += OnIndexFinish;
-
-        _session = session;
-        return session;
-    }
-
-    private void UnsubscribeParserEvents(ParserSession? session)
-    {
-        if (session is null)
-        {
-            return;
-        }
-
-        session.Parser.StartIndex -= OnIndexStart;
-        session.Parser.FinishIndex -= OnIndexFinish;
-    }
-
-    private void FillStartAndEndDateTimeFromLogsIfNeeded(ParserSession session)
+    private void FillStartAndEndDateTimeFromLogsIfNeeded()
     {
         if (!TryGetDateTime(StartDateTime.Text, out var currentStart) || currentStart != DateTime.MinValue)
         {
             return;
         }
 
-        var start = session.Parser.MinDatetime;
+        var start = _indexing.MinDateTime;
         if (start.HasValue)
         {
             StartDateTime.Text = start.Value.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
         }
-        var end = session.Parser.MaxDatetime;
+        var end = _indexing.MaxDateTime;
         if (end.HasValue)
         {
             EndDateTime.Text = end.Value.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
@@ -433,7 +393,7 @@ public partial class MainWindow : Window
             return false;
         }
 
-        if (_session is null)
+        if (_indexing.Current is null)
         {
             return false;
         }
@@ -475,18 +435,21 @@ public partial class MainWindow : Window
 
     private async void BtnExportCsvClick(object? sender, RoutedEventArgs e)
     {
-        var session = _session;
+        var session = _indexing.Current;
         if (!TryGetValidatedRange(out var start, out var end, out _) || !CanExport() || session is null)
         {
             CheckInputs();
             return;
         }
 
-        var selectedIds = GetSelectedIds();
-        var inputFolder = _inputFolderSelection.Path;
-        var outputFolder = _outputFolderSelection.Path;
-        var ignoreDuplicates = ChkIgnoreDuplicates.IsChecked == true;
-        var excludeEmptyTimestamps = ChkExcludeEmptyTimestamps.IsChecked == true;
+        var request = new ExportRequest(
+            _inputFolderSelection.Path,
+            _outputFolderSelection.Path,
+            GetSelectedIds(),
+            start,
+            end,
+            ChkIgnoreDuplicates.IsChecked == true,
+            ChkExcludeEmptyTimestamps.IsChecked == true);
 
         _exportCancellationTokenSource?.Dispose();
         var cts = new CancellationTokenSource();
@@ -498,19 +461,7 @@ public partial class MainWindow : Window
 
         try
         {
-            _exportTask = Task.Run(() =>
-            {
-                session.Export.ToCsv(
-                    inputFolder,
-                    outputFolder,
-                    selectedIds,
-                    start,
-                    end,
-                    ExportTechStatuses,
-                    ignoreDuplicates,
-                    excludeEmptyTimestamps,
-                    cancellationToken);
-            }, cancellationToken);
+            _exportTask = _export.ExportAsync(session, request, cancellationToken);
             await _exportTask;
 
             SetExportStatus("ExportSuccess", Brushes.Green);
@@ -552,7 +503,7 @@ public partial class MainWindow : Window
 
     private HashSet<int> GetSelectedIds()
     {
-        var selectedIds = new HashSet<int>(_requiredExportIds);
+        var selectedIds = new HashSet<int>(_packageCatalog.RequiredExportIds);
         if (PackageIdList.SelectedItems is null)
         {
             return selectedIds;
@@ -594,7 +545,7 @@ public partial class MainWindow : Window
     {
         var busy = IsBusy;
         MenuOpenLogsFolder.IsEnabled = !busy;
-        MenuTrends.IsEnabled = !busy && _session?.Parser.IndexTimes.Count > 0;
+        MenuTrends.IsEnabled = !busy && _indexing.HasIndex;
         BtnCancelExport.IsEnabled = _isExporting;
         CheckInputs();
     }
@@ -677,7 +628,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            if (!await Task.Run(() => HasLogFiles(selectedFolder)))
+            if (!await Task.Run(() => _logFolders.HasLogFiles(selectedFolder)))
             {
                 ResetInputFolder("NoLogFilesInFolder", Brushes.Red);
                 return;
@@ -687,7 +638,7 @@ public partial class MainWindow : Window
 
             SetInputFolder(selectedFolder);
             SetDefaultOutputFolderIfEmpty(selectedFolder);
-            var session = CreateSession(selectedFolder);
+            _indexing.CreateSession(selectedFolder);
 
             _indexCancellationTokenSource?.Dispose();
             var cts = new CancellationTokenSource();
@@ -695,8 +646,8 @@ public partial class MainWindow : Window
 
             try
             {
-                await session.Parser.CreateOrLoadAllIndexesAsync(cts.Token);
-                FillStartAndEndDateTimeFromLogsIfNeeded(session);
+                await _indexing.IndexAsync(cts.Token);
+                FillStartAndEndDateTimeFromLogsIfNeeded();
             }
             catch (OperationCanceledException)
             {
@@ -747,8 +698,8 @@ public partial class MainWindow : Window
 
     private void OpenTrends_Click(object? sender, RoutedEventArgs e)
     {
-        var session = _session;
-        if (IsBusy || session is null || session.Parser.IndexTimes.Count == 0)
+        var session = _indexing.Current;
+        if (IsBusy || session is null || !_indexing.HasIndex)
         {
             return;
         }
@@ -785,14 +736,13 @@ public partial class MainWindow : Window
 
     private void SetLanguage(string cultureName)
     {
-        LocalizationManager.Instance.SetCulture(cultureName);
-        _languageSettings.SaveLanguage(cultureName);
+        _language.SetLanguage(cultureName);
         UpdateLanguageCheckmarks();
     }
 
     private void UpdateLanguageCheckmarks()
     {
-        var current = LocalizationManager.Instance.CurrentCultureName;
+        var current = _language.CurrentCulture;
         MenuLangRu.Icon = current == "ru" ? CreateCheckmark() : null;
         MenuLangEn.Icon = current == "en" ? CreateCheckmark() : null;
     }
@@ -809,8 +759,4 @@ internal sealed class FolderSelection
     public bool IsSelected => !string.IsNullOrEmpty(Path);
 }
 
-// A re-localizable label: a resource key plus optional format args. Held instead of a
-// formatted string so persistent labels can be re-rendered when the language changes.
 internal readonly record struct StatusText(string Key, object[] Args);
-
-internal sealed record ParserSession(LogParser Parser, CsvExport Export);
