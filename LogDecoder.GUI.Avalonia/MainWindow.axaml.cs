@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -46,8 +47,8 @@ public partial class MainWindow : Window
 
     private bool IsBusy => _isIndexing || _isExporting;
 
-    private readonly FolderSelection _inputFolder = new();
-    private readonly FolderSelection _outputFolder = new();
+    private readonly FolderSelection _inputFolderSelection = new();
+    private readonly FolderSelection _outputFolderSelection = new();
     private ParserSession? _session;
     private List<PackageItem> _packageItems = [];
     private CancellationTokenSource? _exportCancellationTokenSource;
@@ -110,14 +111,14 @@ public partial class MainWindow : Window
 
     private void RefreshLocalizedTexts()
     {
-        if (!_inputFolder.IsSelected)
+        if (!_inputFolderSelection.IsSelected)
         {
             TxtSelectedInputFolder.Text = Localizer.L("InputFolderNotSelected");
             TxtSelectedInputFolder.Foreground = Brushes.Gray;
             SetFolderLinkState(TxtSelectedInputFolder, false);
         }
 
-        if (!_outputFolder.IsSelected)
+        if (!_outputFolderSelection.IsSelected)
         {
             TxtSelectedOutputFolder.Text = Localizer.L("OutputFolderNotSelected");
             TxtSelectedOutputFolder.Foreground = Brushes.Gray;
@@ -187,12 +188,12 @@ public partial class MainWindow : Window
     
     private void SetInputFolder(string folder)
     {
-        SetFolder(_inputFolder, TxtSelectedInputFolder, folder);
+        SetFolder(_inputFolderSelection, TxtSelectedInputFolder, folder, Brushes.Green, true);
     }
 
     private void ResetInputFolder(string message, IBrush foreground)
     {
-        ResetFolder(_inputFolder, TxtSelectedInputFolder, message, foreground);
+        SetFolder(_inputFolderSelection, TxtSelectedInputFolder, message, foreground, false);
 
         UnsubscribeParserEvents(_session);
         _session = null;
@@ -200,32 +201,22 @@ public partial class MainWindow : Window
 
     private void SetOutputFolder(string folder)
     {
-        SetFolder(_outputFolder, TxtSelectedOutputFolder, folder);
+        SetFolder(_outputFolderSelection, TxtSelectedOutputFolder, folder, Brushes.Green, true);
     }
 
     private void ResetOutputFolder(string message, IBrush foreground)
     {
-        ResetFolder(_outputFolder, TxtSelectedOutputFolder, message, foreground);
+        SetFolder(_outputFolderSelection, TxtSelectedOutputFolder, message, foreground, false);
     }
     
-    private void SetFolder(FolderSelection selection, TextBlock textBlock, string folder)
+    private void SetFolder(FolderSelection selection, TextBlock textBlock, string folder, IBrush foreground, bool isLinkState)
     {
         selection.Path = folder;
 
         textBlock.Text = folder;
-        textBlock.Foreground = Brushes.Green;
-
-        SetFolderLinkState(textBlock, true);
-    }
-
-    private void ResetFolder(FolderSelection selection, TextBlock textBlock, string message, IBrush foreground)
-    {
-        selection.Path = string.Empty;
-
-        textBlock.Text = message;
         textBlock.Foreground = foreground;
 
-        SetFolderLinkState(textBlock, false);
+        SetFolderLinkState(textBlock, isLinkState);
     }
     
     private void SetFolderLinkState(TextBlock textBlock, bool isClickable)
@@ -239,7 +230,7 @@ public partial class MainWindow : Window
             : null;
     }
 
-    private async Task OpenFolderAsync(FolderSelection folderSelection)
+    private void OpenFolder(FolderSelection folderSelection)
     {
         if (!folderSelection.IsSelected)
         {
@@ -251,55 +242,33 @@ public partial class MainWindow : Window
             return;
         }
 
-        try {
-            var launcher = TopLevel.GetTopLevel(this)?.Launcher;
-            if (launcher is null)
+        try
+        {
+            Process.Start(new ProcessStartInfo
             {
-                _logger.LogWarning("Launcher is not available");
-                return;
-            }
-
-            if (!Uri.TryCreate(folderSelection.Path, UriKind.Absolute, out var uri))
-            {
-                _logger.LogWarning("Cannot build Uri from folder path: {Folder}", folderSelection.Path);
-                return;
-            }
-
-            await launcher.LaunchUriAsync(uri);
+                FileName = folderSelection.Path,
+                UseShellExecute = true
+            });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed OpenFolderAsync({Folder})", folderSelection.Path);
+            _logger.LogError(ex, "Failed OpenFolder({Folder})", folderSelection.Path);
         }
     }
 
-    private async void SelectedInputFolder_Click(object? sender, PointerPressedEventArgs e)
+    private void SelectedInputFolder_Click(object? sender, PointerPressedEventArgs e)
     {
-        try
-        {
-            await OpenFolderAsync(_inputFolder);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unhandled error in SelectedInputFolder_Click");
-        }
+        OpenFolder(_inputFolderSelection);
     }
 
-    private async void SelectedOutputFolder_Click(object? sender, PointerPressedEventArgs e)
+    private void SelectedOutputFolder_Click(object? sender, PointerPressedEventArgs e)
     {
-        try
-        {
-            await OpenFolderAsync(_outputFolder);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unhandled error in SelectedOutputFolder_Click");
-        }
+        OpenFolder(_outputFolderSelection);
     }
 
     private void SetDefaultOutputFolderIfEmpty(string folder)
     {
-        if (!string.IsNullOrEmpty(_outputFolder.Path))
+        if (!string.IsNullOrEmpty(_outputFolderSelection.Path))
         {
             return;
         }
@@ -396,7 +365,7 @@ public partial class MainWindow : Window
             return false;
         }
 
-        if (string.IsNullOrEmpty(_inputFolder.Path) || string.IsNullOrEmpty(_outputFolder.Path))
+        if (string.IsNullOrEmpty(_inputFolderSelection.Path) || string.IsNullOrEmpty(_outputFolderSelection.Path))
         {
             return false;
         }
@@ -441,8 +410,8 @@ public partial class MainWindow : Window
         }
 
         var selectedIds = GetSelectedIds();
-        var inputFolder = _inputFolder.Path;
-        var outputFolder = _outputFolder.Path;
+        var inputFolder = _inputFolderSelection.Path;
+        var outputFolder = _outputFolderSelection.Path;
         var ignoreDuplicates = ChkIgnoreDuplicates.IsChecked == true;
         var excludeEmptyTimestamps = ChkExcludeEmptyTimestamps.IsChecked == true;
 
@@ -556,7 +525,6 @@ public partial class MainWindow : Window
     {
         var busy = IsBusy;
         MenuOpenLogsFolder.IsEnabled = !busy;
-        MenuOpenExportFolder.IsEnabled = !busy;
         MenuTrends.IsEnabled = !busy && _session?.Parser.IndexTimes.Count > 0;
         BtnCancelExport.IsEnabled = _isExporting;
         CheckInputs();
@@ -686,11 +654,6 @@ public partial class MainWindow : Window
 
     private async void OpenExportFolder_Click(object? sender, RoutedEventArgs e)
     {
-        if (IsBusy)
-        {
-            return;
-        }
-
         try
         {
             var folder = await SelectFolderAsync();
