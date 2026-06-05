@@ -7,7 +7,11 @@ public sealed class LanguageService(LanguageSettingsService settings)
 {
     public string CurrentCulture => LocalizationManager.Instance.CurrentCultureName;
 
-    public string LoadSavedLanguage() => settings.LoadLanguageOrDefault();
+    /// <summary>Applies the saved language (or the default) at startup, without re-saving it.</summary>
+    public void ApplySavedLanguage()
+    {
+        LocalizationManager.Instance.SetCulture(settings.LoadLanguageOrDefault());
+    }
 
     public void SetLanguage(string culture)
     {

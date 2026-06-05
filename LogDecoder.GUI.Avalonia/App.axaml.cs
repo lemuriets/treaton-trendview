@@ -5,7 +5,6 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
-using LogDecoder.GUI.Avalonia.Localization;
 using LogDecoder.GUI.Avalonia.Services;
 
 namespace LogDecoder.GUI.Avalonia;
@@ -16,8 +15,7 @@ public partial class App : Application
 
     public override void Initialize()
     {
-        var language = new LanguageSettingsService().LoadLanguageOrDefault();
-        LocalizationManager.Instance.SetCulture(language);
+        new LanguageService(new LanguageSettingsService()).ApplySavedLanguage();
 
         AvaloniaXamlLoader.Load(this);
     }
