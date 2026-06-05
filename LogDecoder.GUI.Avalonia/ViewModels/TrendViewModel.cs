@@ -112,7 +112,7 @@ public class TrendViewModel : INotifyPropertyChanged
         {
             if (!_dataProvider.IsDateTimeExists(value))
             {
-                TxtError = "Дата не найдена!";
+                TxtError = global::LogDecoder.GUI.Avalonia.Localizer.L("TrendsDateNotFound");
                 return;
             }
             TxtError = "";

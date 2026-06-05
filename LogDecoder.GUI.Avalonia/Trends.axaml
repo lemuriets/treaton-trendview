@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:LogDecoder.GUI.Avalonia.Views"
         xmlns:conv="clr-namespace:LogDecoder.GUI.Avalonia.Converters"
-        Title="Trends"
+        xmlns:loc="clr-namespace:LogDecoder.GUI.Avalonia.Localization"
+        Title="{loc:Localize TrendsTitle}"
         Height="720" Width="1100"
         MinHeight="720" MinWidth="800">
     <Window.Resources>
@@ -17,7 +18,7 @@
             <DockPanel Grid.Column="0" LastChildFill="True" Margin="0,0,8,0">
                 <StackPanel DockPanel.Dock="Top">
                     <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Left">
-                        <TextBlock Text="Масштаб:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="{loc:Localize TrendsScaleLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
                         <ComboBox Width="100" ItemsSource="{Binding Scales}" SelectedItem="{Binding Scale, Mode=TwoWay}"/>
                         <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
@@ -31,7 +32,7 @@
                     </Grid>
 
                     <StackPanel Orientation="Horizontal" Margin="6,8,0,4" VerticalAlignment="Center">
-                        <TextBlock Text="Начало:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="DimGray"/>
+                        <TextBlock Text="{loc:Localize TrendsStartLabel}" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="DimGray"/>
                         <TextBox Width="200" Text="{Binding StartDateTime, Mode=TwoWay, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"/>
                         <TextBlock Text="{Binding CurrentDateTime, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}" Margin="20,4,0,6" Foreground="#000"/>
                         <TextBlock Text="{Binding TxtError}" Foreground="Red" TextWrapping="Wrap" Margin="10,4,10,0"/>
@@ -42,26 +43,26 @@
             <Border Grid.Column="1" BorderBrush="#444" BorderThickness="1" CornerRadius="4" Padding="8" Background="#0b0b0d">
                 <StackPanel>
                     <Grid ColumnDefinitions="*,*" Margin="0,0,0,6">
-                        <TextBlock Grid.Column="0" Text="Заряд аккумулятора:" Foreground="LightGray"/>
+                        <TextBlock Grid.Column="0" Text="{loc:Localize TrendsBatteryLabel}" Foreground="LightGray"/>
                         <TextBlock Grid.Column="1" Text="{Binding ValBattery, Converter={StaticResource BatteryConverter}}" Foreground="#7CFF7C" FontWeight="Bold"/>
                     </Grid>
 
-                    <TextBlock Text="Параметры вентиляции" FontWeight="Bold" Foreground="White" Margin="0,0,0,8"/>
+                    <TextBlock Text="{loc:Localize TrendsVentilationParams}" FontWeight="Bold" Foreground="White" Margin="0,0,0,8"/>
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,0,0,6">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="PIP (cmH₂O):" Foreground="LightGray"/><TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ValPIP, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#7CFF7C" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="PEEP (cmH₂O):" Foreground="LightGray"/><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ValPEEP, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#7CFF7C" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="MV общая (L/min):" Foreground="LightGray"/><TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ValMVTotal, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFB966" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="MV аппаратная (L/min):" Foreground="LightGray"/><TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ValMVMachine, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFB966" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Vt (ml):" Foreground="LightGray"/><TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding ValVt, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFB966" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="RB (1/min):" Foreground="LightGray"/><TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding ValRB1, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFD700" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="6" Grid.Column="0" Text="RB самостоятельный (1/min):" Foreground="LightGray"/><TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding ValRB2, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFD700" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Cst:" Foreground="LightGray"/><TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding ValCst, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Rst:" Foreground="LightGray"/><TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding ValRst, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Leak:" Foreground="LightGray"/><TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding ValLeak, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Localize TrendsPip}" Foreground="LightGray"/><TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ValPIP, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#7CFF7C" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Localize TrendsPeep}" Foreground="LightGray"/><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ValPEEP, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#7CFF7C" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Localize TrendsMvTotal}" Foreground="LightGray"/><TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ValMVTotal, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFB966" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{loc:Localize TrendsMvMachine}" Foreground="LightGray"/><TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ValMVMachine, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFB966" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Localize TrendsVt}" Foreground="LightGray"/><TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding ValVt, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFB966" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{loc:Localize TrendsRb1}" Foreground="LightGray"/><TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding ValRB1, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFD700" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="{loc:Localize TrendsRb2}" Foreground="LightGray"/><TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding ValRB2, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFD700" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="{loc:Localize TrendsCst}" Foreground="LightGray"/><TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding ValCst, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="{loc:Localize TrendsRst}" Foreground="LightGray"/><TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding ValRst, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="{loc:Localize TrendsLeak}" Foreground="LightGray"/><TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding ValLeak, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
                     </Grid>
 
                     <Separator Margin="0,6,0,6"/>
-                    <TextBlock Text="Ошибки" FontWeight="Bold" Foreground="LightGray" Margin="0,0,0,8"/>
+                    <TextBlock Text="{loc:Localize TrendsErrors}" FontWeight="Bold" Foreground="LightGray" Margin="0,0,0,8"/>
                     <Border BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="4" Background="#1A1A1D">
                         <ListBox ItemsSource="{Binding Messages}" Height="250" Background="#1A1A1D" BorderThickness="0">
                             <ListBox.ItemTemplate>

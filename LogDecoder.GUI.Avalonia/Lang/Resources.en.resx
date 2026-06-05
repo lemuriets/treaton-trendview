@@ -80,4 +80,25 @@ Application for parsing and export logs from AVL.</value></data>
     <data name="ExportCancelled" xml:space="preserve">
         <value>Export was canceled</value>
     </data>
+    <data name="ExportCancelling" xml:space="preserve"><value>Cancelling export...</value></data>
+
+    <data name="CriticalErrorTitle" xml:space="preserve"><value>Critical error</value></data>
+
+    <data name="TrendsTitle" xml:space="preserve"><value>Trends</value></data>
+    <data name="TrendsScaleLabel" xml:space="preserve"><value>Scale:</value></data>
+    <data name="TrendsStartLabel" xml:space="preserve"><value>Start:</value></data>
+    <data name="TrendsBatteryLabel" xml:space="preserve"><value>Battery charge:</value></data>
+    <data name="TrendsVentilationParams" xml:space="preserve"><value>Ventilation parameters</value></data>
+    <data name="TrendsErrors" xml:space="preserve"><value>Errors</value></data>
+    <data name="TrendsDateNotFound" xml:space="preserve"><value>Date not found!</value></data>
+    <data name="TrendsPip" xml:space="preserve"><value>PIP (cmH₂O):</value></data>
+    <data name="TrendsPeep" xml:space="preserve"><value>PEEP (cmH₂O):</value></data>
+    <data name="TrendsMvTotal" xml:space="preserve"><value>MV total (L/min):</value></data>
+    <data name="TrendsMvMachine" xml:space="preserve"><value>MV machine (L/min):</value></data>
+    <data name="TrendsVt" xml:space="preserve"><value>Vt (ml):</value></data>
+    <data name="TrendsRb1" xml:space="preserve"><value>RB (1/min):</value></data>
+    <data name="TrendsRb2" xml:space="preserve"><value>RB spontaneous (1/min):</value></data>
+    <data name="TrendsCst" xml:space="preserve"><value>Cst:</value></data>
+    <data name="TrendsRst" xml:space="preserve"><value>Rst:</value></data>
+    <data name="TrendsLeak" xml:space="preserve"><value>Leak:</value></data>
 </root>

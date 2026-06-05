@@ -80,4 +80,25 @@
     <data name="ExportCancelled" xml:space="preserve">
         <value>Экспорт отменен</value>
     </data>
+    <data name="ExportCancelling" xml:space="preserve"><value>Отмена экспорта...</value></data>
+
+    <data name="CriticalErrorTitle" xml:space="preserve"><value>Критическая ошибка</value></data>
+
+    <data name="TrendsTitle" xml:space="preserve"><value>Тренды</value></data>
+    <data name="TrendsScaleLabel" xml:space="preserve"><value>Масштаб:</value></data>
+    <data name="TrendsStartLabel" xml:space="preserve"><value>Начало:</value></data>
+    <data name="TrendsBatteryLabel" xml:space="preserve"><value>Заряд аккумулятора:</value></data>
+    <data name="TrendsVentilationParams" xml:space="preserve"><value>Параметры вентиляции</value></data>
+    <data name="TrendsErrors" xml:space="preserve"><value>Ошибки</value></data>
+    <data name="TrendsDateNotFound" xml:space="preserve"><value>Дата не найдена!</value></data>
+    <data name="TrendsPip" xml:space="preserve"><value>PIP (cmH₂O):</value></data>
+    <data name="TrendsPeep" xml:space="preserve"><value>PEEP (cmH₂O):</value></data>
+    <data name="TrendsMvTotal" xml:space="preserve"><value>MV общая (L/min):</value></data>
+    <data name="TrendsMvMachine" xml:space="preserve"><value>MV аппаратная (L/min):</value></data>
+    <data name="TrendsVt" xml:space="preserve"><value>Vt (ml):</value></data>
+    <data name="TrendsRb1" xml:space="preserve"><value>RB (1/min):</value></data>
+    <data name="TrendsRb2" xml:space="preserve"><value>RB самостоятельный (1/min):</value></data>
+    <data name="TrendsCst" xml:space="preserve"><value>Cst:</value></data>
+    <data name="TrendsRst" xml:space="preserve"><value>Rst:</value></data>
+    <data name="TrendsLeak" xml:space="preserve"><value>Leak:</value></data>
 </root>

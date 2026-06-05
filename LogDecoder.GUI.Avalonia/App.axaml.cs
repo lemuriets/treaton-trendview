@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using LogDecoder.GUI.Avalonia.Localization;
+using LogDecoder.GUI.Avalonia.Services;
 
 namespace LogDecoder.GUI.Avalonia;
 
@@ -15,7 +16,8 @@ public partial class App : Application
 
     public override void Initialize()
     {
-        LocalizationManager.Instance.SetCulture("ru");
+        var language = new LanguageSettingsService().LoadLanguageOrDefault();
+        LocalizationManager.Instance.SetCulture(language);
 
         AvaloniaXamlLoader.Load(this);
     }
@@ -127,7 +129,7 @@ public partial class App : Application
 
         var window = new Window
         {
-            Title = "Критическая ошибка",
+            Title = Localizer.L("CriticalErrorTitle"),
             Width = 760,
             Height = 420,
             Content = content

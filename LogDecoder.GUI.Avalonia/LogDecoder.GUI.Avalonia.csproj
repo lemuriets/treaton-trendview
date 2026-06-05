@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>LogDecoder.GUI.Avalonia</AssemblyName>
+    <NeutralLanguage>ru</NeutralLanguage>
     <ApplicationIcon>Assets/favicon.ico</ApplicationIcon>
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>

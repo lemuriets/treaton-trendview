@@ -11,6 +11,7 @@ using LogDecoder.CAN.Packages;
 using LogDecoder.CAN.Protocol;
 using LogDecoder.GUI.Avalonia.Localization;
 using LogDecoder.GUI.Avalonia.Models;
+using LogDecoder.GUI.Avalonia.Services;
 using LogDecoder.Helpers;
 using LogDecoder.Infrastructure.Logging;
 using LogDecoder.Parser;
@@ -55,11 +56,24 @@ public partial class MainWindow : Window
     private Task? _exportTask;
     private CancellationTokenSource? _indexCancellationTokenSource;
 
+    private readonly LanguageSettingsService _languageSettings;
+
+    // Persistent, re-localizable UI state: store the resource key + args (not the
+    // formatted string) so these labels can be re-rendered when the language changes.
+    private StatusText? _exportStatus;
+    private IBrush _exportStatusBrush = Brushes.Green;
+    private StatusText? _indexStatus;
+    private StatusText? _inputFolderMessage = new("InputFolderNotSelected", []);
+    private IBrush _inputFolderBrush = Brushes.Gray;
+    private StatusText? _outputFolderMessage = new("OutputFolderNotSelected", []);
+    private IBrush _outputFolderBrush = Brushes.Gray;
+
     public MainWindow()
     {
         _loggerProvider = new LoggerProvider();
         _logger = _loggerProvider.CreateLogger<MainWindow>();
         _factory = new CanPackageFactory();
+        _languageSettings = new LanguageSettingsService(_logger);
 
         InitializeComponent();
 
@@ -69,6 +83,7 @@ public partial class MainWindow : Window
         FillWidgets();
         SetWindowTitle();
         ConnectEvents();
+        UpdateLanguageCheckmarks();
 
         _logger.LogDebug("GUI initialization finished");
     }
@@ -111,19 +126,71 @@ public partial class MainWindow : Window
 
     private void RefreshLocalizedTexts()
     {
-        if (!_inputFolderSelection.IsSelected)
+        ApplyInputFolderLabel();
+        ApplyOutputFolderLabel();
+        ApplyExportStatus();
+        ApplyIndexStatus();
+    }
+
+    private static string Render(StatusText? status)
+    {
+        if (status is null)
         {
-            TxtSelectedInputFolder.Text = Localizer.L("InputFolderNotSelected");
-            TxtSelectedInputFolder.Foreground = Brushes.Gray;
-            SetFolderLinkState(TxtSelectedInputFolder, false);
+            return string.Empty;
         }
 
-        if (!_outputFolderSelection.IsSelected)
+        var (key, args) = status.Value;
+        return args.Length == 0 ? Localizer.L(key) : Localizer.F(key, args);
+    }
+
+    private void ApplyExportStatus()
+    {
+        TxtExportStatus.Text = Render(_exportStatus);
+        TxtExportStatus.Foreground = _exportStatusBrush;
+    }
+
+    private void ApplyIndexStatus()
+    {
+        TxtIndexStatus.Text = Render(_indexStatus);
+    }
+
+    private void ApplyInputFolderLabel()
+    {
+        if (_inputFolderMessage is null)
         {
-            TxtSelectedOutputFolder.Text = Localizer.L("OutputFolderNotSelected");
-            TxtSelectedOutputFolder.Foreground = Brushes.Gray;
-            SetFolderLinkState(TxtSelectedOutputFolder, false);
+            return;
         }
+
+        _inputFolderSelection.Path = string.Empty;
+        TxtSelectedInputFolder.Text = Render(_inputFolderMessage);
+        TxtSelectedInputFolder.Foreground = _inputFolderBrush;
+        SetFolderLinkState(TxtSelectedInputFolder, false);
+    }
+
+    private void ApplyOutputFolderLabel()
+    {
+        if (_outputFolderMessage is null)
+        {
+            return;
+        }
+
+        _outputFolderSelection.Path = string.Empty;
+        TxtSelectedOutputFolder.Text = Render(_outputFolderMessage);
+        TxtSelectedOutputFolder.Foreground = _outputFolderBrush;
+        SetFolderLinkState(TxtSelectedOutputFolder, false);
+    }
+
+    private void SetExportStatus(string? key, IBrush brush, params object[] args)
+    {
+        _exportStatus = key is null ? null : new StatusText(key, args);
+        _exportStatusBrush = brush;
+        ApplyExportStatus();
+    }
+
+    private void SetIndexStatus(string? key, params object[] args)
+    {
+        _indexStatus = key is null ? null : new StatusText(key, args);
+        ApplyIndexStatus();
     }
 
     private void FillWidgets()
@@ -188,12 +255,15 @@ public partial class MainWindow : Window
     
     private void SetInputFolder(string folder)
     {
+        _inputFolderMessage = null;
         SetFolder(_inputFolderSelection, TxtSelectedInputFolder, folder, Brushes.Green, true);
     }
 
-    private void ResetInputFolder(string message, IBrush foreground)
+    private void ResetInputFolder(string messageKey, IBrush foreground, params object[] args)
     {
-        SetFolder(_inputFolderSelection, TxtSelectedInputFolder, message, foreground, false);
+        _inputFolderMessage = new StatusText(messageKey, args);
+        _inputFolderBrush = foreground;
+        ApplyInputFolderLabel();
 
         UnsubscribeParserEvents(_session);
         _session = null;
@@ -201,12 +271,15 @@ public partial class MainWindow : Window
 
     private void SetOutputFolder(string folder)
     {
+        _outputFolderMessage = null;
         SetFolder(_outputFolderSelection, TxtSelectedOutputFolder, folder, Brushes.Green, true);
     }
 
-    private void ResetOutputFolder(string message, IBrush foreground)
+    private void ResetOutputFolder(string messageKey, IBrush foreground, params object[] args)
     {
-        SetFolder(_outputFolderSelection, TxtSelectedOutputFolder, message, foreground, false);
+        _outputFolderMessage = new StatusText(messageKey, args);
+        _outputFolderBrush = foreground;
+        ApplyOutputFolderLabel();
     }
     
     private void SetFolder(FolderSelection selection, TextBlock textBlock, string folder, IBrush foreground, bool isLinkState)
@@ -323,7 +396,7 @@ public partial class MainWindow : Window
     {
         UpdateSelectAllCheckbox();
         CheckInputs();
-        TxtExportStatus.Text = "";
+        SetExportStatus(null, Brushes.Green);
     }
 
     private void CheckInputs()
@@ -421,7 +494,7 @@ public partial class MainWindow : Window
 
         var cancellationToken = cts.Token;
 
-        SetExporting(true, Localizer.L("ExportingWait"));
+        SetExporting(true, "ExportingWait");
 
         try
         {
@@ -440,22 +513,19 @@ public partial class MainWindow : Window
             }, cancellationToken);
             await _exportTask;
 
-            TxtExportStatus.Text = Localizer.L("ExportSuccess");
-            TxtExportStatus.Foreground = Brushes.Green;
+            SetExportStatus("ExportSuccess", Brushes.Green);
         }
         catch (OperationCanceledException)
         {
             _logger.LogDebug("CSV export cancelled");
 
-            TxtExportStatus.Text = Localizer.L("ExportCancelled");
-            TxtExportStatus.Foreground = Brushes.Orange;
+            SetExportStatus("ExportCancelled", Brushes.Orange);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while parsing IVL logs");
 
-            TxtExportStatus.Text = Localizer.F("ExportError", ex.Message);
-            TxtExportStatus.Foreground = Brushes.Red;
+            SetExportStatus("ExportError", Brushes.Red, ex.Message);
         }
         finally
         {
@@ -477,8 +547,7 @@ public partial class MainWindow : Window
 
         cts.Cancel();
 
-        TxtExportStatus.Text = Localizer.L("ExportCancelling");
-        TxtExportStatus.Foreground = Brushes.Orange;
+        SetExportStatus("ExportCancelling", Brushes.Orange);
     }
 
     private HashSet<int> GetSelectedIds()
@@ -497,28 +566,28 @@ public partial class MainWindow : Window
         return selectedIds;
     }
 
-    private void SetIndexing(bool value, string? status = null)
+    private void SetIndexing(bool value, string? statusKey = null)
     {
         _isIndexing = value;
-        SetExportStatusIfProvided(status);
+        ApplyProvidedExportStatus(statusKey);
         RefreshBusyUi();
     }
 
-    private void SetExporting(bool value, string? status = null)
+    private void SetExporting(bool value, string? statusKey = null)
     {
         _isExporting = value;
-        SetExportStatusIfProvided(status);
+        ApplyProvidedExportStatus(statusKey);
         RefreshBusyUi();
     }
 
-    private void SetExportStatusIfProvided(string? status)
+    private void ApplyProvidedExportStatus(string? statusKey)
     {
-        if (status is null)
+        if (statusKey is null)
         {
             return;
         }
-        TxtExportStatus.Text = status;
-        TxtExportStatus.Foreground = Brushes.Green;
+        // An empty key is used by callers as "clear the status".
+        SetExportStatus(statusKey.Length == 0 ? null : statusKey, Brushes.Green);
     }
 
     private void RefreshBusyUi()
@@ -577,7 +646,7 @@ public partial class MainWindow : Window
     {
         Dispatcher.UIThread.Post(() =>
         {
-            TxtIndexStatus.Text = Localizer.L("IndexingWait");
+            SetIndexStatus("IndexingWait");
             SetIndexing(true);
         });
     }
@@ -586,7 +655,7 @@ public partial class MainWindow : Window
     {
         Dispatcher.UIThread.Post(() =>
         {
-            TxtIndexStatus.Text = string.Empty;
+            SetIndexStatus(null);
             SetIndexing(false);
         });
     }
@@ -598,7 +667,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        SetIndexing(true, Localizer.L("SelectingLogsFolder"));
+        SetIndexing(true, "SelectingLogsFolder");
 
         try
         {
@@ -610,11 +679,11 @@ public partial class MainWindow : Window
 
             if (!await Task.Run(() => HasLogFiles(selectedFolder)))
             {
-                ResetInputFolder(Localizer.L("NoLogFilesInFolder"), Brushes.Red);
+                ResetInputFolder("NoLogFilesInFolder", Brushes.Red);
                 return;
             }
 
-            TxtExportStatus.Text = "";
+            SetExportStatus(null, Brushes.Green);
 
             SetInputFolder(selectedFolder);
             SetDefaultOutputFolderIfEmpty(selectedFolder);
@@ -632,8 +701,8 @@ public partial class MainWindow : Window
             catch (OperationCanceledException)
             {
                 _logger.LogDebug("Indexing cancelled");
-                TxtIndexStatus.Text = Localizer.L("IndexingCancelled");
-                ResetInputFolder(Localizer.L("InputFolderNotSelected"), Brushes.Gray);
+                SetIndexStatus("IndexingCancelled");
+                ResetInputFolder("InputFolderNotSelected", Brushes.Gray);
             }
             finally
             {
@@ -644,7 +713,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while selecting input folder");
-            ResetInputFolder(Localizer.F("InputFolderSelectionError", ex.Message), Brushes.Red);
+            ResetInputFolder("InputFolderSelectionError", Brushes.Red, ex.Message);
         }
         finally
         {
@@ -668,7 +737,7 @@ public partial class MainWindow : Window
         {
             _logger.LogError(ex, "Error while selecting output folder");
 
-            ResetOutputFolder(Localizer.F("OutputFolderSelectionError", ex.Message), Brushes.Red);
+            ResetOutputFolder("OutputFolderSelectionError", Brushes.Red, ex.Message);
         }
         finally
         {
@@ -717,6 +786,20 @@ public partial class MainWindow : Window
     private void SetLanguage(string cultureName)
     {
         LocalizationManager.Instance.SetCulture(cultureName);
+        _languageSettings.SaveLanguage(cultureName);
+        UpdateLanguageCheckmarks();
+    }
+
+    private void UpdateLanguageCheckmarks()
+    {
+        var current = LocalizationManager.Instance.CurrentCultureName;
+        MenuLangRu.Icon = current == "ru" ? CreateCheckmark() : null;
+        MenuLangEn.Icon = current == "en" ? CreateCheckmark() : null;
+    }
+
+    private static TextBlock CreateCheckmark()
+    {
+        return new TextBlock { Text = "✓" };
     }
 }
 
@@ -725,5 +808,9 @@ internal sealed class FolderSelection
     public string Path { get; set; } = string.Empty;
     public bool IsSelected => !string.IsNullOrEmpty(Path);
 }
+
+// A re-localizable label: a resource key plus optional format args. Held instead of a
+// formatted string so persistent labels can be re-rendered when the language changes.
+internal readonly record struct StatusText(string Key, object[] Args);
 
 internal sealed record ParserSession(LogParser Parser, CsvExport Export);

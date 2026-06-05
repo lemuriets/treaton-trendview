@@ -33,13 +33,15 @@
                     Click="OpenTrends_Click"/>
             </MenuItem>
 
-            <MenuItem Header="{Binding [MenuLanguage]}" IsEnabled="False">
+            <MenuItem Header="{Binding [MenuLanguage]}">
                 <MenuItem
+                    x:Name="MenuLangRu"
                     Header="{Binding [LanguageRussian]}"
                     Tag="ru"
                     Click="ChangeLanguage_Click"/>
 
                 <MenuItem
+                    x:Name="MenuLangEn"
                     Header="{Binding [LanguageEnglish]}"
                     Tag="en"
                     Click="ChangeLanguage_Click"/>
@@ -66,9 +68,10 @@
                 <StackPanel Grid.Row="0" Margin="0,0,0,4">
                     <TextBlock Text="{Binding [InputFolderLabel]}"/>
 
+                    <!-- Text is managed in code-behind (folder path or a localized message);
+                         no {Binding [..]} here, or it would overwrite the path on language change. -->
                     <TextBlock
                         x:Name="TxtSelectedInputFolder"
-                        Text="{Binding [InputFolderNotSelected]}"
                         Foreground="Gray"
                         TextWrapping="Wrap"
                         TextTrimming="CharacterEllipsis"
@@ -78,9 +81,9 @@
                 <StackPanel Grid.Row="1" Margin="0,0,0,4">
                     <TextBlock Text="{Binding [OutputFolderLabel]}"/>
 
+                    <!-- Text is managed in code-behind (folder path or a localized message). -->
                     <TextBlock
                         x:Name="TxtSelectedOutputFolder"
-                        Text="{Binding [OutputFolderNotSelected]}"
                         Foreground="Gray"
                         TextWrapping="Wrap"
                         TextTrimming="CharacterEllipsis"
