@@ -13,7 +13,11 @@ public static class LoggerConfig
     
     public static ILoggerFactory CreateLoggerFactory()
     {
-        var configuration = LoadConfiguration();
+        // Intentionally not merging appsettings.json into the logger: a stale config next to the
+        // exe could carry a Serilog File sink with "path": "logs/.log", which (rollingInterval
+        // Infinite) writes that path verbatim and produces a nameless ".log" file alongside ours.
+        // Sinks are configured from code below. LoadConfiguration() is kept for future use.
+        // var configuration = LoadConfiguration();
         var logFilePath = CreateLogFilePath();
         
 #if DEBUG
@@ -24,7 +28,7 @@ public static class LoggerConfig
 
         var loggerConfig = new LoggerConfiguration()
             .MinimumLevel.Is(minimumLevel)
-            .ReadFrom.Configuration(configuration)
+            // .ReadFrom.Configuration(configuration)
             .WriteTo.Console(outputTemplate: OutputTemplate);
             
 #if !DEBUG
