@@ -7,6 +7,19 @@ public class LogSessionsSorted
     public int Count => _sessions.Count;
     public LogSession this[int index] => _sessions.GetValueAtIndex(index);
 
+    public bool TryAdd(LogSession session)
+    {
+        try
+        {
+            Add(session);
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+        return true;
+    }
+    
     public void Add(LogSession session)
     {
         var key = session.StartDT;

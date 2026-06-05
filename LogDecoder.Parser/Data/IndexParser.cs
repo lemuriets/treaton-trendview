@@ -52,7 +52,10 @@ public class IndexParser : IIndexParser
             var nextGroup = i + 1 < groups.Count ? groups[i + 1] : null;
 
             var session = BuildSession(group, nextGroup);
-            _sessions.Add(session);
+            if (!_sessions.TryAdd(session))
+            {
+                _logger.LogError("Failed to add session [{Start}] - [{End}]", session.StartDT, session.EndDT);
+            }
             _entriesByStart[session.StartDT] = group;
 
             foreach (var entry in group)
