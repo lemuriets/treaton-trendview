@@ -1,10 +1,8 @@
-using System.Diagnostics;
 using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using LogDecoder.CAN.Packages;
 using LogDecoder.GUI.Avalonia.Localization;
@@ -13,8 +11,6 @@ using LogDecoder.GUI.Avalonia.Services;
 using LogDecoder.Helpers;
 using LogDecoder.Infrastructure.Logging;
 using Microsoft.Extensions.Logging;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 
 namespace LogDecoder.GUI.Avalonia;
 
@@ -32,6 +28,9 @@ public partial class MainWindow : Window
     private readonly ExportService _export;
     private readonly LogFolderService _logFolders;
     private readonly LanguageService _language;
+    private readonly FolderPickerService _folderPicker;
+    private readonly FolderLauncherService _folderLauncher;
+    private readonly DialogService _dialogs;
 
     private bool _isIndexing;
     private bool _isExporting;
@@ -65,6 +64,9 @@ public partial class MainWindow : Window
         _export = new ExportService();
         _logFolders = new LogFolderService();
         _language = new LanguageService(new LanguageSettingsService(_logger));
+        _folderPicker = new FolderPickerService(() => TopLevel.GetTopLevel(this));
+        _folderLauncher = new FolderLauncherService(_logger);
+        _dialogs = new DialogService(() => this);
 
         InitializeComponent();
 
@@ -218,27 +220,6 @@ public partial class MainWindow : Window
         _logger.LogDebug("ConnectEvents() completed");
     }
 
-    private async Task<string> SelectFolderAsync()
-    {
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is null)
-        {
-            return string.Empty;
-        }
-
-        var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
-        {
-            AllowMultiple = false,
-            Title = Localizer.L("SelectFolderDialogTitle")
-        });
-
-        if (folders.Count == 0)
-        {
-            return string.Empty;
-        }
-        return folders[0].TryGetLocalPath() ?? string.Empty;
-    }
-
     private void SetInputFolder(string folder)
     {
         _inputFolderMessage = null;
@@ -294,24 +275,8 @@ public partial class MainWindow : Window
         {
             return;
         }
-        if (string.IsNullOrWhiteSpace(folderSelection.Path) || !Directory.Exists(folderSelection.Path))
-        {
-            _logger.LogWarning("Cannot open folder. Folder does not exist: {Folder}", folderSelection.Path);
-            return;
-        }
 
-        try
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = folderSelection.Path,
-                UseShellExecute = true
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed OpenFolder({Folder})", folderSelection.Path);
-        }
+        _folderLauncher.OpenFolder(folderSelection.Path);
     }
 
     private void SelectedInputFolder_Click(object? sender, PointerPressedEventArgs e)
@@ -622,7 +587,7 @@ public partial class MainWindow : Window
 
         try
         {
-            var selectedFolder = await SelectFolderAsync();
+            var selectedFolder = await _folderPicker.PickFolderAsync(Localizer.L("SelectFolderDialogTitle"));
             if (string.IsNullOrEmpty(selectedFolder))
             {
                 return;
@@ -676,7 +641,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            var folder = await SelectFolderAsync();
+            var folder = await _folderPicker.PickFolderAsync(Localizer.L("SelectFolderDialogTitle"));
             if (string.IsNullOrEmpty(folder))
             {
                 return;
@@ -710,12 +675,9 @@ public partial class MainWindow : Window
 
     private async void About_Click(object? sender, RoutedEventArgs e)
     {
-        var box = MessageBoxManager.GetMessageBoxStandard(
-            title: Localizer.L("AboutTitle"),
-            text: Localizer.F("AboutText", _appVersion),
-            @enum: ButtonEnum.Ok);
-
-        await box.ShowWindowDialogAsync(this);
+        await _dialogs.ShowMessageAsync(
+            Localizer.L("AboutTitle"),
+            Localizer.F("AboutText", _appVersion));
     }
 
     private void ChangeLanguage_Click(object? sender, RoutedEventArgs e)
