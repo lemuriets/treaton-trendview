@@ -75,44 +75,6 @@ public partial class LogParser : ILogParser
     
     public IEnumerable<ICanPackageParsed> GetPackages(IReadOnlySet<int> filterIds, DateTime start, DateTime end)
     {
-        // var startIndex = _indexParser.FindFloor(start);
-        // var endIndex = _indexParser.FindFloor(end);
-        // if (startIndex is null)
-        // {
-        //     _logger.LogWarning("Unable to find {Start} in index.", start);
-        //     throw new Exception($"Unable to find {start} in index.");
-        // }
-        // if (endIndex is null)
-        // {
-        //     _logger.LogWarning("Unable to find {End} in index.", end);
-        //     throw new Exception($"Unable to find {end} in index.");
-        // }
-        //
-        // var startFilename = startIndex.Value.Filename;
-        // var endFilename = endIndex.Value.Filename;
-        //
-        // var context = new ParseContext();
-        //
-        // _logger.LogDebug(
-        //     "LogParser.GetPackages(), " +
-        //     "start: ({StartFilename}: {StartIndexOffset}), end: ({EndFilename}: {EndIndexOffset})",
-        //     startFilename,
-        //     startIndex.Value.Offset,
-        //     endFilename,
-        //     endIndex.Value.Offset);
-        // foreach (var file in _filesAggregator.GetWrappedRange(startFilename, endFilename))
-        // {
-        //     var filename = Path.GetFileName(file);
-        //     var scanner = GetScanner(file);
-        //     
-        //     var (startOffset, endOffset) = ResolveScanRange(
-        //         filename, startFilename, endFilename, startIndex.Value.Offset, endIndex.Value.Offset);
-        //     foreach (var (_, pkg) in scanner.GetPackagesParsed(_factory, filterIds, context, startOffset, endOffset))
-        //     {
-        //         yield return pkg;
-        //     }
-        // }
-
         var timeRange = new TimeRange(start, end);
         var sessions = _indexParser.Sessions.GetRange(timeRange);
         if (sessions.Count == 0)
@@ -174,28 +136,6 @@ public partial class LogParser : ILogParser
         scanner = new LogFileScanner(_logger, file);
         _scanners[file] = scanner;
         return scanner;
-    }
-    
-    private static (long, long) ResolveScanRange(
-        string filename,
-        string startFilename,
-        string endFilename,
-        long startOffset,
-        long endOffset)
-    {
-        if (startFilename == endFilename && filename == startFilename)
-        {
-            return (startOffset, endOffset);
-        }
-        if (filename == startFilename)
-        {
-            return (startOffset, 0);
-        }
-        if (filename == endFilename)
-        {
-            return (0, endOffset);
-        }
-        return (0, 0);
     }
 
     [GeneratedRegex(@"^[0-1][0-9]$")]
