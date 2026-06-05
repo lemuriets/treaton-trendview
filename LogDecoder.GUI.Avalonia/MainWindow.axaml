@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="clr-namespace:LogDecoder.GUI.Avalonia.Models"
     xmlns:vm="clr-namespace:LogDecoder.GUI.Avalonia.ViewModels"
-    xmlns:conv="clr-namespace:LogDecoder.GUI.Avalonia.Converters"
+    xmlns:views="clr-namespace:LogDecoder.GUI.Avalonia.Views"
     xmlns:loc="clr-namespace:LogDecoder.GUI.Avalonia.Localization"
     x:DataType="vm:MainWindowViewModel"
     x:CompileBindings="True"
@@ -17,11 +17,6 @@
     MaxHeight="700"
     MaxWidth="900"
     CanResize="True">
-
-    <Window.Resources>
-        <conv:BoolToHandCursorConverter x:Key="BoolToHandCursor"/>
-        <conv:BoolToUnderlineConverter x:Key="BoolToUnderline"/>
-    </Window.Resources>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -71,31 +66,21 @@
                 MinWidth="300"
                 VerticalAlignment="Stretch">
 
-                <StackPanel Grid.Row="0" Margin="0,0,0,4">
-                    <TextBlock Text="{loc:Localize InputFolderLabel}"/>
+                <views:FolderSelectorView
+                    Grid.Row="0"
+                    Label="{loc:Localize InputFolderLabel}"
+                    PathText="{Binding InputFolderText}"
+                    PathBrush="{Binding InputFolderBrush}"
+                    IsLink="{Binding InputFolderIsLink}"
+                    OpenCommand="{Binding OpenInputFolderCommand}"/>
 
-                    <TextBlock
-                        Text="{Binding InputFolderText}"
-                        Foreground="{Binding InputFolderBrush}"
-                        Cursor="{Binding InputFolderIsLink, Converter={StaticResource BoolToHandCursor}}"
-                        TextDecorations="{Binding InputFolderIsLink, Converter={StaticResource BoolToUnderline}}"
-                        TextWrapping="Wrap"
-                        TextTrimming="CharacterEllipsis"
-                        PointerPressed="SelectedInputFolder_Click"/>
-                </StackPanel>
-
-                <StackPanel Grid.Row="1" Margin="0,0,0,4">
-                    <TextBlock Text="{loc:Localize OutputFolderLabel}"/>
-
-                    <TextBlock
-                        Text="{Binding OutputFolderText}"
-                        Foreground="{Binding OutputFolderBrush}"
-                        Cursor="{Binding OutputFolderIsLink, Converter={StaticResource BoolToHandCursor}}"
-                        TextDecorations="{Binding OutputFolderIsLink, Converter={StaticResource BoolToUnderline}}"
-                        TextWrapping="Wrap"
-                        TextTrimming="CharacterEllipsis"
-                        PointerPressed="SelectedOutputFolder_Click"/>
-                </StackPanel>
+                <views:FolderSelectorView
+                    Grid.Row="1"
+                    Label="{loc:Localize OutputFolderLabel}"
+                    PathText="{Binding OutputFolderText}"
+                    PathBrush="{Binding OutputFolderBrush}"
+                    IsLink="{Binding OutputFolderIsLink}"
+                    OpenCommand="{Binding OpenOutputFolderCommand}"/>
 
                 <TextBlock
                     Grid.Row="2"

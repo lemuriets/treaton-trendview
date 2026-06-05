@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using LogDecoder.CAN.Packages;
 using LogDecoder.GUI.Avalonia.Models;
@@ -145,16 +144,6 @@ public partial class MainWindow : Window
         _isUpdatingSelectAll = true;
         ChkSelectAllPackages.IsChecked = PackageIdList.SelectedItems?.Count == _viewModel.Packages.Count;
         _isUpdatingSelectAll = false;
-    }
-
-    private void SelectedInputFolder_Click(object? sender, PointerPressedEventArgs e)
-    {
-        _viewModel.OpenInputFolderCommand.Execute(null);
-    }
-
-    private void SelectedOutputFolder_Click(object? sender, PointerPressedEventArgs e)
-    {
-        _viewModel.OpenOutputFolderCommand.Execute(null);
     }
 
     private void UpdateLanguageCheckmarks()

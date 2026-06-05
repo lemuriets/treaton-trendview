@@ -1,0 +1,25 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:LogDecoder.GUI.Avalonia.Converters"
+    x:Class="LogDecoder.GUI.Avalonia.Views.FolderSelectorView"
+    x:Name="Root">
+
+    <UserControl.Resources>
+        <conv:BoolToHandCursorConverter x:Key="BoolToHandCursor"/>
+        <conv:BoolToUnderlineConverter x:Key="BoolToUnderline"/>
+    </UserControl.Resources>
+
+    <StackPanel Margin="0,0,0,4">
+        <TextBlock Text="{Binding #Root.Label}"/>
+
+        <TextBlock
+            Text="{Binding #Root.PathText}"
+            Foreground="{Binding #Root.PathBrush}"
+            Cursor="{Binding #Root.IsLink, Converter={StaticResource BoolToHandCursor}}"
+            TextDecorations="{Binding #Root.IsLink, Converter={StaticResource BoolToUnderline}}"
+            TextWrapping="Wrap"
+            TextTrimming="CharacterEllipsis"
+            PointerPressed="OnPathPressed"/>
+    </StackPanel>
+</UserControl>
