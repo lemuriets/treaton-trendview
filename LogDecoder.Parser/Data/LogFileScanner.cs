@@ -89,7 +89,7 @@ public class LogFileScanner: ILogFileScanner
             
             foreach (var (bufOffset, package) in logBuffer.GetPackages(filterIds, localStartOffset, localEndOffset))
             {
-                var globalOffset = offsetBufferStart + (i - firstBufferIndex) * LogBuffer.BufferWithHeaderSize + bufOffset + LogBuffer.HeaderSize;
+                var globalOffset = offsetBufferStart + (long)(i - firstBufferIndex) * LogBuffer.BufferWithHeaderSize + bufOffset + LogBuffer.HeaderSize;
                 yield return (globalOffset, package);
             }
         }
