@@ -1,4 +1,6 @@
-﻿namespace LogDecoder.GUI.Avalonia.Models;
+﻿using LogDecoder.GUI.Avalonia.Localization;
+
+namespace LogDecoder.GUI.Avalonia.Models;
 
 public class ScaleItem(int seconds)
 {
@@ -6,10 +8,11 @@ public class ScaleItem(int seconds)
 
     public override string ToString()
     {
-        if (Seconds / 60 > 0 &&  Seconds % 60 == 0)
+        var loc = LocalizationManager.Instance;
+        if (Seconds / 60 > 0 && Seconds % 60 == 0)
         {
-            return  $"{Seconds / 60} мин";
+            return $"{Seconds / 60} {loc.Get("ScaleMinutes")}";
         }
-        return $"{Seconds} сек";
+        return $"{Seconds} {loc.Get("ScaleSeconds")}";
     }
 }

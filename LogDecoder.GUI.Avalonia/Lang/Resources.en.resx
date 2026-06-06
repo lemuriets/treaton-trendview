@@ -91,6 +91,8 @@ Application for parsing and export logs from AVL.</value></data>
     <data name="TrendsVentilationParams" xml:space="preserve"><value>Ventilation parameters</value></data>
     <data name="TrendsErrors" xml:space="preserve"><value>Errors</value></data>
     <data name="TrendsDateNotFound" xml:space="preserve"><value>Date not found!</value></data>
+    <data name="ScaleMinutes" xml:space="preserve"><value>min</value></data>
+    <data name="ScaleSeconds" xml:space="preserve"><value>sec</value></data>
     <data name="TrendsPip" xml:space="preserve"><value>PIP (cmH₂O):</value></data>
     <data name="TrendsPeep" xml:space="preserve"><value>PEEP (cmH₂O):</value></data>
     <data name="TrendsMvTotal" xml:space="preserve"><value>MV total (L/min):</value></data>
