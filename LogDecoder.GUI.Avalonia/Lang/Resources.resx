@@ -84,6 +84,11 @@
 
     <data name="CriticalErrorTitle" xml:space="preserve"><value>Критическая ошибка</value></data>
 
+    <data name="MenuDebug" xml:space="preserve"><value>_Отладка</value></data>
+    <data name="MenuDebugLog" xml:space="preserve"><value>_Журнал приложения</value></data>
+    <data name="DebugLogTitle" xml:space="preserve"><value>Журнал отладки</value></data>
+    <data name="DebugLogFilterLabel" xml:space="preserve"><value>Уровень:</value></data>
+
     <data name="TrendsTitle" xml:space="preserve"><value>Тренды</value></data>
     <data name="TrendsScaleLabel" xml:space="preserve"><value>Масштаб:</value></data>
     <data name="TrendsStartLabel" xml:space="preserve"><value>Начало:</value></data>

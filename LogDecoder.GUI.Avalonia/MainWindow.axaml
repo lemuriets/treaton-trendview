@@ -48,6 +48,12 @@
                     CommandParameter="en"/>
             </MenuItem>
 
+            <MenuItem Header="{loc:Localize MenuDebug}">
+                <MenuItem
+                    Header="{loc:Localize MenuDebugLog}"
+                    Command="{Binding OpenDebugLogCommand}"/>
+            </MenuItem>
+
             <MenuItem
                 Header="{loc:Localize MenuAbout}"
                 Command="{Binding AboutCommand}"/>

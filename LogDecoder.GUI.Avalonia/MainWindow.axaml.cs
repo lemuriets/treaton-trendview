@@ -44,6 +44,7 @@ public partial class MainWindow : Window
             folderLauncher,
             dialogs,
             parser => new Trends(parser).Show(this),
+            () => new DebugLogWindow().Show(this),
             AppVersionProvider.GetVersion());
 
         InitializeComponent();

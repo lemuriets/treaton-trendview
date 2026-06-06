@@ -29,7 +29,8 @@ public static class LoggerConfig
         var loggerConfig = new LoggerConfiguration()
             .MinimumLevel.Is(minimumLevel)
             // .ReadFrom.Configuration(configuration)
-            .WriteTo.Console(outputTemplate: OutputTemplate);
+            .WriteTo.Console(outputTemplate: OutputTemplate)
+            .WriteTo.Sink(InMemoryLogSink.Instance);
             
 #if !DEBUG
         loggerConfig

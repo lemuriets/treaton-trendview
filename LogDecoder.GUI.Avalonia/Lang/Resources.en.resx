@@ -84,6 +84,11 @@ Application for parsing and export logs from AVL.</value></data>
 
     <data name="CriticalErrorTitle" xml:space="preserve"><value>Critical error</value></data>
 
+    <data name="MenuDebug" xml:space="preserve"><value>_Debug</value></data>
+    <data name="MenuDebugLog" xml:space="preserve"><value>_Application log</value></data>
+    <data name="DebugLogTitle" xml:space="preserve"><value>Debug log</value></data>
+    <data name="DebugLogFilterLabel" xml:space="preserve"><value>Level:</value></data>
+
     <data name="TrendsTitle" xml:space="preserve"><value>Trends</value></data>
     <data name="TrendsScaleLabel" xml:space="preserve"><value>Scale:</value></data>
     <data name="TrendsStartLabel" xml:space="preserve"><value>Start:</value></data>

@@ -28,6 +28,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     private readonly FolderLauncherService _folderLauncher;
     private readonly DialogService _dialogs;
     private readonly Action<LogParser> _openTrends;
+    private readonly Action _openDebugLog;
     private readonly string _appVersion;
 
     private readonly FolderSelection _inputFolderSelection = new();
@@ -55,6 +56,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         FolderLauncherService folderLauncher,
         DialogService dialogs,
         Action<LogParser> openTrends,
+        Action openDebugLog,
         string appVersion)
     {
         _logger = logger;
@@ -67,6 +69,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         _folderLauncher = folderLauncher;
         _dialogs = dialogs;
         _openTrends = openTrends;
+        _openDebugLog = openDebugLog;
         _appVersion = appVersion;
 
         _title = $"{AppName} v{appVersion}";
@@ -342,6 +345,9 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     }
 
     private bool CanOpenTrends() => !IsBusy && _indexing.HasIndex;
+
+    [RelayCommand]
+    private void OpenDebugLog() => _openDebugLog();
 
     [RelayCommand]
     private void OpenInputFolder()

@@ -1,0 +1,39 @@
+<Window x:Class="LogDecoder.GUI.Avalonia.DebugLogWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:LogDecoder.GUI.Avalonia.Converters"
+        xmlns:vm="clr-namespace:LogDecoder.GUI.Avalonia.ViewModels"
+        xmlns:loc="clr-namespace:LogDecoder.GUI.Avalonia.Localization"
+        Title="{loc:Localize DebugLogTitle}"
+        Height="500" Width="800"
+        MinHeight="300" MinWidth="500">
+    <Window.Resources>
+        <conv:LogLevelToBrushConverter x:Key="LogLevelToBrushConverter"/>
+    </Window.Resources>
+
+    <DockPanel Margin="8">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+            <TextBlock Text="{loc:Localize DebugLogFilterLabel}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+            <ComboBox Width="120"
+                      ItemsSource="{Binding LevelFilters}"
+                      SelectedItem="{Binding SelectedFilter, Mode=TwoWay}"/>
+        </StackPanel>
+
+        <ListBox ItemsSource="{Binding Lines}"
+                 x:Name="LogListBox"
+                 Background="#1A1A1D"
+                 BorderThickness="1"
+                 BorderBrush="#444">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="vm:LogLineItem">
+                    <TextBlock Text="{Binding Text}"
+                               TextWrapping="Wrap"
+                               FontFamily="Consolas, Menlo, monospace"
+                               FontSize="12"
+                               Foreground="{Binding Level, Converter={StaticResource LogLevelToBrushConverter}}"
+                               Margin="0,1"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</Window>
