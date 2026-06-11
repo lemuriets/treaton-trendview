@@ -11,6 +11,7 @@ namespace LogDecoder.Parser.Export;
 public class CsvExport(ILogger logger, LogParser logParser)
 {
     private const int RoundTo = 3;
+
     public void ToCsv(
         string logsFolder,
         string outputFolder,
@@ -33,8 +34,22 @@ public class CsvExport(ILogger logger, LogParser logParser)
         using var csvSession = new CsvSession(csvFilePath);
         var csvWriter = new CsvWriter(csvSession);
 
-        csvWriter.AddRow(["Id", "Имя", "Время последнего IdSynchro"]);
+        csvWriter.AddRow(["Id", "Имя", "Время последнего IdSynchro", "[ИмяПараметра; Значение]...", "[Сообщение]..."]);
 
+        var rowCounter = WriteDataRows(csvWriter, filterIds, start, end, ignoreDuplicates, excludeEmptyTimestamps, cancellationToken);
+
+        logger.LogDebug("Added {RowCounter} rows to csv.", rowCounter);
+    }
+
+    private int WriteDataRows(
+        CsvWriter csvWriter,
+        IReadOnlySet<int> filterIds,
+        DateTime start,
+        DateTime end,
+        bool ignoreDuplicates,
+        bool excludeEmptyTimestamps,
+        CancellationToken cancellationToken)
+    {
         var rowCounter = 0;
         List<string> prevMessages = [];
         ICanPackageParsed? prevPackage = null;
@@ -62,21 +77,13 @@ public class CsvExport(ILogger logger, LogParser logParser)
                 continue;
             }
 
-            
             if (package.Id == IdSynchro.Id)
             {
                 lastDateTimeStr = packageMessages[0];
             }
 
-            if (excludeEmptyTimestamps &&
-                prevPackage != null &&
-                package.Id == IdSynchro.Id &&
-                prevPackage.Id == package.Id)
-            {
-                continue;
-            }
-
-            if (ignoreDuplicates && prevMessages.SequenceEqual(packageMessages) && packageNumericData.Count == 0)
+            if (ShouldSkip(package, prevPackage, prevMessages, packageMessages, packageNumericData,
+                    excludeEmptyTimestamps, ignoreDuplicates))
             {
                 continue;
             }
@@ -88,7 +95,30 @@ public class CsvExport(ILogger logger, LogParser logParser)
             prevMessages = packageMessages;
         }
 
-        logger.LogDebug("Added {RowCounter} rows to csv.", rowCounter);
+        return rowCounter;
+    }
+
+    private static bool ShouldSkip(
+        ICanPackageParsed package,
+        ICanPackageParsed? prevPackage,
+        List<string> prevMessages,
+        List<string> currentMessages,
+        IReadOnlyCollection<NumericDataItem> numericData,
+        bool excludeEmptyTimestamps,
+        bool ignoreDuplicates)
+    {
+        if (excludeEmptyTimestamps &&
+            prevPackage != null &&
+            package.Id == IdSynchro.Id &&
+            prevPackage.Id == package.Id)
+        {
+            return true;
+        }
+        if (ignoreDuplicates && prevMessages.SequenceEqual(currentMessages) && numericData.Count == 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     private static bool ShouldExport(ICanPackageParsed package, IReadOnlySet<PackageTechStatus> techStatusesToParse)
