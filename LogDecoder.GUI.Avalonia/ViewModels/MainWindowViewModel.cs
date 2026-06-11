@@ -139,7 +139,6 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     partial void OnStartDateTimeTextChanged(string value) => OnInputChanged();
     partial void OnEndDateTimeTextChanged(string value) => OnInputChanged();
 
-    // Matches the old InputsChanged handler: clear the (now stale) export status and re-validate.
     private void OnInputChanged()
     {
         SetExportStatus(null, Brushes.Green);
@@ -158,8 +157,6 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         RefreshCommands();
     }
 
-    // Called by the view when the multi-select package list changes (the selection
-    // mechanics stay in code-behind; the view-model only needs the resulting IDs).
     public void SetSelectedPackageIds(IReadOnlySet<int> ids)
     {
         _selectedPackageIds = ids;
@@ -436,7 +433,6 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         {
             return;
         }
-        // An empty key is used by callers as "clear the status".
         SetExportStatus(statusKey.Length == 0 ? null : statusKey, Brushes.Green);
     }
 

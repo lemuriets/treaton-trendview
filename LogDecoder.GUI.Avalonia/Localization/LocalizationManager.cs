@@ -38,15 +38,10 @@ public sealed class LocalizationManager : INotifyPropertyChanged
 
         CultureInfo.CurrentCulture = culture;
         CultureInfo.CurrentUICulture = culture;
-        // Newly created threads/Tasks (export, indexing) inherit these defaults, so
-        // number/date formatting and resource lookups stay consistent off the UI thread.
         CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
         Resources.Culture = culture;
 
-        // Avalonia 11 only re-reads an indexer binding ({Binding [Key]} / {loc:Localize})
-        // when PropertyChanged fires with the CLR indexer member name "Item" — verified
-        // empirically. Neither "" ("all changed") nor the WPF-style "Item[]" refresh it.
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item"));
     }
 }

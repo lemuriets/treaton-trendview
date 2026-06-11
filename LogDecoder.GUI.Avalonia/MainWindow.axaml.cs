@@ -88,9 +88,6 @@ public partial class MainWindow : Window
         }
     }
 
-    // The multi-select package list and the "select all" checkbox are kept in code-behind
-    // because Avalonia's ListBox.SelectedItems is not cleanly bindable. The resulting set of
-    // selected IDs is pushed to the view-model.
     private void PackageSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         var ids = PackageIdList.SelectedItems?
@@ -184,6 +181,6 @@ public partial class MainWindow : Window
 
     private static TextBlock CreateCheckmark()
     {
-        return new TextBlock { Text = "✓" };
+        return new TextBlock { Text = "●" };
     }
 }
