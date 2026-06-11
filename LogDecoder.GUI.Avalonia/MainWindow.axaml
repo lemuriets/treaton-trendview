@@ -18,6 +18,38 @@
     MaxWidth="900"
     CanResize="True">
 
+    <Window.Resources>
+        <Flyout x:Key="PackageDescriptionFlyout" Placement="Right">
+            <StackPanel
+                x:CompileBindings="False"
+                MaxWidth="460"
+                Spacing="6">
+                <TextBlock
+                    Text="{Binding Title}"
+                    FontWeight="Bold"
+                    TextWrapping="Wrap"/>
+                <TextBlock
+                    Text="{Binding Description}"
+                    TextWrapping="Wrap"
+                    IsVisible="{Binding HasDescription}"/>
+                <Border
+                    Height="1"
+                    Background="#33000000"
+                    Margin="0,2"
+                    IsVisible="{Binding HasDetails}"/>
+                <ScrollViewer
+                    MaxHeight="320"
+                    HorizontalScrollBarVisibility="Disabled"
+                    IsVisible="{Binding HasDetails}">
+                    <TextBlock
+                        Text="{Binding Details}"
+                        TextWrapping="Wrap"
+                        FontSize="12"/>
+                </ScrollViewer>
+            </StackPanel>
+        </Flyout>
+    </Window.Resources>
+
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="{loc:Localize MenuFile}">
@@ -102,18 +134,29 @@
                     MinHeight="120"
                     Margin="0,0,0,4">
 
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListBox.Styles>
+
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="models:PackageItem">
-                            <TextBlock
-                                TextWrapping="NoWrap"
-                                TextTrimming="CharacterEllipsis">
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="({0}) {1}">
-                                        <Binding Path="Id"/>
-                                        <Binding Path="Name"/>
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
+                            <Border
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                ToolTip.Tip="{loc:Localize PackageDescriptionHint}">
+                                <TextBlock
+                                    TextWrapping="NoWrap"
+                                    TextTrimming="CharacterEllipsis">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="({0}) {1}">
+                                            <Binding Path="Id"/>
+                                            <Binding Path="Name"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

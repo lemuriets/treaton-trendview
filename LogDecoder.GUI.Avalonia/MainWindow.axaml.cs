@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using LogDecoder.CAN.Packages;
 using LogDecoder.GUI.Avalonia.Models;
 using LogDecoder.GUI.Avalonia.Services;
@@ -17,6 +18,7 @@ public partial class MainWindow : Window
     private readonly MainWindowViewModel _viewModel;
 
     private bool _isUpdatingSelectAll;
+    private Flyout? _descriptionFlyout;
 
     public MainWindow()
     {
@@ -53,8 +55,11 @@ public partial class MainWindow : Window
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
         PackageIdList.SelectionChanged += PackageSelectionChanged;
+        PackageIdList.ContextRequested += PackageContextRequested;
         ChkSelectAllPackages.Checked += ChkSelectAllPackagesChecked;
         ChkSelectAllPackages.Unchecked += ChkSelectAllPackagesUnchecked;
+
+        _descriptionFlyout = (Flyout)Resources["PackageDescriptionFlyout"]!;
 
         UpdateLanguageCheckmarks();
 
@@ -65,6 +70,7 @@ public partial class MainWindow : Window
     {
         _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         PackageIdList.SelectionChanged -= PackageSelectionChanged;
+        PackageIdList.ContextRequested -= PackageContextRequested;
         ChkSelectAllPackages.Checked -= ChkSelectAllPackagesChecked;
         ChkSelectAllPackages.Unchecked -= ChkSelectAllPackagesUnchecked;
 
@@ -94,6 +100,28 @@ public partial class MainWindow : Window
 
         _viewModel.SetSelectedPackageIds(ids);
         UpdateSelectAllCheckbox();
+    }
+
+    private void PackageContextRequested(object? sender, ContextRequestedEventArgs e)
+    {
+        if (_descriptionFlyout is null || e.Source is not Control source)
+        {
+            return;
+        }
+
+        if (source.DataContext is not PackageItem item)
+        {
+            return;
+        }
+
+        var target = source.FindAncestorOfType<ListBoxItem>() ?? source;
+        if (_descriptionFlyout.Content is Control content)
+        {
+            content.DataContext = item;
+        }
+
+        _descriptionFlyout.ShowAt(target, showAtPointer: true);
+        e.Handled = true;
     }
 
     private void ChkSelectAllPackagesChecked(object? sender, RoutedEventArgs e)

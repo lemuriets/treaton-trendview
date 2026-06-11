@@ -22,6 +22,11 @@ public sealed class LocalizationManager : INotifyPropertyChanged
         return this[key];
     }
 
+    public string? Find(string key)
+    {
+        return _resourceManager.GetString(key, CultureInfo.CurrentUICulture);
+    }
+
     public string Format(string key, params object[] args)
     {
         return string.Format(CultureInfo.CurrentCulture, Get(key), args);
