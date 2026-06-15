@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
+using LogDecoder.CAN.Protocol;
 using LogDecoder.Parser;
 using LogDecoder.GUI.Avalonia.Commands;
 using LogDecoder.GUI.Avalonia.Models;
@@ -77,6 +78,8 @@ public class TrendViewModel : INotifyPropertyChanged
         }
     }
 
+    private readonly ObservableCollection<LogMessage> _allMessages = [];
+
     private ObservableCollection<LogMessage> _messages = [];
     public ObservableCollection<LogMessage> Messages
     {
@@ -85,6 +88,20 @@ public class TrendViewModel : INotifyPropertyChanged
         {
             _messages = value;
             OnPropertyChanged(nameof(Messages));
+        }
+    }
+
+    public PackageTechStatus[] Levels { get; } = Enum.GetValues<PackageTechStatus>();
+
+    private PackageTechStatus _selectedLevel = PackageTechStatus.Ok;
+    public PackageTechStatus SelectedLevel
+    {
+        get => _selectedLevel;
+        set
+        {
+            _selectedLevel = value;
+            OnPropertyChanged(nameof(SelectedLevel));
+            RebuildFilteredMessages();
         }
     }
 
@@ -182,11 +199,24 @@ public class TrendViewModel : INotifyPropertyChanged
     private void UpdatePlots(DateTime start, int lenghtSec)
     {
         AllSeries.ClearAll();
-        Messages.Clear();
+        _allMessages.Clear();
 
-        _dataProvider.GetDataForTimeSpan(AllSeries, Messages, start, lenghtSec, 0);
+        _dataProvider.GetDataForTimeSpan(AllSeries, _allMessages, start, lenghtSec, 0);
+        RebuildFilteredMessages();
 
         ApplyToAllPlots(plot => plot.LoadNewPointsAndUpdate(plot.SelectedPlot.Points));
+    }
+
+    private void RebuildFilteredMessages()
+    {
+        Messages.Clear();
+        foreach (var m in _allMessages)
+        {
+            if (m.Status >= _selectedLevel)
+            {
+                Messages.Add(m);
+            }
+        }
     }
 
     private DateTime GetDateTimeByX(double x)

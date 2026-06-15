@@ -64,13 +64,16 @@
                     <Separator Margin="0,6,0,6"/>
                     <TextBlock Text="{loc:Localize TrendsErrors}" FontWeight="Bold" Foreground="LightGray" Margin="0,0,0,8"/>
                     <Border BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="4" Background="#1A1A1D">
-                        <ListBox ItemsSource="{Binding Messages}" Height="250" Background="#1A1A1D" BorderThickness="0">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}}"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        <StackPanel>
+                            <ComboBox ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="0,0,0,6"/>
+                            <ListBox ItemsSource="{Binding Messages}" Height="250" Background="#1A1A1D" BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}}"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
                     </Border>
                 </StackPanel>
             </Border>
