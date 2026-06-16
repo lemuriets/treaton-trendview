@@ -305,10 +305,9 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
         SetCursorX(x);
     }
 
-    // Re-anchors the window only when the cursor leaves [_windowStart, +Scale],
-    // keeping the cursor at the edge it crossed so stepping scrolls the window
-    // point-by-point instead of jumping a whole page. Right and left stay
-    // inverse: stepping back returns to the previous view.
+    // Re-anchors the window when the cursor leaves [_windowStart, +Scale].
+    // Forward: cursor lands at the left edge. Backward: at the right edge, so
+    // there is room to keep stepping in the same direction before re-paging.
     private void RepageIfNeeded(DateTime current, bool pageBackward)
     {
         var windowEnd = _windowStart.AddSeconds(_scale.Seconds);
@@ -317,11 +316,9 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
             return;
         }
 
-        // Moving left: cursor sits at the left edge. Moving right: at the right
-        // edge (so the just-visited points stay on screen to the left).
         _windowStart = pageBackward
-            ? current
-            : current.AddSeconds(-_scale.Seconds);
+            ? current.AddSeconds(-_scale.Seconds)
+            : current;
 
         SyncStartDateTimeText();
         ReloadWindow();
