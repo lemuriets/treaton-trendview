@@ -56,8 +56,8 @@
                         <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Localize TrendsVt}" Foreground="LightGray"/><TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding ValVt, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFB966" FontWeight="Bold"/>
                         <TextBlock Grid.Row="5" Grid.Column="0" Text="{loc:Localize TrendsRb1}" Foreground="LightGray"/><TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding ValRB1, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFD700" FontWeight="Bold"/>
                         <TextBlock Grid.Row="6" Grid.Column="0" Text="{loc:Localize TrendsRb2}" Foreground="LightGray"/><TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding ValRB2, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFD700" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="7" Grid.Column="0" Text="{loc:Localize TrendsCst}" Foreground="LightGray"/><TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding ValCst, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="8" Grid.Column="0" Text="{loc:Localize TrendsRst}" Foreground="LightGray"/><TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding ValRst, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="{loc:Localize TrendsCst}" Foreground="LightGray"/><TextBlock Grid.Row="7" Grid.Column="1" Text="---" Foreground="#FFFFFF" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="{loc:Localize TrendsRst}" Foreground="LightGray"/><TextBlock Grid.Row="8" Grid.Column="1" Text="---" Foreground="#FFFFFF" FontWeight="Bold"/>
                         <TextBlock Grid.Row="9" Grid.Column="0" Text="{loc:Localize TrendsLeak}" Foreground="LightGray"/><TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding ValLeak, Converter={StaticResource NaNToPlaceholderConverter}}" Foreground="#FFFFFF" FontWeight="Bold"/>
                     </Grid>
 
