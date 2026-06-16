@@ -7,7 +7,7 @@ public class NaNToPlaceholderConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is double d && !double.IsNaN(d) && d != 0)
+        if (value is double d && !double.IsNaN(d))
         {
             return d.ToString("F2", culture);
         }
