@@ -1,15 +1,12 @@
 using LogDecoder.Parser;
-using LogDecoder.Parser.Data;
 
 namespace LogDecoder.GUI.Avalonia.Services;
 
 /// <summary>
 /// Navigates the ordered index points (timestamps) produced by the parser.
-/// IndexTimes is flattened across sessions in chronological order, so two
-/// adjacent points separated by &gt;= <see cref="IndexParser.MinIntervalBetweenSessions"/>
-/// belong to different ring-buffer "windows". MoveNext/MovePrev refuse to
-/// cross such a boundary so the cursor never silently jumps between sessions.
-/// The very first/last points clamp.
+/// Movement is by index point: this naturally skips gaps and crosses session
+/// boundaries, because the ordinal after a session's last point is the next
+/// session's first point. The very first/last points clamp.
 /// </summary>
 public class IndexNavigator(LogParser parser)
 {
@@ -31,10 +28,6 @@ public class IndexNavigator(LogParser parser)
         {
             return false;
         }
-        if (IsSessionBoundary(_times[_cursor], _times[_cursor + 1]))
-        {
-            return false;
-        }
         _cursor++;
         return true;
     }
@@ -45,17 +38,8 @@ public class IndexNavigator(LogParser parser)
         {
             return false;
         }
-        if (IsSessionBoundary(_times[_cursor - 1], _times[_cursor]))
-        {
-            return false;
-        }
         _cursor--;
         return true;
-    }
-
-    private static bool IsSessionBoundary(DateTime a, DateTime b)
-    {
-        return (b - a).Duration() >= IndexParser.MinIntervalBetweenSessions;
     }
 
     /// <summary>

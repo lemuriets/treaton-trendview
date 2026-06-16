@@ -18,7 +18,7 @@ public class IndexParser : IIndexParser
     }
 
     private const int HeaderLinesQuantity = 1;
-    public static readonly TimeSpan MinIntervalBetweenSessions = TimeSpan.FromSeconds(15);
+    private static readonly TimeSpan MinIntervalBetweenSessions = TimeSpan.FromSeconds(15);
     private readonly ILogger _logger;
     private readonly ILogFilesAggregator _filesAggregator;
     private readonly LogSessionsSorted _sessions = new LogSessionsSorted();
