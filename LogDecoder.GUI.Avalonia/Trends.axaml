@@ -33,7 +33,7 @@
 
                     <StackPanel Orientation="Horizontal" Margin="6,8,0,4" VerticalAlignment="Center">
                         <TextBlock Text="{loc:Localize TrendsStartLabel}" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="DimGray"/>
-                        <TextBox Width="200" Text="{Binding StartDateTime, Mode=TwoWay, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"/>
+                        <TextBox x:Name="StartTimeBox" Width="200" KeyDown="StartTimeBoxKeyDown" Text="{Binding StartDateTime, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"/>
                         <TextBlock Text="{Binding CurrentDateTime, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}" Margin="20,4,0,6" Foreground="#000"/>
                         <TextBlock Text="{Binding TxtError}" Foreground="Red" TextWrapping="Wrap" Margin="10,4,10,0"/>
                     </StackPanel>
