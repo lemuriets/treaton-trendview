@@ -15,7 +15,16 @@ public partial class App : Application
 
     public override void Initialize()
     {
-        new LanguageService(new LanguageSettingsService()).ApplySavedLanguage();
+        try
+        {
+            new LanguageService(new LanguageSettingsService()).ApplySavedLanguage();
+        }
+        catch
+        {
+            // Settings IO or culture lookup must not block startup; fall through
+            // to the default culture. Global handlers aren't installed yet, so a
+            // throw here would crash before any error dialog could appear.
+        }
 
         AvaloniaXamlLoader.Load(this);
     }
@@ -127,7 +136,7 @@ public partial class App : Application
 
         var window = new Window
         {
-            Title = Localizer.L("CriticalErrorTitle"),
+            Title = "Critical error",
             Width = 760,
             Height = 420,
             Content = content
