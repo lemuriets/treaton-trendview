@@ -93,6 +93,7 @@ Application for parsing and export logs from AVL.</value></data>
     <data name="TrendsScaleLabel" xml:space="preserve"><value>Scale:</value></data>
     <data name="TrendsStartLabel" xml:space="preserve"><value>Start:</value></data>
     <data name="TrendsBatteryLabel" xml:space="preserve"><value>Battery charge:</value></data>
+    <data name="BatteryCharging" xml:space="preserve"><value>Charging</value></data>
     <data name="TrendsVentilationParams" xml:space="preserve"><value>Ventilation parameters</value></data>
     <data name="TrendsErrors" xml:space="preserve"><value>Errors</value></data>
     <data name="TrendsDateNotFound" xml:space="preserve"><value>Date not found!</value></data>

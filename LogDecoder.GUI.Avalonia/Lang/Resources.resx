@@ -93,6 +93,7 @@
     <data name="TrendsScaleLabel" xml:space="preserve"><value>Масштаб:</value></data>
     <data name="TrendsStartLabel" xml:space="preserve"><value>Начало:</value></data>
     <data name="TrendsBatteryLabel" xml:space="preserve"><value>Заряд аккумулятора:</value></data>
+    <data name="BatteryCharging" xml:space="preserve"><value>Заряжается</value></data>
     <data name="TrendsVentilationParams" xml:space="preserve"><value>Параметры вентиляции</value></data>
     <data name="TrendsErrors" xml:space="preserve"><value>Ошибки</value></data>
     <data name="TrendsDateNotFound" xml:space="preserve"><value>Дата не найдена!</value></data>

@@ -1,5 +1,6 @@
 using System.Globalization;
 using Avalonia.Data.Converters;
+using LogDecoder.GUI.Avalonia;
 
 namespace LogDecoder.GUI.Avalonia.Converters;
 
@@ -9,7 +10,7 @@ public class BatteryConverter : IValueConverter
     {
         if (value is double d)
         {
-            return d > 100.0 ? "Заряжается" : d.ToString("F2", culture);
+            return d > 100.0 ? Localizer.L("BatteryCharging") : d.ToString("F2", culture);
         }
 
         return "---";
