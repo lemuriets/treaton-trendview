@@ -4,6 +4,7 @@ using System.Windows.Input;
 using LogDecoder.CAN.Protocol;
 using LogDecoder.Parser;
 using LogDecoder.GUI.Avalonia.Commands;
+using LogDecoder.GUI.Avalonia.Localization;
 using LogDecoder.GUI.Avalonia.Models;
 using LogDecoder.GUI.Avalonia.Services;
 using OxyPlot;
@@ -16,13 +17,14 @@ internal class Cursor
     public DateTime CurrentDateTime { get; set; }
 }
 
-public class TrendViewModel : INotifyPropertyChanged
+public class TrendViewModel : INotifyPropertyChanged, IDisposable
 {
     public TrendViewModel(LogParser parser)
     {
         _dataProvider = new DataProvider(parser);
         _navigator = new IndexNavigator(parser);
 
+        Scales = BuildScales();
         _scale = Scales[0];
 
         PlotBox1 = new PlotBoxViewModel("", 0, _scale.Seconds, OxyColors.Lime);
@@ -43,6 +45,13 @@ public class TrendViewModel : INotifyPropertyChanged
 
         MoveCursorsLeftCommand = new RelayCommand(_ => MoveCursorsLeft());
         MoveCursorsRightCommand = new RelayCommand(_ => MoveCursorsRight());
+
+        LocalizationManager.Instance.PropertyChanged += OnLanguageChanged;
+    }
+
+    public void Dispose()
+    {
+        LocalizationManager.Instance.PropertyChanged -= OnLanguageChanged;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -54,7 +63,10 @@ public class TrendViewModel : INotifyPropertyChanged
     public PlotBoxViewModel PlotBox2 { get; }
     public PlotBoxViewModel PlotBox3 { get; }
 
-    public ScaleItem[] Scales { get; } = [ new(5), new(10), new(15), new(30), new(60), new(120), new(180), new(240), new(300), new(600) ];
+    public ScaleItem[] Scales { get; private set; }
+
+    private static ScaleItem[] BuildScales() =>
+        [ new(5), new(10), new(15), new(30), new(60), new(120), new(180), new(240), new(300), new(600) ];
 
     private ScaleItem _scale;
     public ScaleItem Scale
@@ -63,8 +75,21 @@ public class TrendViewModel : INotifyPropertyChanged
         set
         {
             _scale = value;
+            OnPropertyChanged(nameof(Scale));
             ApplyScales();
         }
+    }
+
+    private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // ScaleItem.ToString() reads the current culture once; existing items
+        // never re-render on a language swap. Rebuild the array and preserve
+        // the selection by Seconds so the ComboBox shows fresh labels.
+        var seconds = _scale.Seconds;
+        Scales = BuildScales();
+        _scale = Array.Find(Scales, s => s.Seconds == seconds) ?? Scales[0];
+        OnPropertyChanged(nameof(Scales));
+        OnPropertyChanged(nameof(Scale));
     }
 
     private string _txtError = string.Empty;
@@ -105,7 +130,7 @@ public class TrendViewModel : INotifyPropertyChanged
         }
     }
 
-    public TrendsData AllSeries { get; set; } = new();
+    public TrendsData AllSeries { get; private set; } = new();
 
     public double ValBattery => AllSeries.Battery.GetValueNearestX(_cursorX);
     public double ValPIP => AllSeries.PIP.GetValueNearestX(_cursorX);
@@ -130,6 +155,9 @@ public class TrendViewModel : INotifyPropertyChanged
             if (!_dataProvider.IsDateTimeExists(value))
             {
                 TxtError = global::LogDecoder.GUI.Avalonia.Localizer.L("TrendsDateNotFound");
+                // Re-pull _windowStart so the TextBox snaps back from the
+                // invalid value the user committed.
+                OnPropertyChanged(nameof(StartDateTime));
                 return;
             }
             TxtError = "";
@@ -320,6 +348,11 @@ public class TrendViewModel : INotifyPropertyChanged
 
     private void OnPlotBoxChanged(TrendSeries trendSeries)
     {
+        if (trendSeries is null)
+        {
+            return;
+        }
+
         foreach (var plot in _plots)
         {
             if (plot.SelectedPlot == trendSeries)
