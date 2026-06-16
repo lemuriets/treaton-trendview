@@ -24,7 +24,6 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
         _dataProvider = new DataProvider(parser);
         _navigator = new IndexNavigator(parser);
 
-        Scales = BuildScales();
         _scale = Scales[0];
 
         PlotBox1 = new PlotBoxViewModel("", 0, _scale.Seconds, OxyColors.Lime);
@@ -63,9 +62,7 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
     public PlotBoxViewModel PlotBox2 { get; }
     public PlotBoxViewModel PlotBox3 { get; }
 
-    public ScaleItem[] Scales { get; private set; }
-
-    private static ScaleItem[] BuildScales() =>
+    public ScaleItem[] Scales { get; } =
         [ new(5), new(10), new(15), new(30), new(60), new(120), new(180), new(240), new(300), new(600) ];
 
     private ScaleItem _scale;
@@ -74,6 +71,10 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
         get => _scale;
         set
         {
+            if (value is null)
+            {
+                return;
+            }
             _scale = value;
             OnPropertyChanged(nameof(Scale));
             ApplyScales();
@@ -82,14 +83,13 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
 
     private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
     {
-        // ScaleItem.ToString() reads the current culture once; existing items
-        // never re-render on a language swap. Rebuild the array and preserve
-        // the selection by Seconds so the ComboBox shows fresh labels.
-        var seconds = _scale.Seconds;
-        Scales = BuildScales();
-        _scale = Array.Find(Scales, s => s.Seconds == seconds) ?? Scales[0];
-        OnPropertyChanged(nameof(Scales));
-        OnPropertyChanged(nameof(Scale));
+        // Refresh each item's localized label in place. Replacing the Scales
+        // array would change item identity, clear the ComboBox selection and
+        // push null into Scale.
+        foreach (var scale in Scales)
+        {
+            scale.RefreshLabel();
+        }
     }
 
     private string _txtError = string.Empty;
