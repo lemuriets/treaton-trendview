@@ -8,7 +8,7 @@ public class BatteryConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is double d)
+        if (value is double d && !double.IsNaN(d))
         {
             return d > 100.0 ? Localizer.L("BatteryCharging") : d.ToString("F2", culture);
         }
