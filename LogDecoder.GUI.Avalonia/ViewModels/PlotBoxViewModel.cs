@@ -31,6 +31,11 @@ public class PlotBoxViewModel : INotifyPropertyChanged
         get => _selectedPlot;
         set
         {
+            if (value is null)
+            {
+                return;
+            }
+
             _selectedPlot = value;
             OnPropertyChanged(nameof(SelectedPlot));
 
@@ -82,8 +87,7 @@ public class PlotBoxViewModel : INotifyPropertyChanged
             IsZoomEnabled = false,
             IsPanEnabled = false,
             MinorTickSize = 0,
-            // MajorStep = 1,
-            // LabelFormatter = _ => ""
+            LabelFormatter = _ => string.Empty
         };
         _yAxis = new LinearAxis
         {
@@ -113,11 +117,20 @@ public class PlotBoxViewModel : INotifyPropertyChanged
         {
             return double.NaN;
         }
-        var nearest = series.Points
-            .OrderBy(p => Math.Abs(p.X - x))
-            .First();
 
-        return Math.Round(nearest.Y, 2);
+        var bestDist = double.PositiveInfinity;
+        var bestY = double.NaN;
+        foreach (var p in series.Points)
+        {
+            var dist = Math.Abs(p.X - x);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestY = p.Y;
+            }
+        }
+
+        return Math.Round(bestY, 2);
     }
 
     public void SetRangeX(double min, double max)
