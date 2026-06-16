@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Input;
 using LogDecoder.CAN.Protocol;
 using LogDecoder.Parser;
@@ -41,6 +42,7 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
         }
 
         ApplyScales();
+        SyncStartDateTimeText();
 
         MoveCursorsLeftCommand = new RelayCommand(_ => MoveCursorsLeft());
         MoveCursorsRightCommand = new RelayCommand(_ => MoveCursorsRight());
@@ -144,33 +146,54 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
     // public double ValRst => AllSeries.Rst.GetValueNearestX(_cursorX);
     public double ValLeak => AllSeries.Leak.GetValueNearestX(_cursorX);
 
+    private const string DateTimeFormat = "dd.MM.yyyy HH:mm:ss";
+
     // _windowStart is the time mapped to plot x = 0; the visible window is
     // [_windowStart, _windowStart + Scale.Seconds].
     private DateTime _windowStart;
-    public DateTime StartDateTime
+
+    // Bound to the start-time TextBox as a string (commits on LostFocus/Enter).
+    // Parsing is explicit here to avoid Avalonia's TwoWay DateTime conversion,
+    // which throws InvalidCastException on commit.
+    private string _startDateTimeText = string.Empty;
+    public string StartDateTimeText
     {
-        get => _windowStart;
+        get => _startDateTimeText;
         set
         {
-            if (!_dataProvider.IsDateTimeExists(value))
-            {
-                TxtError = global::LogDecoder.GUI.Avalonia.Localizer.L("TrendsDateNotFound");
-                // Re-pull _windowStart so the TextBox snaps back from the
-                // invalid value the user committed.
-                OnPropertyChanged(nameof(StartDateTime));
-                return;
-            }
-            TxtError = "";
-
-            _navigator.SeekFloor(value);
-            _windowStart = _navigator.Current;
-            CurrentDateTime = _navigator.Current;
-
-            OnPropertyChanged(nameof(StartDateTime));
-
-            SetCursorX(0);
-            ReloadWindow();
+            _startDateTimeText = value;
+            OnPropertyChanged(nameof(StartDateTimeText));
+            CommitStartDateTime();
         }
+    }
+
+    private void CommitStartDateTime()
+    {
+        if (!DateTime.TryParseExact(_startDateTimeText, DateTimeFormat,
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out var value)
+            || !_dataProvider.IsDateTimeExists(value))
+        {
+            TxtError = global::LogDecoder.GUI.Avalonia.Localizer.L("TrendsDateNotFound");
+            // Restore the field to the last accepted value.
+            SyncStartDateTimeText();
+            return;
+        }
+
+        TxtError = "";
+
+        _navigator.SeekFloor(value);
+        _windowStart = _navigator.Current;
+        CurrentDateTime = _navigator.Current;
+
+        SyncStartDateTimeText();
+        SetCursorX(0);
+        ReloadWindow();
+    }
+
+    private void SyncStartDateTimeText()
+    {
+        _startDateTimeText = _windowStart.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
+        OnPropertyChanged(nameof(StartDateTimeText));
     }
 
     private DateTime _currentDateTime;
@@ -297,7 +320,7 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
             ? current.AddSeconds(-_scale.Seconds)
             : current;
 
-        OnPropertyChanged(nameof(StartDateTime));
+        SyncStartDateTimeText();
         ReloadWindow();
     }
 
@@ -326,7 +349,7 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
         if (current < _windowStart || current >= windowEnd)
         {
             _windowStart = current;
-            OnPropertyChanged(nameof(StartDateTime));
+            SyncStartDateTimeText();
         }
 
         ReloadWindow();
