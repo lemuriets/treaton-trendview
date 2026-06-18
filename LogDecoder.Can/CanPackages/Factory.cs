@@ -1,5 +1,9 @@
 using LogDecoder.CAN.Contracts;
+using LogDecoder.CAN.Protocol;
+using LogDecoder.CAN.Protocol.Definitions;
 using LogDecoder.Parser;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace LogDecoder.CAN.Packages;
 
@@ -8,11 +12,34 @@ internal record FactoryItem(string PackageName, Func<CanPackage, string, ParseCo
 public class CanPackageFactory : ICanPackageFactory
 {
     private readonly Dictionary<int, FactoryItem> _registered = new();
+    private readonly Dictionary<int, int> _contextSetters = new();
     public IReadOnlySet<int> RegisteredIds => _registered.Keys.ToHashSet();
 
     public CanPackageFactory()
     {
-        RegisterBuiltIn();
+    }
+
+    /// <summary>Registers every package from a loaded YAML protocol family.</summary>
+    public void LoadFrom(LoadedProtocol protocol, ILogger? logger = null)
+    {
+        logger ??= NullLogger.Instance;
+        _registered.Clear();
+        _contextSetters.Clear();
+
+        var endianness = protocol.Protocol.Endianness;
+        foreach (var definition in protocol.Packages)
+        {
+            var def = definition;
+            Register(def.Id, def.Name, (p, n, c) => new ConfigCanPackage(p, n, def, endianness, c));
+            if (def.SetsContext is { } setter)
+            {
+                _contextSetters[def.Id] = setter.Byte;
+            }
+        }
+
+        logger.LogDebug(
+            "Registered {Count} packages from family '{Family}' ({Setters} context setters)",
+            _registered.Count, protocol.FamilyName, _contextSetters.Count);
     }
 
     public List<(int Id, string Name)> GetIdsWithNames(IReadOnlySet<int>? excludeIds = null)
@@ -25,9 +52,9 @@ public class CanPackageFactory : ICanPackageFactory
 
     public ICanPackageParsed Create(CanPackage package, ParseContext context)
     {
-        if (package.Id == IdModeCivl.Id && package.Data.Length > 0)
+        if (_contextSetters.TryGetValue(package.Id, out var byteIndex) && package.Data.Length > byteIndex)
         {
-            context.CivlMode = package.Data.Span[0];
+            context.CivlMode = package.Data.Span[byteIndex];
         }
         if (_registered.TryGetValue(package.Id, out var item))
         {
@@ -46,6 +73,8 @@ public class CanPackageFactory : ICanPackageFactory
         _registered[id] = new FactoryItem(name, constructor);
     }
 
+    // Retained for reference: the legacy id -> name -> hand-written class mapping.
+    // No longer invoked; packages are now registered from YAML via LoadFrom.
     private void RegisterBuiltIn()
 {
     Register(1023, "ID_OFF_PWR", (p, n, c) => new IdOffPwr(p, n));

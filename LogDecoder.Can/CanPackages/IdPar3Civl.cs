@@ -35,17 +35,10 @@ public class IdPar3Civl : BasePackageParsed
         var deltaPeep = span[5];
         var flags = span[6];
 
-        var waveDiv = waveByte is >= 1 and <= 33 ? waveByte : (byte)33;
-        var waveFreq = 500.0 / waveDiv;
-        if (waveFreq < 15.0)
-        {
-            waveFreq = 15.0;
-        }
-
         var numericData = new List<NumericDataItem>
         {
             new("Скорость нарастания давления [ммH2O/с]", riseSpeed),
-            new("Частота выдачи ID_WAVE_CIVL [Гц]", waveFreq),
+            new("Байт 6", waveByte),
             new("Поток поддержки [л/мин]", supportFlow),
             new("Чувствительность к дисконнекции [%]", disconnectSensitivity),
             new("Приращение deltaPEEP", deltaPeep),

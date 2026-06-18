@@ -5,5 +5,6 @@ public enum FieldKind
     Value,
     Bit,
     BitRange,
+    DateTime,
     Raw
 }
