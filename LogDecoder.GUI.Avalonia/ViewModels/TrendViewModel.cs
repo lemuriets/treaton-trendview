@@ -85,9 +85,6 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
 
     private void OnLanguageChanged(object? sender, PropertyChangedEventArgs e)
     {
-        // Refresh each item's localized label in place. Replacing the Scales
-        // array would change item identity, clear the ComboBox selection and
-        // push null into Scale.
         foreach (var scale in Scales)
         {
             scale.RefreshLabel();
@@ -147,14 +144,9 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
     public double ValLeak => AllSeries.Leak.GetValueNearestX(_cursorX);
 
     private const string DateTimeFormat = "dd.MM.yyyy HH:mm:ss";
-
-    // _windowStart is the time mapped to plot x = 0; the visible window is
-    // [_windowStart, _windowStart + Scale.Seconds].
+    
     private DateTime _windowStart;
-
-    // Bound to the start-time TextBox as a string (commits on LostFocus/Enter).
-    // Parsing is explicit here to avoid Avalonia's TwoWay DateTime conversion,
-    // which throws InvalidCastException on commit.
+    
     private string _startDateTimeText = string.Empty;
     public string StartDateTimeText
     {
@@ -173,8 +165,7 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out var value)
             || !_dataProvider.IsDateTimeExists(value))
         {
-            TxtError = global::LogDecoder.GUI.Avalonia.Localizer.L("TrendsDateNotFound");
-            // Restore the field to the last accepted value.
+            TxtError = Localizer.L("TrendsDateNotFound");
             SyncStartDateTimeText();
             return;
         }
@@ -304,10 +295,7 @@ public class TrendViewModel : INotifyPropertyChanged, IDisposable
         var x = (current - _windowStart).TotalSeconds;
         SetCursorX(x);
     }
-
-    // Re-anchors the window when the cursor leaves [_windowStart, +Scale].
-    // Forward: cursor lands at the left edge. Backward: at the right edge, so
-    // there is room to keep stepping in the same direction before re-paging.
+    
     private void RepageIfNeeded(DateTime current, bool pageBackward)
     {
         var windowEnd = _windowStart.AddSeconds(_scale.Seconds);

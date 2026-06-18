@@ -21,8 +21,6 @@ public partial class Trends : Window
             return;
         }
 
-        // Caret navigation inside the start-time TextBox must not also page the
-        // plot cursor.
         if (FocusManager?.GetFocusedElement() is TextBox)
         {
             return;
@@ -41,8 +39,6 @@ public partial class Trends : Window
         }
     }
 
-    // The start-time binding commits on LostFocus (so the plots don't reload on
-    // every keystroke). Enter commits by dropping focus, which raises LostFocus.
     private void StartTimeBoxKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter)
