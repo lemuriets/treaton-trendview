@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <Version>2.4.0-260607</Version>
+        <Version>2.4.1-260616</Version>
         <InformationalVersion>$(Version)</InformationalVersion>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     </PropertyGroup>
