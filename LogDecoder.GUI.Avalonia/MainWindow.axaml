@@ -61,9 +61,9 @@
                     Header="{loc:Localize MenuOpenOutputFolder}"
                     Command="{Binding OpenExportFolderCommand}"/>
 
-                <MenuItem
-                    Header="{loc:Localize MenuTrends}"
-                    Command="{Binding OpenTrendsCommand}"/>
+                <!-- <MenuItem -->
+                <!--     Header="{loc:Localize MenuTrends}" -->
+                <!--     Command="{Binding OpenTrendsCommand}"/> -->
             </MenuItem>
 
             <MenuItem Header="{loc:Localize MenuLanguage}">
