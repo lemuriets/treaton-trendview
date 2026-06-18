@@ -101,11 +101,11 @@
     <data name="ScaleSeconds" xml:space="preserve"><value>сек</value></data>
     <data name="TrendsPip" xml:space="preserve"><value>PIP (cmH₂O):</value></data>
     <data name="TrendsPeep" xml:space="preserve"><value>PEEP (cmH₂O):</value></data>
-    <data name="TrendsMvTotal" xml:space="preserve"><value>MV общая (L/min):</value></data>
-    <data name="TrendsMvMachine" xml:space="preserve"><value>MV аппаратная (L/min):</value></data>
+    <data name="TrendsMvTotal" xml:space="preserve"><value>MV общая (ml/min):</value></data>
+    <data name="TrendsMvMachine" xml:space="preserve"><value>MV аппаратная (ml/min):</value></data>
     <data name="TrendsVt" xml:space="preserve"><value>Vt (ml):</value></data>
     <data name="TrendsRb1" xml:space="preserve"><value>RB (1/min):</value></data>
-    <data name="TrendsRb2" xml:space="preserve"><value>RB самостоятельный (1/min):</value></data>
+    <data name="TrendsRb2" xml:space="preserve"><value>RB сам. (1/min):</value></data>
     <data name="TrendsCst" xml:space="preserve"><value>Cst:</value></data>
     <data name="TrendsRst" xml:space="preserve"><value>Rst:</value></data>
     <data name="TrendsLeak" xml:space="preserve"><value>Leak:</value></data>

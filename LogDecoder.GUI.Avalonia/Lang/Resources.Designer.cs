@@ -93,6 +93,12 @@ namespace LogDecoder.GUI.Avalonia.Lang {
             }
         }
         
+        internal static string MenuTrends {
+            get {
+                return ResourceManager.GetString("MenuTrends", resourceCulture);
+            }
+        }
+        
         internal static string MenuExit {
             get {
                 return ResourceManager.GetString("MenuExit", resourceCulture);
@@ -249,6 +255,18 @@ namespace LogDecoder.GUI.Avalonia.Lang {
             }
         }
         
+        internal static string IndexingCancelling {
+            get {
+                return ResourceManager.GetString("IndexingCancelling", resourceCulture);
+            }
+        }
+        
+        internal static string IndexingCancelled {
+            get {
+                return ResourceManager.GetString("IndexingCancelled", resourceCulture);
+            }
+        }
+        
         internal static string InputFolderLabel {
             get {
                 return ResourceManager.GetString("InputFolderLabel", resourceCulture);
@@ -276,6 +294,744 @@ namespace LogDecoder.GUI.Avalonia.Lang {
         internal static string ExportCancelled {
             get {
                 return ResourceManager.GetString("ExportCancelled", resourceCulture);
+            }
+        }
+        
+        internal static string ExportCancelling {
+            get {
+                return ResourceManager.GetString("ExportCancelling", resourceCulture);
+            }
+        }
+        
+        internal static string CriticalErrorTitle {
+            get {
+                return ResourceManager.GetString("CriticalErrorTitle", resourceCulture);
+            }
+        }
+        
+        internal static string MenuDebug {
+            get {
+                return ResourceManager.GetString("MenuDebug", resourceCulture);
+            }
+        }
+        
+        internal static string MenuDebugLog {
+            get {
+                return ResourceManager.GetString("MenuDebugLog", resourceCulture);
+            }
+        }
+        
+        internal static string DebugLogTitle {
+            get {
+                return ResourceManager.GetString("DebugLogTitle", resourceCulture);
+            }
+        }
+        
+        internal static string DebugLogFilterLabel {
+            get {
+                return ResourceManager.GetString("DebugLogFilterLabel", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsTitle {
+            get {
+                return ResourceManager.GetString("TrendsTitle", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsScaleLabel {
+            get {
+                return ResourceManager.GetString("TrendsScaleLabel", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsStartLabel {
+            get {
+                return ResourceManager.GetString("TrendsStartLabel", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsBatteryLabel {
+            get {
+                return ResourceManager.GetString("TrendsBatteryLabel", resourceCulture);
+            }
+        }
+        
+        internal static string BatteryCharging {
+            get {
+                return ResourceManager.GetString("BatteryCharging", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsVentilationParams {
+            get {
+                return ResourceManager.GetString("TrendsVentilationParams", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsErrors {
+            get {
+                return ResourceManager.GetString("TrendsErrors", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsDateNotFound {
+            get {
+                return ResourceManager.GetString("TrendsDateNotFound", resourceCulture);
+            }
+        }
+        
+        internal static string ScaleMinutes {
+            get {
+                return ResourceManager.GetString("ScaleMinutes", resourceCulture);
+            }
+        }
+        
+        internal static string ScaleSeconds {
+            get {
+                return ResourceManager.GetString("ScaleSeconds", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsPip {
+            get {
+                return ResourceManager.GetString("TrendsPip", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsPeep {
+            get {
+                return ResourceManager.GetString("TrendsPeep", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsMvTotal {
+            get {
+                return ResourceManager.GetString("TrendsMvTotal", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsMvMachine {
+            get {
+                return ResourceManager.GetString("TrendsMvMachine", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsVt {
+            get {
+                return ResourceManager.GetString("TrendsVt", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsRb1 {
+            get {
+                return ResourceManager.GetString("TrendsRb1", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsRb2 {
+            get {
+                return ResourceManager.GetString("TrendsRb2", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsCst {
+            get {
+                return ResourceManager.GetString("TrendsCst", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsRst {
+            get {
+                return ResourceManager.GetString("TrendsRst", resourceCulture);
+            }
+        }
+        
+        internal static string TrendsLeak {
+            get {
+                return ResourceManager.GetString("TrendsLeak", resourceCulture);
+            }
+        }
+        
+        internal static string PackageDescriptionHint {
+            get {
+                return ResourceManager.GetString("PackageDescriptionHint", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1192 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1192", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1192 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1192", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1196 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1196", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1196 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1196", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1023 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1023", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1023 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1023", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1025 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1025", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1025 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1025", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1058 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1058", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1058 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1058", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1090 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1090", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1090 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1090", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1093 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1093", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1093 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1093", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1123 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1123", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1123 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1123", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1154 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1154", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1154 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1154", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1156 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1156", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1156 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1156", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1157 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1157", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1157 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1157", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1168 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1168", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1168 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1168", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1184 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1184", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1184 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1184", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1187 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1187", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1187 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1187", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1188 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1188", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1188 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1188", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1189 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1189", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1189 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1189", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1190 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1190", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1190 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1190", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1193 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1193", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1193 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1193", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1197 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1197", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1197 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1197", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1198 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1198", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1198 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1198", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1199 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1199", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1199 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1199", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1200 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1200", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1200 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1200", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1201 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1201", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1201 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1201", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1202 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1202", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1202 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1202", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1203 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1203", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1203 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1203", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1204 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1204", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1204 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1204", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1205 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1205", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1205 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1205", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1207 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1207", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1207 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1207", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1219 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1219", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1219 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1219", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1220 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1220", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1220 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1220", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1221 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1221", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1221 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1221", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1223 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1223", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1223 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1223", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1224 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1224", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1224 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1224", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1249 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1249", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1249 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1249", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1253 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1253", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1253 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1253", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1284 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1284", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1284 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1284", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1293 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1293", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1293 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1293", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1294 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1294", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1294 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1294", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1296 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1296", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1296 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1296", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1298 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1298", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1298 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1298", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1299 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1299", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1299 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1299", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1300 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1300", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1300 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1300", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1304 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1304", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1304 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1304", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1345 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1345", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1345 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1345", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1409 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1409", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1409 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1409", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1410 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1410", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1410 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1410", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1449 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1449", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1449 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1449", resourceCulture);
+            }
+        }
+        
+        internal static string PkgDesc_1451 {
+            get {
+                return ResourceManager.GetString("PkgDesc_1451", resourceCulture);
+            }
+        }
+        
+        internal static string PkgInfo_1451 {
+            get {
+                return ResourceManager.GetString("PkgInfo_1451", resourceCulture);
             }
         }
     }
