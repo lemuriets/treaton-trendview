@@ -1,0 +1,37 @@
+id: 1198
+hex: '0x4ae'
+name: ID_M_PEEP_CIVL
+module: CIVL
+direction: output
+length: 8
+parser: config
+fields:
+- name: PEEP
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  unit: мм вод.ст.
+- name: AutoPEEP
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: 0xFFFF при ошибке измерения autoPEEP
+  unit: мм вод.ст.
+- name: FlowAtInspirationStart
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  description: Поток относительно тройника в момент начала вдоха
+  signed: true
+  scale: 0.1
+  unit: л/мин
+- name: RespiratoryTimeConstant
+  kind: Value
+  bytes:
+  - 6
+  - 7
+  description: Константа времени; 0xFFFF при ошибке
+  unit: мс

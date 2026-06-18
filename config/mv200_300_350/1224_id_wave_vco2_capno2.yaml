@@ -1,0 +1,24 @@
+id: 1224
+hex: '0x4c8'
+name: ID_WAVE_VCO2_CAPNO2
+module: CAPNO2
+direction: output
+length: 4
+parser: config
+fields:
+- name: VCO2Wave
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Волна VCO2
+  scale: 0.01
+  unit: мл
+- name: VCO2Integral
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: Интеграл VCO2
+  unit: '%'
+description: Графическая информация VCO2

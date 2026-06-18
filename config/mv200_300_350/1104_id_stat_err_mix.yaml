@@ -1,0 +1,21 @@
+id: 1104
+hex: '0x450'
+name: ID_STAT_ERR_MIX
+module: MIX
+direction: output
+length: 4
+fields:
+- name: error_bit_number
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Номер бита ошибки
+- name: error_voltage_mV
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  unit: мВ
+  description: Напряжение ошибки
+description: Информация о причине неисправности модуля

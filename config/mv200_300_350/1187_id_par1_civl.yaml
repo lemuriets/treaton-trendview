@@ -1,0 +1,141 @@
+id: 1187
+hex: '0x4a3'
+name: ID_PAR1_CIVL
+module: CIVL
+direction: input
+length: 8
+parser: config
+fields:
+- name: PatientMode
+  kind: Bit
+  byte: 0
+  bit: 7
+  values:
+    0:
+      message: Взрослый режим
+      status: Ok
+    1:
+      message: Детский режим
+      status: Ok
+- name: SighMode
+  kind: Bit
+  byte: 0
+  bit: 6
+  values:
+    0:
+      message: Нет режима вздох
+      status: Ok
+    1:
+      message: Режим вздох через 50 циклов
+      status: Ok
+- name: FlowShape
+  kind: Bit
+  byte: 0
+  bit: 5
+  values:
+    0:
+      message: Поток прямоугольный
+      status: Ok
+    1:
+      message: Поток убывающий
+      status: Ok
+- name: TriggerType
+  kind: Bit
+  byte: 0
+  bit: 4
+  values:
+    0:
+      message: Активен триггер по давлению
+      status: Ok
+    1:
+      message: Активен триггер по потоку
+      status: Ok
+- name: VentilationMode
+  kind: BitRange
+  byte: 0
+  bitRange:
+    from: 0
+    to: 3
+  values:
+    0:
+      message: CMV/VCV
+      status: Ok
+    1:
+      message: CMV/PCV
+      status: Ok
+    2:
+      message: SIMV/PC+PS+apnea
+      status: Ok
+    3:
+      message: SIMV/VC+PS+apnea
+      status: Ok
+    4:
+      message: CPAP+PS+apnea
+      status: Ok
+    5:
+      message: BiSTEP+PS+apnea
+      status: Ok
+    6:
+      message: NIV
+      status: Ok
+    7:
+      message: APRV
+      status: Ok
+    8:
+      message: PCV-VG
+      status: Ok
+    9:
+      message: SIMV/DC
+      status: Ok
+    10:
+      message: iSV
+      status: Ok
+    11:
+      message: nCPAP
+      status: Ok
+    12:
+      message: CPAP+VS
+      status: Ok
+    13:
+      message: nIMV
+      status: Ok
+    14:
+      message: HF_O2
+      status: Ok
+    15:
+      message: зарезервировано (пакет игнорируется)
+      status: Error
+- name: PEEP
+  kind: Value
+  byte: 1
+  description: Величина ПДКВ; в BiSTEP - Plow
+  unit: см вод.ст.
+- name: PressureTriggerSensitivity
+  kind: Value
+  byte: 2
+  max: 200
+  description: Чувствительность триггера по давлению; до 200
+  unit: мм вод.ст.
+- name: FlowTriggerSensitivity
+  kind: Value
+  byte: 3
+  description: Чувствительность триггера по потоку
+  scale: 0.1
+  unit: л/мин
+- name: InspirationTime
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  description: Время вдоха; 0xFFFF означает авто
+  unit: мс
+  sentinel: { value: 65535, message: 'Время вдоха: авто-режим' }
+- name: ExpirationTime
+  kind: Value
+  bytes:
+  - 6
+  - 7
+  description: Время выдоха; 0xFFFF означает авто
+  unit: мс
+  sentinel: { value: 65535, message: 'Время выдоха: авто-режим' }
+description: Параметры вентиляции 1

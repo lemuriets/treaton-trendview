@@ -1,0 +1,180 @@
+id: 1219
+hex: '0x4c3'
+name: ID_STATUS_CAPNO2
+module: CAPNO2
+direction: output
+length: 8
+fields:
+- name: StatusBit0
+  kind: Bit
+  byte: 0
+  bit: 0
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Отрицательное значение CO2, status: Warning }
+- name: StatusBit1
+  kind: Bit
+  byte: 0
+  bit: 1
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Ошибка адаптера, status: Warning }
+- name: StatusBit2
+  kind: Bit
+  byte: 0
+  bit: 2
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Обнаружено дыхание, status: Ok }
+- name: StatusBit3
+  kind: Bit
+  byte: 0
+  bit: 3
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Высокое CO2, status: Warning }
+- name: StatusBit4
+  kind: Bit
+  byte: 0
+  bit: 4
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Капнограф не может начать калибровку, status: Warning }
+- name: StatusBit5
+  kind: Bit
+  byte: 0
+  bit: 5
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Активен режим сна, status: Ok }
+- name: StatusBit6
+  kind: Bit
+  byte: 0
+  bit: 6
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Апноэ, status: Warning }
+- name: StatusBit12
+  kind: Bit
+  byte: 1
+  bit: 4
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: capnostat5 не проинициализирован, status: Error }
+- name: StatusBit21
+  kind: Bit
+  byte: 2
+  bit: 5
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Аппаратная ошибка, status: Error }
+- name: StatusBit22
+  kind: Bit
+  byte: 2
+  bit: 6
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Неисправна EEPROM, status: Error }
+- name: StatusBit24
+  kind: Bit
+  byte: 3
+  bit: 0
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Отсутствует адаптер бокового потока, status: Error }
+- name: StatusBit25
+  kind: Bit
+  byte: 3
+  bit: 1
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Насос выработал ресурс, status: Error }
+- name: StatusBit26
+  kind: Bit
+  byte: 3
+  bit: 2
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Ошибка пневматики, status: Error }
+- name: StatusBit27
+  kind: Bit
+  byte: 3
+  bit: 3
+  gate: { byte: 5, value: 0 }
+  values:
+    1: { message: Аппаратная ошибка, status: Error }
+- name: CapnographLoopMode
+  kind: Bit
+  byte: 0
+  bit: 7
+  gate: { byte: 5, value: 0 }
+  values:
+    0: { message: Капнограф работает в открытом контуре, status: Ok }
+    1: { message: Капнограф работает в закрытом контуре, status: Ok }
+- name: TemperatureStatus
+  kind: BitRange
+  byte: 1
+  bitRange:
+    from: 0
+    to: 1
+  gate: { byte: 5, value: 0 }
+  values:
+    0: { message: 'Температура стабильна, модуль готов', status: Ok }
+    1: { message: Температура ниже требуемой, status: Warning }
+    2: { message: Температура выше требуемой, status: Warning }
+    3: { message: Температура нестабильна, status: Warning }
+- name: ZeroCalibrationStatus
+  kind: BitRange
+  byte: 1
+  bitRange:
+    from: 2
+    to: 3
+  gate: { byte: 5, value: 0 }
+  values:
+    0: { message: Калибровка нуля не требуется, status: Ok }
+    1: { message: Активна калибровка нуля, status: Info }
+    2: { message: Необходимо провести калибровку нуля, status: Warning }
+    3: { message: Ошибка калибровки нуля, status: Error }
+- name: CurrentStabilizerStatus
+  kind: BitRange
+  byte: 1
+  bitRange:
+    from: 5
+    to: 6
+  gate: { byte: 5, value: 0 }
+  values:
+    0: { message: Ток в норме, status: Ok }
+    1: { message: Ток стабилизируется, status: Info }
+    2: { message: Ток не в норме, status: Error }
+    3: { message: Ток ограничивается, status: Error }
+- name: PriorityMessageNumber
+  kind: Value
+  byte: 4
+  gate: { byte: 5, value: 0 }
+  description: Номер наиболее приоритетного сообщения
+  values:
+    0: { message: Отсутствие ошибок, status: Ok }
+    1: { message: Датчик перегрет, status: Error }
+    2: { message: Датчик дефектный, status: Error }
+    3: { message: Не задано атмосферное давление, status: Warning }
+    4: Капнограф в спящем режиме
+    5: Активна коррекция нуля
+    6: Активен прогрев датчика
+    7: { message: Ошибка измерения нуля, status: Warning }
+    8: { message: Высокое значение CO2, status: Warning }
+    9: { message: Ошибка адаптера, status: Warning }
+    10: { message: Высокое давление в линии отбора пробы, status: Warning }
+- name: CapnographPresence
+  kind: Value
+  byte: 5
+  description: Наличие капнографа
+  values:
+    0: { message: Капнограф подключен, status: Ok }
+    20: { message: Капнограф не подключен, status: Warning }
+- name: AtmosphericPressure
+  kind: Value
+  bytes:
+  - 6
+  - 7
+  unit: мм рт.ст.
+description: Информация о статусе преобразователя протоколов/капнографа

@@ -1,0 +1,25 @@
+id: 1298
+hex: '0x512'
+name: ID_PAUX_WAVE_CIVL2
+module: CIVL2
+direction: output
+length: 4
+parser: config
+fields:
+- name: Paux1Pressure
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: -1020..1020
+  signed: true
+  unit: мм вод.ст.
+- name: Paux2Pressure
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: -1020..1020
+  signed: true
+  unit: мм вод.ст.
+description: Давление Paux

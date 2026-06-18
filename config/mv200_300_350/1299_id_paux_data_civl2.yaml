@@ -1,0 +1,30 @@
+id: 1299
+hex: '0x513'
+name: ID_PAUX_DATA_CIVL2
+module: CIVL2
+direction: output
+length: 6
+parser: config
+fields:
+- name: PauxMaxPressure
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  signed: true
+  unit: мм вод.ст.
+- name: PauxMeanPressure
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  signed: true
+  unit: мм вод.ст.
+- name: PauxMinPressure
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  signed: true
+  unit: мм вод.ст.
+description: Давление Paux за дыхательный цикл

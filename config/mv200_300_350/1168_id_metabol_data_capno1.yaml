@@ -1,0 +1,37 @@
+id: 1168
+hex: '0x490'
+name: ID_METABOL_DATA_CAPNO1
+module: CAPNO1
+direction: output
+length: 8
+parser: config
+fields:
+- name: VCO2
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Минутное выделение CO2
+  unit: мл/мин
+- name: VO2
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: Минутное потребление кислорода
+  unit: мл/мин
+- name: RQ
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  description: Дыхательный коэффициент; 100 соответствует 1.00
+  scale: 0.01
+- name: REE
+  kind: Value
+  bytes:
+  - 6
+  - 7
+  description: Суточная энергопотребность; 0xFFFF недействительно
+  unit: ккал/сут
+description: Измеренные параметры метаболизма

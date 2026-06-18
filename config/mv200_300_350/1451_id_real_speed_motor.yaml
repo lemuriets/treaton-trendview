@@ -1,0 +1,21 @@
+id: 1451
+hex: '0x5ab'
+name: ID_REAL_SPEED_MOTOR
+module: MOTOR
+direction: output
+length: 3
+parser: config
+fields:
+- name: RealMotorSpeed
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Текущая скорость вращения двигателя
+  scale: 0.1
+  unit: об/мин
+- name: StatusByte
+  kind: Raw
+  byte: 2
+  description: Статусная информация, совпадает с байтом 0 ID_STATUS_MOTOR
+description: Состояние модуля и текущая угловая скорость вращения вала ГП

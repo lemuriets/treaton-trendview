@@ -1,0 +1,129 @@
+id: 1025
+hex: '0x401'
+name: ID_STATUS_PWR
+module: PWR
+direction: output
+length: 5
+parser: config
+fields:
+- name: OutputVoltage
+  kind: Value
+  byte: 0
+  description: 'Выходное напряжение блока питания: x*0.1 В + 10 В'
+  scale: 0.1
+  offset: 10
+  unit: В
+- name: BatteryLevelOrChargeCurrent
+  kind: Value
+  byte: 1
+  description: 'При заряде: 255 - ток заряда >=0.4 А, 100 - аккумулятор заряжен; при
+    разряде: уровень 0..100%'
+  unit: '%'
+- name: MainsVoltageMissing
+  kind: Bit
+  byte: 2
+  bit: 0
+  values:
+    1:
+      message: Отсутствует напряжение в сети 220V
+      status: Error
+- name: FanFault
+  kind: Bit
+  byte: 2
+  bit: 1
+  values:
+    1:
+      message: Вентилятор неисправен
+      status: Error
+- name: BatteryLow10Min
+  kind: Bit
+  byte: 2
+  bit: 2
+  values:
+    1:
+      message: Оставшегося заряда аккумулятора хватит не более чем на 10 минут
+      status: Warning
+- name: BatteryFaultMissing
+  kind: Bit
+  byte: 2
+  bit: 3
+  values:
+    1:
+      message: 'Авария аккумулятора: аккумулятор отсутствует'
+      status: Warning
+- name: BatteryFaultChargeCurrentOrShortCircuit
+  kind: Bit
+  byte: 2
+  bit: 4
+  values:
+    1:
+      message: 'Авария аккумулятора: превышение тока зарядки или замыкание'
+      status: Warning
+- name: BatteryChargeOvervoltage
+  kind: Bit
+  byte: 2
+  bit: 5
+  values:
+    1:
+      message: Превышение напряжения зарядки аккумулятора
+      status: Warning
+- name: ChargerKeyFault
+  kind: Bit
+  byte: 2
+  bit: 6
+  values:
+    1:
+      message: Неисправность ключа зарядного устройства
+      status: Warning
+- name: SpeakerFaultOpenCircuit
+  kind: Bit
+  byte: 2
+  bit: 7
+  values:
+    1:
+      message: Неисправность динамика (обрыв)
+      status: Warning
+- name: ExternalPowerConnected
+  kind: Bit
+  byte: 3
+  bit: 0
+  values:
+    1:
+      message: Подключено внешнее питание
+      status: Info
+- name: BadExternalPowerSource
+  kind: Bit
+  byte: 3
+  bit: 1
+  values:
+    1:
+      message: Плохой внешний источник питания
+      status: Warning
+- name: ReservedStatusBits
+  kind: BitRange
+  byte: 3
+  bitRange:
+    from: 2
+    to: 6
+  description: 'Биты 10..14: резерв'
+- name: RestartFlag
+  kind: Bit
+  byte: 3
+  bit: 7
+  values:
+    1:
+      message: Признак рестарта
+      status: Info
+- name: AlarmStatus
+  kind: Value
+  byte: 4
+  description: Состояние тревог
+  values:
+    0: Нет тревог
+    1:
+      message: Есть тревога высокого приоритета
+      status: Error
+    2:
+      message: Есть тревога среднего приоритета
+      status: Warning
+description: Информация о состоянии модуля

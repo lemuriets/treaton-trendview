@@ -1,0 +1,41 @@
+id: 1300
+hex: '0x514'
+name: ID_PAUX_DATA2_CIVL2
+module: CIVL2
+direction: output
+length: 8
+parser: config
+fields:
+- name: Ptpi
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Транспульмональное давление в момент максимального давления на вдохе
+  signed: true
+  unit: мм вод.ст.
+- name: Ptpe
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: Транспульмональное давление в момент окончания выдоха
+  signed: true
+  unit: мм вод.ст.
+- name: Ptpm
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  description: Среднее транспульмональное давление
+  signed: true
+  unit: мм вод.ст.
+- name: Ccw
+  kind: Value
+  bytes:
+  - 6
+  - 7
+  description: Комплайнс грудной стенки
+  signed: true
+  unit: мл/см вод.ст.
+description: Данные Paux/транспульмонального давления

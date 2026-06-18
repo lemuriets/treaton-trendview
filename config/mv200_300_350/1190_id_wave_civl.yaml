@@ -1,0 +1,37 @@
+id: 1190
+hex: '0x4a6'
+name: ID_WAVE_CIVL
+module: CIVL
+direction: output
+length: 8
+parser: config
+fields:
+- name: FlowAtYpiece
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Поток к тройнику
+  signed: true
+  scale: 0.1
+  unit: л/мин
+- name: AirwayPressure
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: Давление в магистрали
+  signed: true
+  unit: мм вод.ст.
+- name: Volume
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  - 6
+  - 7
+  description: Объем
+  signed: true
+  scale: 0.1
+  unit: мл
+description: Графическая информация

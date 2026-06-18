@@ -1,0 +1,23 @@
+id: 1196
+hex: '0x4ac'
+name: ID_M_VINSP_CIVL
+module: CIVL
+direction: output
+length: 4
+parser: config
+fields:
+- name: MeasuredInspiratoryVolumeAvg4
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Измеренный объем вдоха, усредненный за 4 последних цикла
+  unit: мл
+- name: SpecificWorkCurrentInspiration
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: Удельная работа аппарата в текущем вдохе
+  scale: 0.01
+  unit: Дж/л

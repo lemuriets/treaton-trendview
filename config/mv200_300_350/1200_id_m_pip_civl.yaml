@@ -1,0 +1,26 @@
+id: 1200
+hex: '0x4b0'
+name: ID_M_PIP_CIVL
+module: CIVL
+direction: output
+length: 5
+parser: config
+fields:
+- name: PIP
+  kind: Value
+  byte: 0
+  unit: см H2O
+- name: DynamicCompliance
+  kind: Value
+  bytes:
+  - 1
+  - 2
+  scale: 0.01
+  unit: мл/мм вод.ст.
+- name: StressIndex
+  kind: Value
+  bytes:
+  - 3
+  - 4
+  description: 0xFFFF при ошибке измерения
+  scale: 0.01

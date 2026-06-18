@@ -1,0 +1,20 @@
+id: 1201
+hex: '0x4b1'
+name: ID_M_MV_CIVL
+module: CIVL
+direction: output
+length: 4
+parser: config
+fields:
+- name: MinuteVentilationTotal
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  unit: мл/мин
+- name: MinuteVentilationMachine
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  unit: мл/мин

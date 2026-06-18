@@ -1,0 +1,202 @@
+id: 1090
+hex: '0x442'
+name: ID_STATUS_MIX
+module: MIX
+direction: output
+length: 8
+parser: config
+fields:
+- name: OxygenLinePressure
+  kind: Value
+  byte: 0
+  description: Давление в магистрали кислорода
+  scale: 0.1
+  unit: Атм
+- name: AtmosphericPressure
+  kind: Value
+  bytes:
+  - 1
+  - 2
+  description: Атмосферное давление
+  unit: мм рт.ст.
+- name: ActiveMode
+  kind: Value
+  byte: 3
+  description: Текущий активный режим работы, соответствует ID_MODE_MIX
+- name: StatusBit0
+  kind: Bit
+  byte: 4
+  bit: 0
+  values:
+    1:
+      message: Признак рестарта
+      status: Info
+- name: StatusBit11
+  kind: Bit
+  byte: 5
+  bit: 3
+  values:
+    1:
+      message: Неисправность/загрязнение HEPA-фильтра
+      status: Warning
+- name: StatusBit12
+  kind: Bit
+  byte: 5
+  bit: 4
+  values:
+    1:
+      message: Неисправность источника питания 12V1 (13.2 В) пропорционального клапана
+      status: Error
+- name: StatusBit13
+  kind: Bit
+  byte: 5
+  bit: 5
+  values:
+    1:
+      message: Неисправность CAN
+      status: Warning
+- name: StatusBit14
+  kind: Bit
+  byte: 5
+  bit: 6
+  values:
+    1:
+      message: Неисправность источника питания +2.5VA (не используется)
+      status: Error
+- name: StatusBit15
+  kind: Bit
+  byte: 5
+  bit: 7
+  values:
+    1:
+      message: Неисправность источника питания +12VA
+      status: Warning
+- name: StatusBit16
+  kind: Bit
+  byte: 6
+  bit: 0
+  values:
+    1:
+      message: Неисправность источника питания +5VA (не используется)
+      status: Error
+- name: StatusBit17
+  kind: Bit
+  byte: 6
+  bit: 1
+  values:
+    1:
+      message: Ошибка констант датчика давления в магистрали кислорода (не используется)
+      status: Error
+- name: StatusBit18
+  kind: Bit
+  byte: 6
+  bit: 2
+  values:
+    1:
+      message: Ошибка констант датчика потока в магистрали воздуха
+      status: Warning
+- name: StatusBit19
+  kind: Bit
+  byte: 6
+  bit: 3
+  values:
+    1:
+      message: Ошибка констант датчика потока в магистрали кислорода
+      status: Warning
+- name: StatusBit20
+  kind: Bit
+  byte: 6
+  bit: 4
+  values:
+    1:
+      message: Ошибка констант датчика давления в камере смешения
+      status: Warning
+- name: StatusBit21
+  kind: Bit
+  byte: 6
+  bit: 5
+  values:
+    1:
+      message: Напряжение питания выше 27V (превышает 30V)
+      status: Warning
+- name: StatusBit22
+  kind: Bit
+  byte: 6
+  bit: 6
+  values:
+    1:
+      message: Напряжение питания ниже 27V (ниже 20V)
+      status: Warning
+- name: StatusBit23
+  kind: Bit
+  byte: 6
+  bit: 7
+  values:
+    1:
+      message: Отсутствует связь с БУ
+      status: Error
+- name: StatusBit24
+  kind: Bit
+  byte: 7
+  bit: 0
+  values:
+    1:
+      message: Отсутствует связь с КИВЛ
+      status: Error
+- name: StatusBit25
+  kind: Bit
+  byte: 7
+  bit: 1
+  values:
+    1:
+      message: Неисправен пропорциональный клапан в магистрали O2 (не используется)
+      status: Error
+- name: StatusBit26
+  kind: Bit
+  byte: 7
+  bit: 2
+  values:
+    1:
+      message: Неисправен АЦП AD7738
+      status: Error
+- name: StatusBit27
+  kind: Bit
+  byte: 7
+  bit: 3
+  values:
+    1:
+      message: Неисправен ИОН
+      status: Error
+- name: StatusBit28
+  kind: Bit
+  byte: 7
+  bit: 4
+  values:
+    1:
+      message: Неисправен датчик потока в магистрали воздуха
+      status: Error
+- name: StatusBit29
+  kind: Bit
+  byte: 7
+  bit: 5
+  values:
+    1:
+      message: Неисправен датчик потока в магистрали O2
+      status: Error
+- name: StatusBit30
+  kind: Bit
+  byte: 7
+  bit: 6
+  values:
+    1:
+      message: Неисправен датчик абсолютного давления перед ГП
+      status: Error
+- name: StatusBit31
+  kind: Bit
+  byte: 7
+  bit: 7
+  values:
+    1:
+      message: Неисправен датчик давления для магистрали кислорода
+      status: Error
+description: Информация о состоянии смесителя газов

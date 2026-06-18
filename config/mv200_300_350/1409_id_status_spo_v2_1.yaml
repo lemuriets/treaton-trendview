@@ -1,0 +1,110 @@
+id: 1409
+hex: '0x581'
+name: ID_STATUS_SPO_V2_1
+module: SPO
+direction: output
+length: 8
+fields:
+- name: Наполнение [0.001%]
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  scale: 0.001
+- name: Частота пульса [уд/мин]
+  kind: Value
+  bytes:
+  - 2
+  - 3
+- name: Сатурация [%]
+  kind: Value
+  byte: 4
+- name: PVI [%]
+  kind: Value
+  byte: 5
+- name: Режим работы блока
+  kind: BitRange
+  byte: 7
+  bitRange:
+    from: 6
+    to: 7
+- name: SensorState
+  kind: BitRange
+  byte: 6
+  bitRange:
+    from: 0
+    to: 3
+  values:
+    0: { message: 'Норма, нет сообщения', status: Ok }
+    1: { message: Датчик не подключен, status: Warning }
+    2: Датчик сброшен
+    3: { message: Датчик неисправен, status: Error }
+    4: { message: Деградация датчика, status: Warning }
+    5: { message: Слабый сигнал ФПГ, status: Warning }
+    6: Установка соединения с модулем
+    7: { message: Модуль отсутствует, status: Error }
+    8: { message: Высокий уровень помех, status: Warning }
+    9: Калибровка датчика
+    10: Поиск пульса
+    11: { message: Несовместимый датчик, status: Error }
+    12: { message: Модуль неисправен, status: Error }
+    13: { message: Измерения недостоверны, status: Warning }
+- name: SensorType
+  kind: BitRange
+  byte: 6
+  bitRange:
+    from: 4
+    to: 7
+  values:
+    0: { message: 'Тип датчика: датчик не подключен', status: Warning }
+    1: { message: 'Тип датчика: Masimo LNOP Sensor', status: Ok }
+    2: 'Тип датчика: резерв'
+    3: 'Тип датчика: резерв'
+    4: { message: 'Тип датчика: Unknown Sensor', status: Warning }
+    5: { message: 'Тип датчика: Hi Fi (Trauma or Newborn) Sensor', status: Ok }
+    6: 'Тип датчика: резерв'
+    7: 'Тип датчика: резерв'
+    8: 'Тип датчика: резерв'
+    9: 'Тип датчика: резерв'
+    10: 'Тип датчика: резерв'
+    11: 'Тип датчика: резерв'
+    12: 'Тип датчика: резерв'
+    13: 'Тип датчика: резерв'
+    14: 'Тип датчика: резерв'
+    15: 'Тип датчика: резерв'
+- name: QualityPI
+  kind: Bit
+  byte: 7
+  bit: 0
+  values:
+    0: 'Качество PI: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество PI: значение OK'
+- name: QualityPR
+  kind: Bit
+  byte: 7
+  bit: 1
+  values:
+    0: 'Качество PR: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество PR: значение OK'
+- name: QualitySpO2
+  kind: Bit
+  byte: 7
+  bit: 2
+  values:
+    0: 'Качество SpO2: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество SpO2: значение OK'
+- name: QualityPVI
+  kind: Bit
+  byte: 7
+  bit: 3
+  values:
+    0: 'Качество PVI: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество PVI: значение OK'
+- name: QualitySType
+  kind: Bit
+  byte: 7
+  bit: 4
+  values:
+    0: 'Качество SType: значение недостоверное'
+    1: 'Качество SType: значение OK'
+description: Состояние модуля пульсоксиметрии Masimo 1

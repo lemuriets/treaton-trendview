@@ -1,0 +1,30 @@
+id: 1221
+hex: '0x4c5'
+name: ID_DATA_CAPNO2
+module: CAPNO2
+direction: output
+length: 5
+parser: config
+fields:
+- name: FiCO2Percent
+  kind: Value
+  byte: 0
+  unit: '%'
+- name: FiCO2Pressure
+  kind: Value
+  byte: 1
+  unit: мм рт.ст.
+- name: EtCO2Percent
+  kind: Value
+  byte: 2
+  unit: '%'
+- name: EtCO2Pressure
+  kind: Value
+  byte: 3
+  unit: мм рт.ст.
+- name: RespiratoryRate
+  kind: Value
+  byte: 4
+  description: 0xFF недействительно
+  unit: 1/мин
+description: Измеренные параметры CO2

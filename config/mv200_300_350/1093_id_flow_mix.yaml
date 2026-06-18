@@ -1,0 +1,27 @@
+id: 1093
+hex: '0x445'
+name: ID_FLOW_MIX
+module: MIX
+direction: output
+length: 4
+parser: config
+fields:
+- name: AirFlowSTPD
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: STPD-поток воздуха
+  signed: true
+  scale: 0.01
+  unit: л/мин
+- name: OxygenFlowSTPD
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: STPD-поток кислорода
+  signed: true
+  scale: 0.01
+  unit: л/мин
+description: Мгновенные потоки воздуха и кислорода; частота 500 Гц

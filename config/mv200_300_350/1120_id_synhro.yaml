@@ -1,0 +1,22 @@
+id: 1120
+hex: '0x460'
+name: ID_SYNHRO
+module: BU
+direction: output
+length: 6
+fields:
+- name: Timestamp
+  kind: DateTime
+  bytes:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  yearOffset: 2000
+  description: 'Год(+2000), месяц, день, час, минута, секунда'
+description: Синхропакет; формируется с частотой 1 Гц
+aliases:
+- ID_SYNHRO
+- ID_SYNCHRO

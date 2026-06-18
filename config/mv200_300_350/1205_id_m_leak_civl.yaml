@@ -1,0 +1,37 @@
+id: 1205
+hex: '0x4b5'
+name: ID_M_LEAK_CIVL
+module: CIVL
+direction: output
+length: 8
+parser: config
+fields:
+- name: MeanPressurePreviousCycle
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: 0xFFFF некорректно
+  signed: true
+  unit: мм вод.ст.
+- name: InspExpVolumeDifference
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  signed: true
+  unit: мл
+- name: Leak
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  signed: true
+  unit: л/мин
+- name: InstantLeakToInspFlowRatio
+  kind: Value
+  bytes:
+  - 6
+  - 7
+  signed: true
+  unit: '%'

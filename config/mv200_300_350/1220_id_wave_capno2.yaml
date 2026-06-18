@@ -1,0 +1,27 @@
+id: 1220
+hex: '0x4c4'
+name: ID_WAVE_CAPNO2
+module: CAPNO2
+direction: output
+length: 4
+parser: config
+fields:
+- name: CO2PartialPressure
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: От -75.00 до 15.00
+  signed: true
+  scale: 0.01
+  unit: мм рт.ст.
+- name: CO2Percent
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: От -9.99 до 19.70
+  signed: true
+  scale: 0.01
+  unit: '%'
+description: Графическая информация CO2

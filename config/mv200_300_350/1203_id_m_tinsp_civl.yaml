@@ -1,0 +1,21 @@
+id: 1203
+hex: '0x4b3'
+name: ID_M_TINSP_CIVL
+module: CIVL
+direction: output
+length: 4
+parser: config
+fields:
+- name: MeasuredInspirationTime
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  unit: мс
+- name: RCinsp
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: 0 выводится как прочерки
+  unit: мс

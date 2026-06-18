@@ -1,0 +1,17 @@
+id: 1207
+hex: '0x4b7'
+name: ID_WORKTIME_CIVL
+module: CIVL
+direction: output
+length: 4
+parser: config
+fields:
+- name: WorkTimeFromRelease
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  - 2
+  - 3
+  description: Время наработки аппарата с момента выпуска
+  unit: мин

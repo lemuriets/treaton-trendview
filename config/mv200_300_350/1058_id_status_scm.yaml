@@ -1,0 +1,185 @@
+id: 1058
+hex: '0x422'
+name: ID_STATUS_SCM
+module: SCM
+direction: output
+length: 4
+parser: config
+fields:
+- name: StatusBit0
+  kind: Bit
+  byte: 0
+  bit: 0
+  values:
+    1:
+      message: Ошибка ИМС физического доступа к шине Ethernet
+      status: Error
+- name: StatusBit1
+  kind: Bit
+  byte: 0
+  bit: 1
+  values:
+    1:
+      message: Есть активное подключение к сети Ethernet
+      status: Ok
+- name: StatusBit2
+  kind: Bit
+  byte: 0
+  bit: 2
+  values:
+    1:
+      message: Полный дуплексный режим обмена Ethernet
+      status: Ok
+- name: StatusBit3
+  kind: Bit
+  byte: 0
+  bit: 3
+  values:
+    1:
+      message: Скорость обмена Ethernet 100 МБод
+      status: Ok
+- name: StatusBit4
+  kind: Bit
+  byte: 0
+  bit: 4
+  values:
+    1:
+      message: Есть связь по управляющему порту Ethernet
+      status: Ok
+- name: StatusBit5
+  kind: Bit
+  byte: 0
+  bit: 5
+  values:
+    1:
+      message: Есть связь по порту передачи данных Ethernet
+      status: Ok
+- name: StatusBit6
+  kind: Bit
+  byte: 0
+  bit: 6
+  values:
+    1:
+      message: SDRAM исправна
+      status: Ok
+- name: StatusBit7
+  kind: Bit
+  byte: 0
+  bit: 7
+  values:
+    1:
+      message: Нет microSD
+      status: Ok
+- name: StatusBit8
+  kind: Bit
+  byte: 1
+  bit: 0
+  values:
+    1:
+      message: Идет создание файловой системы на SD card
+      status: Ok
+- name: StatusBit9
+  kind: Bit
+  byte: 1
+  bit: 1
+  values:
+    1:
+      message: Признак износа SD card
+      status: Ok
+- name: StatusBit10
+  kind: Bit
+  byte: 1
+  bit: 2
+  values:
+    1:
+      message: Ошибка обмена с SD card
+      status: Error
+- name: StatusBit11
+  kind: Bit
+  byte: 1
+  bit: 3
+  values:
+    1:
+      message: USB mass storage подключена
+      status: Ok
+- name: StatusBit12
+  kind: Bit
+  byte: 1
+  bit: 4
+  values:
+    1:
+      message: Есть раздел FAT на USB mass storage
+      status: Ok
+- name: StatusBit13
+  kind: Bit
+  byte: 1
+  bit: 5
+  values:
+    1:
+      message: Идет запись журнала тревог
+      status: Ok
+- name: StatusBit14
+  kind: Bit
+  byte: 1
+  bit: 6
+  values:
+    1:
+      message: Идет запись копии экрана
+      status: Ok
+- name: StatusBit15
+  kind: Bit
+  byte: 1
+  bit: 7
+  values:
+    1:
+      message: Идет перенос лога CAN с SD на USB
+      status: Ok
+- name: StatusBit16
+  kind: Bit
+  byte: 2
+  bit: 0
+  values:
+    1:
+      message: Идет запись журнала сервисного обслуживания
+      status: Ok
+- name: StatusBit17
+  kind: Bit
+  byte: 2
+  bit: 1
+  values:
+    1:
+      message: Идет запись трендов
+      status: Ok
+- name: StatusBit18
+  kind: Bit
+  byte: 2
+  bit: 2
+  values:
+    1:
+      message: Сервисный режим трансляции включен (SERVICE_ON)
+      status: Ok
+- name: StatusBit19
+  kind: Bit
+  byte: 2
+  bit: 3
+  values:
+    1:
+      message: Ошибка восстановления записываемого сектора microSD из памяти с батарейным
+        питанием
+      status: Error
+- name: StatusBit20
+  kind: Bit
+  byte: 2
+  bit: 4
+  values:
+    1:
+      message: Режим работы с СЦМ включен (SCM_ON)
+      status: Ok
+- name: ReservedBits
+  kind: BitRange
+  byte: 2
+  bitRange:
+    from: 5
+    to: 7
+  description: Биты 21..31 не используются
+description: Информация о состоянии CAN-Ethernet

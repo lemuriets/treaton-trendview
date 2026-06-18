@@ -1,0 +1,23 @@
+id: 1204
+hex: '0x4b4'
+name: ID_M_COMPL_CIVL
+module: CIVL
+direction: output
+length: 4
+parser: config
+fields:
+- name: StaticCompliance
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: 0xFFFF недействительно
+  scale: 0.1
+  unit: мл/см вод.ст.
+- name: Resistance
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: 0xFFFF недействительно
+  unit: смH2O*с/л
