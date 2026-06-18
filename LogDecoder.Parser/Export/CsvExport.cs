@@ -11,6 +11,7 @@ namespace LogDecoder.Parser.Export;
 public class CsvExport(ILogger logger, LogParser logParser)
 {
     private const int RoundTo = 3;
+    private static readonly CultureInfo NumberCulture = CultureInfo.GetCultureInfo("ru-RU");
 
     public void ToCsv(
         string logsFolder,
@@ -137,7 +138,7 @@ public class CsvExport(ILogger logger, LogParser logParser)
         foreach (var item in data)
         {
             row.Add(item.Name);
-            row.Add(Math.Round(item.Value, RoundTo).ToString(CultureInfo.InvariantCulture));
+            row.Add(Math.Round(item.Value, RoundTo).ToString(NumberCulture));
         }
         row.AddRange(messages);
         return row;
