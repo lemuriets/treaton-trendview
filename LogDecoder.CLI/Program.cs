@@ -24,7 +24,7 @@ class Program
     
     private static void Run()
     {
-        var ivlLogsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/problem_log_test";
+        var ivlLogsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/test_1";
         var logsFolder = Path.Combine(ivlLogsFolder, "logs");
         // var logsFolder = "/Volumes/Cucumber/treaton_bin_avl";
         // var logsFolder = "/Volumes/KINGSTON/SD";
@@ -33,6 +33,7 @@ class Program
         using var loggerProvider = new LoggerProvider();
         var logger = loggerProvider.CreateLogger<LogParser>();
         var factory = new CanPackageFactory();
+        factory.LoadFrom(ProtocolLoader.LoadActiveFamily(logger: logger), logger);
         var parser = new LogParser(logger, ivlLogsFolder, factory);
         
         parser.CreateOrLoadAllIndexes();

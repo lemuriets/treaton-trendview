@@ -668,4 +668,14 @@ Module failure = bits 0|1|2|5|6|7</value></data>
     <data name="PkgInfo_1451" xml:space="preserve"><value>Data fields (length 3 bytes):
 • bytes 0–1 — current rotation speed [0.1 rpm]
 • byte 2 — status info (matches byte 0 of ID_STATUS_MOTOR)</value></data>
+
+    <data name="ConfigMissingTitle" xml:space="preserve"><value>Configuration not found</value></data>
+    <data name="ConfigMissingMessage" xml:space="preserve"><value>Configuration folder not found:
+{0}
+
+Create a "config" folder next to the application, add the package configs, and restart.</value></data>
+
+    <data name="ConfigSelectTitle" xml:space="preserve"><value>Select configuration</value></data>
+    <data name="ConfigSelectPrompt" xml:space="preserve"><value>Multiple configurations are available. Choose the device configuration:</value></data>
+    <data name="ConfigSelectOk" xml:space="preserve"><value>Load</value></data>
 </root>

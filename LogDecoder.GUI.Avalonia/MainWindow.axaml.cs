@@ -20,12 +20,17 @@ public partial class MainWindow : Window
     private bool _isUpdatingSelectAll;
     private Flyout? _descriptionFlyout;
 
-    public MainWindow()
+    // Parameterless ctor required by the Avalonia XAML compiler/previewer; at
+    // runtime App always uses the factory ctor with the loaded protocol.
+    public MainWindow() : this(new CanPackageFactory(), new LoggerProvider())
     {
-        _loggerProvider = new LoggerProvider();
+    }
+
+    public MainWindow(CanPackageFactory factory, LoggerProvider loggerProvider)
+    {
+        _loggerProvider = loggerProvider;
         var logger = _loggerProvider.CreateLogger<MainWindow>();
 
-        var factory = new CanPackageFactory();
         var packageCatalog = new PackageCatalog(factory);
         var indexing = new IndexingService(logger, factory);
         var export = new ExportService();

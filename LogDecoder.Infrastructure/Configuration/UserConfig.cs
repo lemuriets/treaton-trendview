@@ -11,6 +11,9 @@ public sealed class UserConfig
 {
     public LoggingUserConfig Logging { get; set; } = new();
 
+    /// <summary>Folder name of the last-selected protocol config family (pre-selected at startup).</summary>
+    public string? ActiveConfig { get; set; }
+
     public static UserConfig LoadOrCreate()
     {
         var path = GetPath();

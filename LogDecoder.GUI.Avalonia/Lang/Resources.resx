@@ -668,4 +668,14 @@
     <data name="PkgInfo_1451" xml:space="preserve"><value>Поля данных (длина 3 байта):
 • Байты 0–1 — текущая скорость вращения [0,1 об/мин]
 • Байт 2 — статусная информация (совпадает с Байт 0 пакета ID_STATUS_MOTOR)</value></data>
+
+    <data name="ConfigMissingTitle" xml:space="preserve"><value>Конфигурация не найдена</value></data>
+    <data name="ConfigMissingMessage" xml:space="preserve"><value>Папка конфигурации не найдена:
+{0}
+
+Создайте папку «config» рядом с программой, добавьте в неё конфигурации пакетов и перезапустите программу.</value></data>
+
+    <data name="ConfigSelectTitle" xml:space="preserve"><value>Выбор конфигурации</value></data>
+    <data name="ConfigSelectPrompt" xml:space="preserve"><value>Доступно несколько конфигураций. Выберите конфигурацию аппарата:</value></data>
+    <data name="ConfigSelectOk" xml:space="preserve"><value>Загрузить</value></data>
 </root>
