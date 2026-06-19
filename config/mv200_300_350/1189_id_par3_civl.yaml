@@ -1,10 +1,8 @@
 id: 1189
-hex: '0x4a5'
 name: ID_PAR3_CIVL
-module: CIVL
-direction: input
 length: 7
 parser: config
+description: Параметры вентиляции 3
 fields:
 - name: PressureRiseRate
   kind: Value
@@ -40,4 +38,3 @@ fields:
     0: вкл компенсацию утечки
     1: вкл функцию "свободное дыхание"
     2: неонатальный/детский режим ИВЛ
-description: Параметры вентиляции 3

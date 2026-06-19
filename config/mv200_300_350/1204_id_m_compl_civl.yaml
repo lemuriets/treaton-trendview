@@ -1,8 +1,5 @@
 id: 1204
-hex: '0x4b4'
 name: ID_M_COMPL_CIVL
-module: CIVL
-direction: output
 length: 4
 parser: config
 fields:

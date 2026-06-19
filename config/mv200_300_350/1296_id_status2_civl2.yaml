@@ -1,10 +1,8 @@
 id: 1296
-hex: '0x510'
 name: ID_STATUS2_CIVL2
-module: CIVL2
-direction: output
 length: 2
 parser: config
+description: Дополнительный статус КИВЛ2
 fields:
 - name: StatusBit0
   kind: Bit
@@ -103,4 +101,3 @@ fields:
     1:
       message: Достигнуто давление 50 см вод.ст.
       status: Warning
-description: Дополнительный статус КИВЛ2

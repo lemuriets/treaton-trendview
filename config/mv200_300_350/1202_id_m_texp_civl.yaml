@@ -1,8 +1,5 @@
 id: 1202
-hex: '0x4b2'
 name: ID_M_TEXP_CIVL
-module: CIVL
-direction: output
 length: 2
 parser: config
 fields:

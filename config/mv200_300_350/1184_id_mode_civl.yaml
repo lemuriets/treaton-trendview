@@ -1,12 +1,10 @@
 id: 1184
-hex: '0x4a0'
 name: ID_MODE_CIVL
-module: CIVL
-direction: input
 length: 1
 setsContext:
   key: civlMode
   byte: 0
+description: Управление режимом работы КИВЛ
 fields:
 - name: Mode
   kind: Value
@@ -38,4 +36,3 @@ fields:
     23: Инициализация
     24: калибровка нулей датчиков давления в зависимости от температуры
     25: тест контура для режима nCPAP
-description: Управление режимом работы КИВЛ

@@ -1,8 +1,5 @@
 id: 1200
-hex: '0x4b0'
 name: ID_M_PIP_CIVL
-module: CIVL
-direction: output
 length: 5
 parser: config
 fields:

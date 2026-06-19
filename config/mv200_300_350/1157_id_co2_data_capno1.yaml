@@ -1,10 +1,8 @@
 id: 1157
-hex: '0x485'
 name: ID_CO2_DATA_CAPNO1
-module: CAPNO1
-direction: output
 length: 5
 parser: config
+description: Измеренные параметры CO2
 fields:
 - name: EtCO2Percent
   kind: Value
@@ -33,4 +31,3 @@ fields:
   byte: 4
   description: Частота дыханий; 0 означает капнографическое апноэ
   unit: 1/мин
-description: Измеренные параметры CO2

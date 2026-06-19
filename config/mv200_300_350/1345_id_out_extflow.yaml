@@ -1,10 +1,8 @@
 id: 1345
-hex: '0x541'
 name: ID_OUT_EXTFLOW
-module: EXTFLOW
-direction: output
 length: 3
 parser: config
+description: Информация о потоке от внешнего датчика
 fields:
 - name: FlowSensorCode
   kind: Value
@@ -35,4 +33,3 @@ fields:
     to: 6
   values:
     0: Данные не обновлены (используется предыдущая точка)
-description: Информация о потоке от внешнего датчика

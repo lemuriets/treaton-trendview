@@ -1,10 +1,8 @@
 id: 1090
-hex: '0x442'
 name: ID_STATUS_MIX
-module: MIX
-direction: output
 length: 8
 parser: config
+description: Информация о состоянии смесителя газов
 fields:
 - name: OxygenLinePressure
   kind: Value
@@ -199,4 +197,3 @@ fields:
     1:
       message: Неисправен датчик давления для магистрали кислорода
       status: Error
-description: Информация о состоянии смесителя газов

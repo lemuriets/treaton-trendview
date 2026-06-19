@@ -1,8 +1,5 @@
 id: 1198
-hex: '0x4ae'
 name: ID_M_PEEP_CIVL
-module: CIVL
-direction: output
 length: 8
 parser: config
 fields:

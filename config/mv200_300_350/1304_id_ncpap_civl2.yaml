@@ -1,10 +1,8 @@
 id: 1304
-hex: '0x518'
 name: ID_NCPAP_CIVL2
-module: CIVL2
-direction: output
 length: 2
 parser: config
+description: Давление nCPAP
 fields:
 - name: MeanNcpapPressure
   kind: Value
@@ -13,4 +11,3 @@ fields:
   - 1
   description: Усредненное давление nCPAP
   unit: мм вод.ст.
-description: Давление nCPAP

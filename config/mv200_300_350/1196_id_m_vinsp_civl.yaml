@@ -1,8 +1,5 @@
 id: 1196
-hex: '0x4ac'
 name: ID_M_VINSP_CIVL
-module: CIVL
-direction: output
 length: 4
 parser: config
 fields:

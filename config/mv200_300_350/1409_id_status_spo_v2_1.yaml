@@ -1,9 +1,7 @@
 id: 1409
-hex: '0x581'
 name: ID_STATUS_SPO_V2_1
-module: SPO
-direction: output
 length: 8
+description: Состояние модуля пульсоксиметрии Masimo 1
 fields:
 - name: Наполнение [0.001%]
   kind: Value
@@ -107,4 +105,3 @@ fields:
   values:
     0: 'Качество SType: значение недостоверное'
     1: 'Качество SType: значение OK'
-description: Состояние модуля пульсоксиметрии Masimo 1

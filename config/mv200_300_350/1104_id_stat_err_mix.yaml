@@ -1,9 +1,7 @@
 id: 1104
-hex: '0x450'
 name: ID_STAT_ERR_MIX
-module: MIX
-direction: output
 length: 4
+description: Информация о причине неисправности модуля
 fields:
 - name: error_bit_number
   kind: Value
@@ -18,4 +16,3 @@ fields:
   - 3
   unit: мВ
   description: Напряжение ошибки
-description: Информация о причине неисправности модуля

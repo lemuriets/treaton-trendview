@@ -1,10 +1,8 @@
 id: 1284
-hex: '0x504'
 name: ID_VENTILATOR_SN_CIVL2
-module: CIVL2
-direction: output
 length: 4
 parser: config
+description: Серийный номер аппарата
 fields:
 - name: VentilatorSerialNumber
   kind: Value
@@ -14,4 +12,3 @@ fields:
   - 2
   - 3
   description: Серийный номер аппарата
-description: Серийный номер аппарата

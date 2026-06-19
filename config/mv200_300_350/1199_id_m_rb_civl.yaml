@@ -1,8 +1,5 @@
 id: 1199
-hex: '0x4af'
 name: ID_M_RB_CIVL
-module: CIVL
-direction: output
 length: 2
 parser: config
 fields:

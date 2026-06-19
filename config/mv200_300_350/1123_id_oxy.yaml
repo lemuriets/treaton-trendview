@@ -1,14 +1,11 @@
 id: 1123
-hex: '0x463'
 name: ID_OXY
-module: BU
-direction: output
 length: 1
 parser: config
+description: Управление содержанием кислорода
 fields:
 - name: OxygenPercent
   kind: Value
   byte: 0
   description: Содержание кислорода на вдохе
   unit: '%'
-description: Управление содержанием кислорода

@@ -1,10 +1,8 @@
 id: 1220
-hex: '0x4c4'
 name: ID_WAVE_CAPNO2
-module: CAPNO2
-direction: output
 length: 4
 parser: config
+description: Графическая информация CO2
 fields:
 - name: CO2PartialPressure
   kind: Value
@@ -24,4 +22,3 @@ fields:
   signed: true
   scale: 0.01
   unit: '%'
-description: Графическая информация CO2

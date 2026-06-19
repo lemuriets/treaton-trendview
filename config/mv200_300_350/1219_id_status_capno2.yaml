@@ -1,9 +1,7 @@
 id: 1219
-hex: '0x4c3'
 name: ID_STATUS_CAPNO2
-module: CAPNO2
-direction: output
 length: 8
+description: Информация о статусе преобразователя протоколов/капнографа
 fields:
 - name: StatusBit0
   kind: Bit
@@ -177,4 +175,3 @@ fields:
   - 6
   - 7
   unit: мм рт.ст.
-description: Информация о статусе преобразователя протоколов/капнографа

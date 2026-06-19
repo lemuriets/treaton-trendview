@@ -1,9 +1,7 @@
 id: 1410
-hex: '0x582'
 name: ID_STATUS_SPO_V2_2
-module: SPO
-direction: output
 length: 8
+description: Состояние модуля пульсоксиметрии Masimo 2
 fields:
 - name: Exceptions 2
   kind: Value
@@ -140,4 +138,3 @@ fields:
   values:
     0: Режим демо выключен
     1: Режим демо включен
-description: Состояние модуля пульсоксиметрии Masimo 2

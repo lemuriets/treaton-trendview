@@ -1,8 +1,5 @@
 id: 1203
-hex: '0x4b3'
 name: ID_M_TINSP_CIVL
-module: CIVL
-direction: output
 length: 4
 parser: config
 fields:

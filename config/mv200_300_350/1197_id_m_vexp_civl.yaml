@@ -1,8 +1,5 @@
 id: 1197
-hex: '0x4ad'
 name: ID_M_VEXP_CIVL
-module: CIVL
-direction: output
 length: 4
 parser: config
 fields:

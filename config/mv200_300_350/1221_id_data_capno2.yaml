@@ -1,10 +1,8 @@
 id: 1221
-hex: '0x4c5'
 name: ID_DATA_CAPNO2
-module: CAPNO2
-direction: output
 length: 5
 parser: config
+description: Измеренные параметры CO2
 fields:
 - name: FiCO2Percent
   kind: Value
@@ -27,4 +25,3 @@ fields:
   byte: 4
   description: 0xFF недействительно
   unit: 1/мин
-description: Измеренные параметры CO2

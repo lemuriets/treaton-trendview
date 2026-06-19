@@ -1,10 +1,8 @@
 id: 1187
-hex: '0x4a3'
 name: ID_PAR1_CIVL
-module: CIVL
-direction: input
 length: 8
 parser: config
+description: Параметры вентиляции 1
 fields:
 - name: PatientMode
   kind: Bit
@@ -138,4 +136,3 @@ fields:
   description: Время выдоха; 0xFFFF означает авто
   unit: мс
   sentinel: { value: 65535, message: 'Время выдоха: авто-режим' }
-description: Параметры вентиляции 1

@@ -1,10 +1,8 @@
 id: 1190
-hex: '0x4a6'
 name: ID_WAVE_CIVL
-module: CIVL
-direction: output
 length: 8
 parser: config
+description: Графическая информация
 fields:
 - name: FlowAtYpiece
   kind: Value
@@ -34,4 +32,3 @@ fields:
   signed: true
   scale: 0.1
   unit: мл
-description: Графическая информация

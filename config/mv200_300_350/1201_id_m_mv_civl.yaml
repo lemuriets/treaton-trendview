@@ -1,8 +1,5 @@
 id: 1201
-hex: '0x4b1'
 name: ID_M_MV_CIVL
-module: CIVL
-direction: output
 length: 4
 parser: config
 fields:

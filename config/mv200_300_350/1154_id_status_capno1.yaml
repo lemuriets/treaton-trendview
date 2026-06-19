@@ -1,10 +1,8 @@
 id: 1154
-hex: '0x482'
 name: ID_STATUS_CAPNO1
-module: CAPNO1
-direction: output
 length: 4
 parser: config
+description: Информация о статусе модуля капнографа бокового отведения
 fields:
 - name: ModuleStatus
   kind: Value
@@ -113,4 +111,3 @@ fields:
   - 2
   - 3
   description: Не используется
-description: Информация о статусе модуля капнографа бокового отведения

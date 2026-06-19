@@ -1,10 +1,8 @@
 id: 1193
-hex: '0x4a9'
 name: ID_CLBR_ERR_CIVL
-module: CIVL
-direction: output
 length: 2
 requiresContext: civlMode
+description: Информация об ошибках калибровок; содержание зависит от режима работы модуля
 fields:
 - name: ResponseCode
   kind: Value
@@ -114,4 +112,3 @@ fields:
     name: Progress
   - when: { mode: 14, code: 18 }
     name: MaxError
-description: Информация об ошибках калибровок; содержание зависит от режима работы модуля

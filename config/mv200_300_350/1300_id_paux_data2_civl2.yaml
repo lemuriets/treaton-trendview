@@ -1,10 +1,8 @@
 id: 1300
-hex: '0x514'
 name: ID_PAUX_DATA2_CIVL2
-module: CIVL2
-direction: output
 length: 8
 parser: config
+description: Данные Paux/транспульмонального давления
 fields:
 - name: Ptpi
   kind: Value
@@ -38,4 +36,3 @@ fields:
   description: Комплайнс грудной стенки
   signed: true
   unit: мл/см вод.ст.
-description: Данные Paux/транспульмонального давления

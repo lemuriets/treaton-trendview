@@ -1,10 +1,8 @@
 id: 1025
-hex: '0x401'
 name: ID_STATUS_PWR
-module: PWR
-direction: output
 length: 5
 parser: config
+description: Информация о состоянии модуля
 fields:
 - name: OutputVoltage
   kind: Value
@@ -126,4 +124,3 @@ fields:
     2:
       message: Есть тревога среднего приоритета
       status: Warning
-description: Информация о состоянии модуля

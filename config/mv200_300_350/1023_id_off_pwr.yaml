@@ -1,10 +1,7 @@
 id: 1023
-hex: '0x3ff'
 name: ID_OFF_PWR
-module: PWR
-direction: output
 length: 0
+description: Информирование о выключении питания через примерно 5 секунд
 fields: []
 messages:
 - { message: выключения питания, status: Ok }
-description: Информирование о выключении питания через примерно 5 секунд

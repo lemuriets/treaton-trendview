@@ -1,10 +1,8 @@
 id: 1188
-hex: '0x4a4'
 name: ID_PAR2_CIVL
-module: CIVL
-direction: input
 length: 8
 parser: config
+description: Параметры вентиляции 2
 fields:
 - name: InspiratoryVolume
   kind: Value
@@ -44,4 +42,3 @@ fields:
   description: Триггер окончания вдоха; 0xFF авто
   unit: '%'
   sentinel: { value: 255, message: 'Триггер окончания вдоха: AUTO' }
-description: Параметры вентиляции 2

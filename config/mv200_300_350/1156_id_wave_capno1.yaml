@@ -1,10 +1,8 @@
 id: 1156
-hex: '0x484'
 name: ID_WAVE_CAPNO1
-module: CAPNO1
-direction: output
 length: 8
 parser: config
+description: Значения CO2, N2O и O2
 fields:
 - name: CO2PartialPressure
   kind: Value
@@ -38,4 +36,3 @@ fields:
   description: Значение N2O; при отсутствии N2O некорректно
   scale: 0.1
   unit: '%'
-description: Значения CO2, N2O и O2
