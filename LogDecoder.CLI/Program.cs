@@ -44,7 +44,7 @@ class Program
         // var start = parser.MinDatetime.Value;
         // var end = parser.MaxDatetime.Value;
         // IReadOnlySet<int> ids = parser.RegisteredIds;
-        IReadOnlySet<int> ids = new HashSet<int>(){IdSynchro.Id, IdModeCivl.Id};
+        IReadOnlySet<int> ids = new HashSet<int>(){factory.SynchroId, 1184};
         
         var export = new CsvExport(logger, parser);
         export.ToCsv(

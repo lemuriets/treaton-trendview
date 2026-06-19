@@ -116,7 +116,7 @@ public sealed class ConfigCanPackage : BasePackageParsed
             {
                 if (Matches(emit.When, code))
                 {
-                    numeric.Add(new NumericDataItem(emit.Name, raw * emit.Scale));
+                    numeric.Add(new NumericDataItem(emit.Name, raw * emit.Scale) { Unit = emit.Unit });
                     break;
                 }
             }
@@ -129,7 +129,7 @@ public sealed class ConfigCanPackage : BasePackageParsed
             return;
         }
 
-        numeric.Add(new NumericDataItem(field.Name, raw * field.Scale + field.Offset));
+        numeric.Add(new NumericDataItem(field.Name, raw * field.Scale + field.Offset) { Unit = field.Unit });
     }
 
     private void EmitBit(FieldDefinition field, ReadOnlySpan<byte> span, List<string> messages)

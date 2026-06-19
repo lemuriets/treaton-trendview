@@ -3,16 +3,12 @@ namespace LogDecoder.CAN.Protocol.Definitions;
 public sealed class PackageDefinition
 {
     public int Id { get; set; }
-    public string? Hex { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string? Module { get; set; }
-    public string? Direction { get; set; }
 
     /// <summary>Minimum data length; shorter payloads yield a null parse result.</summary>
     public int Length { get; set; }
 
     public string? Description { get; set; }
-    public List<string>? Aliases { get; set; }
 
     /// <summary>If set, this package writes a byte into the shared ParseContext.</summary>
     public ContextSetter? SetsContext { get; set; }

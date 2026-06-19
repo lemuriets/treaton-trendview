@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.RegularExpressions;
 using LogDecoder.CAN.Protocol.Definitions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -23,7 +25,8 @@ public static class ProtocolLoader
 {
     public const string ConfigFolderName = "config";
     public const string ConfigDirEnvVar = "LOGDECODER_CONFIG_DIR";
-    private const string ManifestFileName = "protocol.yaml";
+    private const string ManifestFileName = "manifest.yaml";
+    private const string DefaultPackagesGlob = "[0-9]*.yaml";
 
     /// <summary>
     /// Config root: the <c>LOGDECODER_CONFIG_DIR</c> env var if set, otherwise a
@@ -57,7 +60,12 @@ public static class ProtocolLoader
         foreach (var dir in Directory.GetDirectories(configRoot).OrderBy(d => d, StringComparer.Ordinal))
         {
             var folderName = Path.GetFileName(dir.TrimEnd(Path.DirectorySeparatorChar));
-            var protocol = LoadManifest(deserializer, dir, logger);
+            if (!File.Exists(Path.Combine(dir, ManifestFileName)))
+            {
+                logger.LogWarning("Skipping config folder without {Manifest}: {Dir}", ManifestFileName, dir);
+                continue;
+            }
+            var protocol = LoadManifest(deserializer, dir, logger).Protocol;
             var displayName = string.IsNullOrWhiteSpace(protocol.Name) ? folderName : protocol.Name!;
             families.Add(new ConfigFamily(folderName, displayName, dir));
         }
@@ -102,13 +110,22 @@ public static class ProtocolLoader
 
         var deserializer = BuildDeserializer();
 
-        var protocol = LoadManifest(deserializer, familyDir, logger);
-        var packages = LoadPackages(deserializer, familyDir, logger);
+        var manifest = LoadManifest(deserializer, familyDir, logger);
+        var protocol = manifest.Protocol;
+        var packages = LoadPackages(deserializer, familyDir, manifest.PackagesPath, logger);
 
         if (packages.Count == 0)
         {
             logger.LogError("No package definitions found in {FamilyDir}", familyDir);
             throw new ConfigValidationException($"No package definitions found in {familyDir}");
+        }
+
+        if (protocol.SynchroId <= 0 || packages.All(p => p.Id != protocol.SynchroId))
+        {
+            logger.LogError("Manifest synchroId {SynchroId} is not among loaded packages in {FamilyDir}",
+                protocol.SynchroId, familyDir);
+            throw new ConfigValidationException(
+                $"Manifest synchroId {protocol.SynchroId} is not among loaded packages in {familyDir}");
         }
 
         var familyName = Path.GetFileName(familyDir.TrimEnd(Path.DirectorySeparatorChar));
@@ -119,18 +136,18 @@ public static class ProtocolLoader
         return new LoadedProtocol(familyName, protocol, packages);
     }
 
-    private static ProtocolDefinition LoadManifest(IDeserializer deserializer, string familyDir, ILogger logger)
+    private static ProtocolManifest LoadManifest(IDeserializer deserializer, string familyDir, ILogger logger)
     {
         var manifestPath = Path.Combine(familyDir, ManifestFileName);
         if (!File.Exists(manifestPath))
         {
             logger.LogWarning("Manifest {Manifest} not found in {FamilyDir}; using defaults", ManifestFileName, familyDir);
-            return new ProtocolDefinition();
+            return new ProtocolManifest();
         }
         try
         {
             var manifest = deserializer.Deserialize<ProtocolManifest>(File.ReadAllText(manifestPath));
-            return manifest?.Protocol ?? new ProtocolDefinition();
+            return manifest ?? new ProtocolManifest();
         }
         catch (YamlException ex)
         {
@@ -138,13 +155,15 @@ public static class ProtocolLoader
         }
     }
 
-    private static List<PackageDefinition> LoadPackages(IDeserializer deserializer, string familyDir, ILogger logger)
+    private static List<PackageDefinition> LoadPackages(IDeserializer deserializer, string familyDir, string? packagesPath, ILogger logger)
     {
         var packages = new List<PackageDefinition>();
         var seenIds = new HashSet<int>();
 
-        var files = Directory.EnumerateFiles(familyDir, "*.yaml")
+        var matches = BuildPackageMatcher(packagesPath);
+        var files = Directory.EnumerateFiles(familyDir, "*")
             .Where(f => !Path.GetFileName(f).Equals(ManifestFileName, StringComparison.OrdinalIgnoreCase))
+            .Where(f => matches(Path.GetFileName(f)))
             .OrderBy(f => f, StringComparer.Ordinal);
 
         foreach (var file in files)
@@ -237,6 +256,49 @@ public static class ProtocolLoader
         {
             yield return gate.Byte;
         }
+    }
+
+    /// <summary>
+    /// Translates the manifest's <c>packagesPath</c> shell glob (supporting <c>*</c>,
+    /// <c>?</c> and <c>[...]</c> character classes) into a filename predicate. This glob
+    /// is the sole selector of package files; an absent pattern falls back to the
+    /// <see cref="DefaultPackagesGlob"/> convention.
+    /// </summary>
+    private static Func<string, bool> BuildPackageMatcher(string? packagesPath)
+    {
+        var glob = string.IsNullOrWhiteSpace(packagesPath) ? DefaultPackagesGlob : packagesPath;
+
+        var pattern = new StringBuilder("^");
+        for (var i = 0; i < glob.Length; i++)
+        {
+            var c = glob[i];
+            switch (c)
+            {
+                case '*':
+                    pattern.Append(".*");
+                    break;
+                case '?':
+                    pattern.Append('.');
+                    break;
+                case '[':
+                    var close = glob.IndexOf(']', i + 1);
+                    if (close < 0)
+                    {
+                        pattern.Append("\\[");
+                        break;
+                    }
+                    pattern.Append(glob, i, close - i + 1);
+                    i = close;
+                    break;
+                default:
+                    pattern.Append(Regex.Escape(c.ToString()));
+                    break;
+            }
+        }
+        pattern.Append('$');
+
+        var regex = new Regex(pattern.ToString(), RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        return name => regex.IsMatch(name);
     }
 
     private static IDeserializer BuildDeserializer()

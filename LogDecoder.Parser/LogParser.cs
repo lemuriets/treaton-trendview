@@ -36,6 +36,7 @@ public partial class LogParser : ILogParser
     private readonly Dictionary<string, LogFileScanner> _scanners = new();
 
     public IReadOnlySet<int> RegisteredIds { get; }
+    public int SynchroId => _factory.SynchroId;
     
     public bool IsDateTimeExists(DateTime target) => _indexParser.IsDateTimeExists(target);
     public IReadOnlyList<DateTime> IndexTimes => _indexParser.IndexTimes;
