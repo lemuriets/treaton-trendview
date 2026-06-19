@@ -216,6 +216,18 @@ public class ProtocolLoaderTests
     }
 
     [Test]
+    public void Factory_StatusScm_BitEmitsBothStates()
+    {
+        var factory = LoadedFactory();
+
+        var off = Messages(factory, 1058, new byte[] { 0, 0, 0, 0 });
+        Assert.That(off, Contains.Item("Нет активного подключения к сети Ethernet"));
+
+        var on = Messages(factory, 1058, new byte[] { 0b0000_0010, 0, 0, 0 });
+        Assert.That(on, Contains.Item("Есть активное подключение к сети Ethernet"));
+    }
+
+    [Test]
     public void Factory_OutExtflow_AvgCountZeroMessage()
     {
         var factory = LoadedFactory();
