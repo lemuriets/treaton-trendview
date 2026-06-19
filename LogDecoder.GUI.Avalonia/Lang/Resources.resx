@@ -675,6 +675,13 @@
 
 Создайте папку «config» рядом с программой, добавьте в неё конфигурации пакетов и перезапустите программу.</value></data>
 
+    <data name="ConfigInvalidTitle" xml:space="preserve"><value>Ошибка конфигурации</value></data>
+    <data name="ConfigInvalidMessage" xml:space="preserve"><value>Конфигурация аппарата некорректна и не может быть загружена:
+
+{0}
+
+Приложение будет закрыто.</value></data>
+
     <data name="ConfigSelectTitle" xml:space="preserve"><value>Выбор конфигурации</value></data>
     <data name="ConfigSelectPrompt" xml:space="preserve"><value>Доступно несколько конфигураций. Выберите конфигурацию аппарата:</value></data>
     <data name="ConfigSelectOk" xml:space="preserve"><value>Загрузить</value></data>

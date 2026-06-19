@@ -78,7 +78,7 @@ public partial class App : Application
         {
             logger.LogError(ex, "Failed to load protocol configuration; cannot start");
             loggerProvider.Dispose();
-            return CreateFatalWindow(Localizer.L("ConfigMissingTitle"), ex.Message);
+            return CreateFatalWindow(Localizer.L("ConfigInvalidTitle"), Localizer.F("ConfigInvalidMessage", ex.Message));
         }
     }
 
@@ -155,10 +155,20 @@ public partial class App : Application
         okButton.Click += (_, _) =>
         {
             var index = listBox.SelectedIndex >= 0 ? listBox.SelectedIndex : 0;
-            var main = BuildMainWindow(families[index], loggerProvider, logger);
+            Window next;
+            try
+            {
+                next = BuildMainWindow(families[index], loggerProvider, logger);
+            }
+            catch (ProtocolLoadException ex)
+            {
+                logger.LogError(ex, "Failed to load selected configuration; cannot start");
+                loggerProvider.Dispose();
+                next = CreateFatalWindow(Localizer.L("ConfigInvalidTitle"), Localizer.F("ConfigInvalidMessage", ex.Message));
+            }
             proceeded = true;
-            desktop.MainWindow = main;
-            main.Show();
+            desktop.MainWindow = next;
+            next.Show();
             window.Close();
         };
 

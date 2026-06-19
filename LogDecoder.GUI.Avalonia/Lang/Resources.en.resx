@@ -675,6 +675,13 @@ Module failure = bits 0|1|2|5|6|7</value></data>
 
 Create a "config" folder next to the application, add the package configs, and restart.</value></data>
 
+    <data name="ConfigInvalidTitle" xml:space="preserve"><value>Configuration error</value></data>
+    <data name="ConfigInvalidMessage" xml:space="preserve"><value>The machine configuration is invalid and cannot be loaded:
+
+{0}
+
+The application will close.</value></data>
+
     <data name="ConfigSelectTitle" xml:space="preserve"><value>Select configuration</value></data>
     <data name="ConfigSelectPrompt" xml:space="preserve"><value>Multiple configurations are available. Choose the device configuration:</value></data>
     <data name="ConfigSelectOk" xml:space="preserve"><value>Load</value></data>
