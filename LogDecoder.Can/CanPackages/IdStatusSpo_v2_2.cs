@@ -19,7 +19,7 @@ public class IdStatusSpo_v2_2 : BasePackageParsed
             "PVI поддержан"),
 
         [1] = BitMessage.One("PVI Exception: Invalid PVI", PackageTechStatus.Warning),
-        [2] = BitMessage.One("PVI Exception: StartupState", PackageTechStatus.Info),
+        [2] = BitMessage.One("PVI Exception: StartupState"),
         [3] = BitMessage.One("PVI Exception: Low PVI Confidence", PackageTechStatus.Warning),
     };
 
@@ -27,7 +27,7 @@ public class IdStatusSpo_v2_2 : BasePackageParsed
     {
         [0] = new("PVI Exception: всё нормально", PackageTechStatus.Ok),
         [1] = new("PVI Exception: Invalid PVI", PackageTechStatus.Warning),
-        [2] = new("PVI Exception: StartupState", PackageTechStatus.Info),
+        [2] = new("PVI Exception: StartupState"),
         [3] = new("PVI Exception: Low PVI Confidence", PackageTechStatus.Warning),
     };
 
@@ -40,8 +40,8 @@ public class IdStatusSpo_v2_2 : BasePackageParsed
         [4] = new("Детализация сообщения датчика: Bad Sensor ID Offset", PackageTechStatus.Error),
         [5] = new("Детализация сообщения датчика: Pro Cal Failure", PackageTechStatus.Error),
         [6] = new("Детализация сообщения датчика: Memory Failure", PackageTechStatus.Error),
-        [7] = new("Детализация сообщения датчика: reserved", PackageTechStatus.Info),
-        [8] = new("Детализация сообщения датчика: reserved", PackageTechStatus.Info),
+        [7] = new("Детализация сообщения датчика: reserved"),
+        [8] = new("Детализация сообщения датчика: reserved"),
     };
 
     private static readonly Dictionary<int, BitMessage> Byte7BitDefinitions = new()

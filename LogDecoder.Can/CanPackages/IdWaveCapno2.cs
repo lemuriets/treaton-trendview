@@ -30,16 +30,6 @@ public class IdWaveCapno2 : BasePackageParsed
 
         var messages = new List<string>();
 
-        // if (co2PressureRaw < 0)
-        // {
-        //     messages.Add("Отрицательное значение парциального давления CO2");
-        // }
-        //
-        // if (co2PercentRaw < 0)
-        // {
-        //     messages.Add("Отрицательное значение процентного содержания CO2");
-        // }
-
         return new PackageData(numericData, messages);
     }
 }

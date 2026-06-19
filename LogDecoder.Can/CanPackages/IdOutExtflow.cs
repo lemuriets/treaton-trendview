@@ -22,7 +22,7 @@ public class IdOutExtflow : BasePackageParsed
         var flowRaw = BitUtil.ToU16(span[0], span[1]);
 
         var statusByte = span[2];
-        var noDataFlag = (statusByte >> 7) & 0x01;
+        var noDataFlag = (statusByte >> 7);
         var avgCount = statusByte & 0x7F;
 
         var numericData = new NumericDataItem[]

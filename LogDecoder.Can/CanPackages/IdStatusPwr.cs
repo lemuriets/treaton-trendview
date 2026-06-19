@@ -20,9 +20,9 @@ public class IdStatusPwr : BasePackageParsed
         { 5, BitMessage.One("Превышение напряжения зарядки аккумулятора", PackageTechStatus.Warning) },
         { 6, BitMessage.One("Неисправность ключа зарядного устройства", PackageTechStatus.Warning) },
         { 7, BitMessage.One("Неисправен динамик (обрыв)", PackageTechStatus.Warning) },
-        { 8, BitMessage.One("подключено внешнее питание", PackageTechStatus.Info) },
+        { 8, BitMessage.One("подключено внешнее питание") },
         { 9, BitMessage.One("\"плохой\" внешний источник питания", PackageTechStatus.Warning) },
-        { 15, BitMessage.One("Рестарт", PackageTechStatus.Info) },
+        { 15, BitMessage.One("Рестарт") },
     };
     
     public IdStatusPwr(CanPackage p, string name) : base(p, name) { }

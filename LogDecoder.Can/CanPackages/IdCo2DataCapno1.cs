@@ -36,11 +36,6 @@ public class IdCo2DataCapno1 : BasePackageParsed
 
         var messages = new List<string>();
 
-        // if (rr == 0)
-        // {
-        //     messages.Add("Капнографическое апноэ");
-        // }
-
         return new PackageData(numericData, messages);
     }
 }

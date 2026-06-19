@@ -12,7 +12,7 @@ public class IdStatusMix : BasePackageParsed
 
     private static readonly Dictionary<int, BitMessage> BitsDefinitions = new()
     {
-        { 0, BitMessage.One("Рестарт", PackageTechStatus.Info) },
+        { 0, BitMessage.One("Рестарт") },
         { 11, BitMessage.One("Неисправность (загрязнение) НЕРА-фильтра", PackageTechStatus.Warning) },
         { 13, BitMessage.One("Неисправность CAN", PackageTechStatus.Warning) },
         { 15, BitMessage.One("Неисправность источника питания +12VA", PackageTechStatus.Warning) },

@@ -15,7 +15,7 @@ public class IdStatusMotor : BasePackageParsed
         { 0, BitMessage.One("Отказ датчиков Холла", PackageTechStatus.Error) },
         { 1, BitMessage.One("Отказ драйвера ЭД (OCTW)", PackageTechStatus.Error) },
         { 2, BitMessage.One("Отказ драйвера ЭД (FAULT)", PackageTechStatus.Error) },
-        { 3, BitMessage.One("Флаг сброса", PackageTechStatus.Info) },
+        { 3, BitMessage.One("Флаг сброса") },
         { 5, BitMessage.One("Отказ энкодера", PackageTechStatus.Error) },
         { 6, BitMessage.One("Отказ привода", PackageTechStatus.Error) },
         { 7, BitMessage.One("КРИТИЧЕСКИЙ ОТКАЗ (остановка мотора)", PackageTechStatus.Critical) }

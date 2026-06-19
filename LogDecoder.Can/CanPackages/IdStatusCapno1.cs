@@ -9,7 +9,6 @@ namespace LogDecoder.CAN.Packages;
     {
         public const int Id = 0x482;
 
-        // TODO: добавить кодов и доработать парсинг
         private static readonly Dictionary<int, (string msg, PackageTechStatus level)> StatusDefinitions = new()
         {
             { 0x00, ("Измерение", PackageTechStatus.Ok) },

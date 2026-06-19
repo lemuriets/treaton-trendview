@@ -53,6 +53,7 @@ public class CanPackageFactory : ICanPackageFactory
     Register(1058, "ID_STATUS_SCM", (p, n, c) => new IdStatusScm(p, n));
     Register(1090, "ID_STATUS_MIX", (p, n, c) => new IdStatusMix(p, n));
     Register(1093, "ID_FLOW_MIX", (p, n, c) => new IdFlowMix(p, n));
+    Register(1104, "ID_STAT_ERR_MIX", (p, n, c) => new IdStatErrMix(p, n));
     Register(1120, "ID_SYNHRO", (p, n, c) => new IdSynchro(p, n));
     Register(1123, "ID_OXY", (p, n, c) => new IdOxy(p, n));
     Register(1154, "ID_STATUS_CAPNO1", (p, n, c) => new IdStatusCapno1(p, n));
