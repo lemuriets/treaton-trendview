@@ -69,6 +69,23 @@ public class ProtocolLoaderTests
     }
 
     [Test]
+    public void ListFamilies_SkipsFolderWithoutManifest()
+    {
+        var root = NewTempDir();
+        var good = Path.Combine(root, "good");
+        var bad = Path.Combine(root, "bad");
+        Directory.CreateDirectory(good);
+        Directory.CreateDirectory(bad);
+        File.WriteAllText(Path.Combine(good, "manifest.yaml"), "protocol:\n  name: Good\n  synchroId: 1\n");
+        WritePackage(good, 1);
+        WritePackage(bad, 2);
+
+        var families = ProtocolLoader.ListFamilies(root);
+
+        Assert.That(families.Select(f => f.FolderName), Is.EqualTo(new[] { "good" }));
+    }
+
+    [Test]
     public void MissingFolder_Throws()
     {
         var missing = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -100,8 +117,33 @@ public class ProtocolLoaderTests
     public void DuplicateId_Throws()
     {
         var family = NewTempDir();
-        File.WriteAllText(Path.Combine(family, "a.yaml"), string.Format(MinimalPackage, 1));
-        File.WriteAllText(Path.Combine(family, "b.yaml"), string.Format(MinimalPackage, 1));
+        File.WriteAllText(Path.Combine(family, "10.yaml"), string.Format(MinimalPackage, 1));
+        File.WriteAllText(Path.Combine(family, "11.yaml"), string.Format(MinimalPackage, 1));
+
+        Assert.Throws<ConfigValidationException>(() => ProtocolLoader.LoadFamily(family));
+    }
+
+    [Test]
+    public void PackagesPath_GlobExcludesNonMatchingFiles()
+    {
+        var family = NewTempDir();
+        File.WriteAllText(Path.Combine(family, "manifest.yaml"),
+            "protocol:\n  name: T\n  synchroId: 7\npackagesPath: \"[0-9]*.yaml\"\n");
+        WritePackage(family, 7);
+        File.WriteAllText(Path.Combine(family, "notes.yaml"), string.Format(MinimalPackage, 8));
+
+        var loaded = ProtocolLoader.LoadFamily(family);
+
+        Assert.That(loaded.Packages.Select(p => p.Id), Is.EqualTo(new[] { 7 }));
+    }
+
+    [Test]
+    public void SynchroIdNotAmongPackages_Throws()
+    {
+        var family = NewTempDir();
+        File.WriteAllText(Path.Combine(family, "manifest.yaml"),
+            "protocol:\n  name: T\n  synchroId: 999\npackagesPath: \"[0-9]*.yaml\"\n");
+        WritePackage(family, 7);
 
         Assert.Throws<ConfigValidationException>(() => ProtocolLoader.LoadFamily(family));
     }
@@ -110,7 +152,7 @@ public class ProtocolLoaderTests
     public void ByteOutOfRange_Throws()
     {
         var family = NewTempDir();
-        File.WriteAllText(Path.Combine(family, "a.yaml"),
+        File.WriteAllText(Path.Combine(family, "3.yaml"),
             "id: 3\nname: PKG3\nlength: 1\nfields:\n- name: A\n  kind: Value\n  byte: 5\n");
 
         Assert.Throws<ConfigValidationException>(() => ProtocolLoader.LoadFamily(family));
