@@ -1,7 +1,7 @@
 using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
-using LogDecoder.CAN.Protocol;
+using LogDecoder.CAN;
 
 namespace LogDecoder.GUI.Avalonia.Converters;
 

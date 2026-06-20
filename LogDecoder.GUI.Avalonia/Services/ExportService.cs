@@ -1,4 +1,4 @@
-using LogDecoder.CAN.Protocol;
+using LogDecoder.CAN;
 
 namespace LogDecoder.GUI.Avalonia.Services;
 

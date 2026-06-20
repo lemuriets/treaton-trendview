@@ -1,8 +1,8 @@
 using System.Globalization;
+using LogDecoder.CAN;
 using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.General;
 using LogDecoder.CAN.Packages;
-using LogDecoder.CAN.Protocol;
 using LogDecoder.Helpers.Csv;
 using Microsoft.Extensions.Logging;
 

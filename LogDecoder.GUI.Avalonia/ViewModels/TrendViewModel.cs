@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Input;
-using LogDecoder.CAN.Protocol;
+using LogDecoder.CAN;
 using LogDecoder.Parser;
 using LogDecoder.GUI.Avalonia.Commands;
 using LogDecoder.GUI.Avalonia.Localization;

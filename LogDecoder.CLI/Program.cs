@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Diagnostics;
+using LogDecoder.CAN;
 using LogDecoder.CAN.Packages;
 using LogDecoder.CAN.Protocol;
 using LogDecoder.Infrastructure.Logging;
