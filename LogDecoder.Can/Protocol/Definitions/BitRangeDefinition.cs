@@ -1,4 +1,4 @@
-namespace LogDecoder.CAN.Protocol;
+namespace LogDecoder.CAN.Protocol.Definitions;
 
 public sealed class BitRangeDefinition
 {
