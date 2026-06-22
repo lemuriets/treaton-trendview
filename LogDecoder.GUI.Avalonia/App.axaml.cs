@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -126,7 +127,8 @@ public partial class App : Application
             Content = Localizer.L("ConfigSelectOk"),
             Width = 120,
             HorizontalAlignment = HorizontalAlignment.Center,
-            Margin = new Thickness(0, 8, 0, 12)
+            Margin = new Thickness(0, 8, 0, 12),
+            IsDefault = true
         };
 
         var prompt = new TextBlock
@@ -151,6 +153,19 @@ public partial class App : Application
             Content = content,
             WindowStartupLocation = WindowStartupLocation.CenterScreen
         };
+
+        window.Opened += (_, _) => Dispatcher.UIThread.Post(() =>
+        {
+            var index = listBox.SelectedIndex >= 0 ? listBox.SelectedIndex : 0;
+            if (listBox.ContainerFromIndex(index) is Control container)
+            {
+                container.Focus(NavigationMethod.Directional);
+            }
+            else
+            {
+                listBox.Focus();
+            }
+        });
 
         var proceeded = false;
         okButton.Click += (_, _) =>
