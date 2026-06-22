@@ -1,0 +1,52 @@
+packageId: 1090
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет СГ (смеситель газов). Состояние модуля: формируется каждые 100 мс, после обработки ID_MODE_MIX и при изменении статуса. Содержит давление O₂, атмосферное давление, текущий режим и флаги неисправностей.
+    details: |-
+      Поля данных и флаги (длина 8 байт):
+      • Байт 0 — давление в магистрали кислорода [0,1 атм]
+      • Байты 1–2 — атмосферное давление [мм рт.ст.]
+      • Байт 3 — текущий активный режим (как в ID_MODE_MIX)
+      • Байты 4–7 — слово состояния:
+         • бит 31 — неисправен датчик давления магистрали O₂
+         • бит 30 — неисправен датчик абсолютного давления перед ГП
+         • бит 29 — неисправен датчик потока в магистрали O₂
+         • бит 28 — неисправен датчик потока в магистрали воздуха
+         • бит 27 — неисправен ИОН
+         • бит 26 — неисправен АЦП AD7738
+         • бит 24 — отсутствует связь с КИВЛ
+         • бит 23 — отсутствует связь с БУ
+         • бит 20 — ошибка констант датчика давления в камере смешения
+         • бит 19 — ошибка констант датчика потока O₂
+         • бит 18 — ошибка констант датчика потока воздуха
+         • бит 15 — неисправность источника +12VA
+         • бит 13 — неисправность CAN
+         • бит 12 — неисправность источника 12V1 (13,2 В) пропорционального клапана
+         • бит 11 — загрязнение HEPA-фильтра
+         • бит 0 — признак рестарта
+  en:
+    summary: |-
+      Output packet from the gas mixer (MIX). Module state: emitted every 100 ms, after processing ID_MODE_MIX and on status change. Carries O₂ pressure, atmospheric pressure, current mode and fault flags.
+    details: |-
+      Data fields and flags (length 8 bytes):
+      • byte 0 — oxygen-line pressure [0.1 atm]
+      • bytes 1–2 — atmospheric pressure [mmHg]
+      • byte 3 — current active mode (as in ID_MODE_MIX)
+      • bytes 4–7 — status word:
+         • bit 31 — O₂-line pressure sensor fault
+         • bit 30 — absolute-pressure sensor (before flow generator) fault
+         • bit 29 — O₂-line flow sensor fault
+         • bit 28 — air-line flow sensor fault
+         • bit 27 — voltage reference fault
+         • bit 26 — AD7738 ADC fault
+         • bit 24 — no link with the CIVL
+         • bit 23 — no link with the control unit (BU)
+         • bit 20 — mixing-chamber pressure sensor constants error
+         • bit 19 — O₂-line flow sensor constants error
+         • bit 18 — air-line flow sensor constants error
+         • bit 15 — +12VA supply fault
+         • bit 13 — CAN fault
+         • bit 12 — 12V1 (13.2 V) proportional-valve supply fault
+         • bit 11 — HEPA filter contamination
+         • bit 0 — restart flag

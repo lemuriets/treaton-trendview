@@ -1,0 +1,18 @@
+packageId: 1299
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Давление Paux за дыхательный цикл (макс/среднее/мин). Ошибок не содержит.
+    details: |-
+      Поля данных (длина 6 байт, величины знаковые):
+      • Байты 0–1 — максимальное давление за цикл [мм вод.ст.]
+      • Байты 2–3 — среднее давление за цикл [мм вод.ст.]
+      • Байты 4–5 — минимальное давление за цикл [мм вод.ст.]
+  en:
+    summary: |-
+      Output packet from the CIVL. Paux pressure over the breath cycle (max/mean/min). Contains no errors.
+    details: |-
+      Data fields (length 6 bytes, signed values):
+      • bytes 0–1 — maximum pressure over the cycle [mmH₂O]
+      • bytes 2–3 — mean pressure over the cycle [mmH₂O]
+      • bytes 4–5 — minimum pressure over the cycle [mmH₂O]

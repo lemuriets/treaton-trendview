@@ -1,0 +1,28 @@
+packageId: 1449
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КМ (контроллер мотора). Состояние модуля: формируется каждые 100 мс и при изменении любого бита. Анализируется КИВЛ (бит 17 ID_STATUS_CIVL).
+    details: |-
+      Слово состояния (длина 1 байт), Байт 0:
+      • бит 0 — отказ датчиков Холла
+      • бит 1 — отказ драйвера ЭД (OCTW, DRV8301)
+      • бит 2 — отказ драйвера ЭД (FAULT, DRV8301)
+      • бит 3 — бит сброса (1 в первом пакете после загрузки)
+      • бит 5 — отказ энкодера
+      • бит 6 — отказ привода
+      • бит 7 — критический отказ (останов мотора)
+      Отказ модуля = биты 0|1|2|5|6|7
+  en:
+    summary: |-
+      Output packet from the motor controller (KM). Module state: emitted every 100 ms and on any bit change. Analyzed by the CIVL (bit 17 of ID_STATUS_CIVL).
+    details: |-
+      Status word (length 1 byte), byte 0:
+      • bit 0 — Hall sensors failure
+      • bit 1 — motor driver failure (OCTW, DRV8301)
+      • bit 2 — motor driver failure (FAULT, DRV8301)
+      • bit 3 — reset bit (1 in the first packet after boot)
+      • bit 5 — encoder failure
+      • bit 6 — drive failure
+      • bit 7 — critical failure (motor stop)
+      Module failure = bits 0|1|2|5|6|7

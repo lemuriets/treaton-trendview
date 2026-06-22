@@ -1,0 +1,20 @@
+packageId: 1198
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Параметры дыхания: ПДКВ, аутоПДКВ, поток у тройника и постоянная времени тракта. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 8 байт):
+      • Байты 0–1 — ПДКВ [мм вод.ст.]
+      • Байты 2–3 — аутоПДКВ [мм вод.ст.] (0xFFFF — ошибка измерения)
+      • Байты 4–5 — поток у тройника с учётом утечки [0,1 л/мин], знаковый
+      • Байты 6–7 — постоянная времени тракта [мс] (0xFFFF — ошибка)
+  en:
+    summary: |-
+      Output packet from the CIVL. Breathing parameters: PEEP, autoPEEP, wye flow and respiratory-tract time constant. Contains no errors.
+    details: |-
+      Data fields (length 8 bytes):
+      • bytes 0–1 — PEEP [mmH₂O]
+      • bytes 2–3 — autoPEEP [mmH₂O] (0xFFFF — measurement error)
+      • bytes 4–5 — wye flow with leak correction [0.1 l/min], signed
+      • bytes 6–7 — respiratory-tract time constant [ms] (0xFFFF — error)

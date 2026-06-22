@@ -1,0 +1,16 @@
+packageId: 1093
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет СГ (смеситель газов). Мгновенные потоки воздуха и кислорода (частота 500 Гц). Ошибок не содержит.
+    details: |-
+      Поля данных (длина 4 байта, величины знаковые):
+      • Байты 0–1 — STPD-поток воздуха [0,01 л/мин]
+      • Байты 2–3 — STPD-поток кислорода [0,01 л/мин]
+  en:
+    summary: |-
+      Output packet from the gas mixer (MIX). Instantaneous air and oxygen flows (500 Hz). Contains no errors.
+    details: |-
+      Data fields (length 4 bytes, signed values):
+      • bytes 0–1 — STPD air flow [0.01 l/min]
+      • bytes 2–3 — STPD oxygen flow [0.01 l/min]

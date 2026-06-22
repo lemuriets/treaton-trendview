@@ -1,0 +1,14 @@
+packageId: 1284
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Серийный номер аппарата. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 4 байта):
+      • Байты 0–3 — серийный номер аппарата
+  en:
+    summary: |-
+      Output packet from the CIVL. Device serial number. Contains no errors.
+    details: |-
+      Data fields (length 4 bytes):
+      • bytes 0–3 — device serial number

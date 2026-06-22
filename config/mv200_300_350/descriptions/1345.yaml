@@ -1,0 +1,20 @@
+packageId: 1345
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет ВДП (внешний датчик потока). Код потока с датчика и признак достоверности данных. Частота задаётся ID_MODE_EXTFLOW.
+    details: |-
+      Поля данных (длина 3 байта):
+      • Байты 0–1 — код, считанный из датчика потока
+      • Байт 2:
+         • бит 7 — нет данных от датчика (ошибка/инициализация); передана прошлая точка
+         • биты 6–0 — число усреднений (0 — преобразование не завершено)
+  en:
+    summary: |-
+      Output packet from the external flow sensor (EXTFLOW). Raw flow-sensor code and a data-validity flag. Rate is set by ID_MODE_EXTFLOW.
+    details: |-
+      Data fields (length 3 bytes):
+      • bytes 0–1 — code read from the flow sensor
+      • byte 2:
+         • bit 7 — no sensor data (error/initialization); the previous point is sent
+         • bits 6–0 — number of averages (0 — conversion not finished)

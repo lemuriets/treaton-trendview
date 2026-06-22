@@ -85,6 +85,7 @@ public partial class App : Application
     private static MainWindow BuildMainWindow(ConfigFamily family, LoggerProvider loggerProvider, ILogger logger)
     {
         var factory = ProtocolBootstrap.CreateFactory(family, logger);
+        PackageDescriptionService.Initialize(family.FullPath, logger);
         SaveActiveConfig(family.FolderName);
         logger.LogInformation("Active config family: {Family}", family.FolderName);
         return new MainWindow(factory, loggerProvider);

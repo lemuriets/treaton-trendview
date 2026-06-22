@@ -1,0 +1,20 @@
+packageId: 1223
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет ПП (CAPNO2). Параметры объёмной капнографии. 0xFFFF — недействительное значение.
+    details: |-
+      Поля данных (длина 8 байт):
+      • Байты 0–1 — элиминация CO₂ [мл/мин]
+      • Байты 2–3 — альвеолярная вентиляция за минуту [0,1 л/мин]
+      • Байты 4–5 — мёртвое пространство за цикл [мл]
+      • Байты 6–7 — альвеолярная вентиляция за цикл [мл]
+  en:
+    summary: |-
+      Output packet from the PP (CAPNO2). Volumetric capnography parameters. 0xFFFF — invalid value.
+    details: |-
+      Data fields (length 8 bytes):
+      • bytes 0–1 — CO₂ elimination [ml/min]
+      • bytes 2–3 — alveolar ventilation per minute [0.1 l/min]
+      • bytes 4–5 — dead space per cycle [ml]
+      • bytes 6–7 — alveolar ventilation per cycle [ml]

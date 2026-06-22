@@ -1,0 +1,20 @@
+packageId: 1205
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Информация об утечке из контура за прошедший дыхательный цикл (частота 10 Гц). Ошибок не содержит.
+    details: |-
+      Поля данных (длина 8 байт, величины знаковые):
+      • Байты 0–1 — среднее давление в тройнике за цикл [мм вод.ст.] (0xFFFF — некорректно)
+      • Байты 2–3 — разница объёмов вдоха и выдоха [мл]
+      • Байты 4–5 — величина утечки [л/мин]
+      • Байты 6–7 — отношение мгновенной утечки к потоку вдоха [%]
+  en:
+    summary: |-
+      Output packet from the CIVL. Circuit leak for the just-completed breath cycle (10 Hz). Contains no errors.
+    details: |-
+      Data fields (length 8 bytes, signed values):
+      • bytes 0–1 — mean wye pressure over the cycle [mmH₂O] (0xFFFF — invalid)
+      • bytes 2–3 — difference between inspiratory and expiratory volumes [ml]
+      • bytes 4–5 — leak value [l/min]
+      • bytes 6–7 — instantaneous leak to inspiratory flow ratio [%]

@@ -1,0 +1,54 @@
+packageId: 1058
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет платы CAN-Ethernet (СЦМ). Состояние модуля: формируется в режиме «РАБОТА» в ответ на ID_SYNHRO, при подключении/отключении USB-носителя и останове отладочной сессии. Содержит флаги Ethernet, SD-карты и USB-накопителя.
+    details: |-
+      Слово состояния (длина 4 байта), биты 0–20:
+      • бит 0 — ошибка ИМС физического доступа к Ethernet
+      • бит 1 — есть активное подключение к сети Ethernet
+      • бит 2 — полно-/полудуплексный режим Ethernet
+      • бит 3 — скорость Ethernet 100/10 МБод
+      • бит 4 — связь по управляющему порту Ethernet
+      • бит 5 — связь по порту передачи данных Ethernet
+      • бит 6 — SDRAM исправна/неисправна
+      • бит 7 — нет/есть microSD
+      • бит 8 — идёт создание файловой системы на SD
+      • бит 9 — износ SD-карты (ресурс записи исчерпан)
+      • бит 10 — ошибка обмена с SD-картой
+      • бит 11 — USB mass storage подключена
+      • бит 12 — есть раздел FAT на USB
+      • бит 13 — идёт запись журнала тревог
+      • бит 14 — идёт запись копии экрана
+      • бит 15 — идёт перенос лога CAN с SD на USB
+      • бит 16 — идёт запись сервисного журнала
+      • бит 17 — идёт запись трендов
+      • бит 18 — сервисный режим трансляции включён (SERVICE_ON)
+      • бит 19 — ошибка восстановления сектора microSD
+      • бит 20 — режим работы с СЦМ включён (SCM_ON)
+  en:
+    summary: |-
+      Output packet from the CAN-Ethernet board (SCM). Module state: emitted in RUN mode in response to ID_SYNHRO, on USB-storage connect/disconnect and on debug-session stop. Carries Ethernet, SD-card and USB-storage flags.
+    details: |-
+      Status word (length 4 bytes), bits 0–20:
+      • bit 0 — Ethernet PHY access-chip error
+      • bit 1 — active Ethernet network connection present
+      • bit 2 — Ethernet full/half duplex
+      • bit 3 — Ethernet speed 100/10 Mbaud
+      • bit 4 — link on the control port
+      • bit 5 — link on the data port
+      • bit 6 — SDRAM healthy/faulty
+      • bit 7 — microSD absent/present
+      • bit 8 — building the file system on SD
+      • bit 9 — SD-card wear-out (write resource exhausted)
+      • bit 10 — SD-card exchange error
+      • bit 11 — USB mass storage connected
+      • bit 12 — FAT partition present on USB
+      • bit 13 — writing the alarm journal
+      • bit 14 — writing a screenshot
+      • bit 15 — transferring the CAN log from SD to USB
+      • bit 16 — writing the service journal
+      • bit 17 — writing trends
+      • bit 18 — service translation mode on (SERVICE_ON)
+      • bit 19 — microSD sector-recovery error
+      • bit 20 — SCM mode on (SCM_ON)

@@ -1,0 +1,34 @@
+packageId: 1187
+descriptions:
+  ru:
+    summary: |-
+      Входной пакет КИВЛ. Параметры вентиляции (часть 1): режим ИВЛ, тип пациента, форма потока, триггер, ПДКВ, времена вдоха/выдоха.
+    details: |-
+      Поля данных (длина 8 байт):
+      • Байт 0:
+         • бит 7 — детский/взрослый режим
+         • бит 6 — режим «вздох»
+         • бит 5 — форма потока (0 — прямоугольный, 1 — убывающий)
+         • бит 4 — триггер (0 — по давлению, 1 — по потоку)
+         • биты 3–0 — режим ИВЛ: 0 CMV/VCV, 1 CMV/PCV, 2 SIMV/PC, 3 SIMV/VC, 4 CPAP, 5 BiSTEP, 6 NIV, 7 APRV, 8 PCV-VG, 9 SIMV/DC, 10 iSV, 11 nCPAP, 12 CPAP+VS, 13 nIMV, 14 HF_O2
+      • Байт 1 — ПДКВ [см вод.ст.] (в BiSTEP — Plow)
+      • Байт 2 — чувствительность триггера по давлению [мм вод.ст.]
+      • Байт 3 — чувствительность триггера по потоку [0,1 л/мин]
+      • Байты 4–5 — время вдоха [мс] (0xFFFF — авто)
+      • Байты 6–7 — время выдоха [мс] (0xFFFF — авто)
+  en:
+    summary: |-
+      Input packet to the CIVL. Ventilation parameters (part 1): ventilation mode, patient type, flow shape, trigger, PEEP, inspiratory/expiratory times.
+    details: |-
+      Data fields (length 8 bytes):
+      • byte 0:
+         • bit 7 — pediatric/adult mode
+         • bit 6 — "sigh" mode
+         • bit 5 — flow shape (0 — square, 1 — decelerating)
+         • bit 4 — trigger (0 — pressure, 1 — flow)
+         • bits 3–0 — ventilation mode: 0 CMV/VCV, 1 CMV/PCV, 2 SIMV/PC, 3 SIMV/VC, 4 CPAP, 5 BiSTEP, 6 NIV, 7 APRV, 8 PCV-VG, 9 SIMV/DC, 10 iSV, 11 nCPAP, 12 CPAP+VS, 13 nIMV, 14 HF_O2
+      • byte 1 — PEEP [cmH₂O] (Plow in BiSTEP)
+      • byte 2 — pressure trigger sensitivity [mmH₂O]
+      • byte 3 — flow trigger sensitivity [0.1 l/min]
+      • bytes 4–5 — inspiratory time [ms] (0xFFFF — auto)
+      • bytes 6–7 — expiratory time [ms] (0xFFFF — auto)

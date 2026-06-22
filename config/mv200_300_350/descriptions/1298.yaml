@@ -1,0 +1,16 @@
+packageId: 1298
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Графика давления Paux (каналы Paux1/Paux2). Ошибок не содержит.
+    details: |-
+      Поля данных (длина 4 байта, величины знаковые):
+      • Байты 0–1 — давление Paux1 [мм вод.ст.], от -1020 до 1020
+      • Байты 2–3 — давление Paux2 [мм вод.ст.], от -1020 до 1020
+  en:
+    summary: |-
+      Output packet from the CIVL. Paux pressure graph (Paux1/Paux2 channels). Contains no errors.
+    details: |-
+      Data fields (length 4 bytes, signed values):
+      • bytes 0–1 — Paux1 pressure [mmH₂O], -1020 to 1020
+      • bytes 2–3 — Paux2 pressure [mmH₂O], -1020 to 1020

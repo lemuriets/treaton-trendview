@@ -1,0 +1,38 @@
+packageId: 1249
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет модуля пульсоксиметрии Тритон (SpO₂). Состояние модуля и измерения: формируется в ответ на ID_SYNHRO/ID_MODE_SPO и при изменении статуса. Содержит наполнение, пульс, сатурацию и состояние датчика.
+    details: |-
+      Поля данных и состояние (длина 7 байт):
+      • Байты 0–1 — наполнение [0,1 %] (≥1000 — прочерки)
+      • Байты 2–3 — частота пульса [уд/мин] (≥1000 — прочерки)
+      • Байт 4 — сатурация [%] (255 — прочерки)
+      • Байт 5 — состояние датчика/сигнала (биты 0–3):
+         • 0 — норма
+         • 1 — модуль отключён
+         • 2 — модуль неисправен
+         • 3 — датчик отсоединён
+         • 4 — датчик неисправен
+         • 5 — датчик сброшен
+         • 6 — слабый сигнал ФПГ
+         • 7 — деградация датчика
+      • Байт 6 — режим работы блока (как в ID_MODE_SPO)
+  en:
+    summary: |-
+      Output packet from the Triton pulse oximetry module (SpO₂). Module state and measurements: emitted in response to ID_SYNHRO/ID_MODE_SPO and on status change. Carries perfusion, pulse, saturation and sensor state.
+    details: |-
+      Data fields and state (length 7 bytes):
+      • bytes 0–1 — perfusion [0.1 %] (≥1000 — dashes)
+      • bytes 2–3 — pulse rate [bpm] (≥1000 — dashes)
+      • byte 4 — saturation [%] (255 — dashes)
+      • byte 5 — sensor/signal state (bits 0–3):
+         • 0 — normal
+         • 1 — module off
+         • 2 — module faulty
+         • 3 — sensor disconnected
+         • 4 — sensor faulty
+         • 5 — sensor reset
+         • 6 — weak PPG signal
+         • 7 — sensor degradation
+      • byte 6 — module operating mode (as in ID_MODE_SPO)

@@ -1,0 +1,114 @@
+packageId: 1192
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ (контроллер ИВЛ). Статусная информация модуля: формируется каждые 100 мс, в ответ на ID_MODE_CIVL и при изменении статусных бит. Содержит флаги неисправностей и тревог (биты 0–47), код текущего режима работы и измеренный %O₂.
+    details: |-
+      Биты статуса (Байты 0–5), флаги неисправностей и тревог:
+      • бит 47 — окклюзия ЭТ-трубки
+      • бит 46 — окклюзия клапана
+      • бит 45 — окклюзия контура
+      • бит 44 — неисправность небулайзера
+      • бит 43 — AutoLeak
+      • бит 42 — подключён внешний датчик потока
+      • бит 41 — подключён внешний модуль потока
+      • бит 40 — возникновение рестарта
+      • бит 39 — ошибка автоматической калибровки датчика кислорода
+      • бит 38 — работа алгоритма автоматической калибровки датчика кислорода
+      • бит 37 — манёвр раскрытия альвеол
+      • бит 36 — сбой в памяти начального напряжения на датчике кислорода
+      • бит 35 — ошибка калибровочного коэффициента датчика кислорода
+      • бит 34 — неисправность ГП (большая потребляемая мощность)
+      • бит 33 — неисправность ИОН для AD7738
+      • бит 32 — ошибка передачи по CAN
+      • бит 31 — работающий небулайзер
+      • бит 30 — отсутствие связи с СГ
+      • бит 29 — неисправность дифф. датчика давления для датчика потока в ЭМКВ выдоха
+      • бит 28 — неисправность датчика давления в магистрали выдоха
+      • бит 27 — неисправность датчика давления в магистрали вдоха
+      • бит 26 — неисправность АЦП AD7738
+      • бит 25 — неисправность датчика кислорода
+      • бит 24 — неисправность клапана выдоха
+      • бит 23 — неисправность VLV_F-
+      • бит 22 — неисправность VLV_F+
+      • бит 21 — неисправность VLV_Z-
+      • бит 20 — неисправность VLV_Z+
+      • бит 19 — неисправность компрессора продувки
+      • бит 18 — неисправность клапана безопасности
+      • бит 17 — неисправность ГП (без указания причины)
+      • бит 16 — неисправность EEPROM
+      • бит 15 — ошибка констант генератора потока
+      • бит 14 — ошибка констант клапана выдоха
+      • бит 13 — ошибка констант преобразователя «поток-давление»
+      • бит 12 — ошибка констант датчиков давления
+      • бит 11 — ошибка напряжения 12VA
+      • бит 10 — ошибка напряжения 2.5VA
+      • бит 9 — ошибка напряжения 5VA
+      • бит 8 — ошибка напряжения 12V_VLV
+      • бит 7 — ошибка напряжения 15VA
+      • бит 6 — ошибка напряжения V_EMV
+      • бит 5 — ошибка напряжения 27V_PWR
+      • бит 4 — апноэ
+      • бит 3 — достижение Pmax
+      • бит 2 — окклюзия дыхательного контура
+      • бит 1 — разгерметизация
+      • бит 0 — отсутствие связи с БУ
+      Поля данных:
+      • Байт 6 — код текущего активного режима работы (как в ID_MODE_CIVL)
+      • Байт 7 — текущий %O₂, измеренный датчиком кислорода
+  en:
+    summary: |-
+      Output packet from the CIVL (ventilation controller). Module status: emitted every 100 ms, in response to ID_MODE_CIVL and whenever a status bit changes. Carries fault and alarm flags (bits 0–47), the current operating-mode code and the measured %O₂.
+    details: |-
+      Status bits (bytes 0–5), fault and alarm flags:
+      • bit 47 — ET tube occlusion
+      • bit 46 — valve occlusion
+      • bit 45 — circuit occlusion
+      • bit 44 — nebulizer fault
+      • bit 43 — AutoLeak
+      • bit 42 — external flow sensor connected
+      • bit 41 — external flow module connected
+      • bit 40 — restart occurred
+      • bit 39 — oxygen sensor auto-calibration error
+      • bit 38 — oxygen sensor auto-calibration algorithm running
+      • bit 37 — alveolar recruitment maneuver
+      • bit 36 — oxygen sensor initial-voltage memory failure
+      • bit 35 — oxygen sensor calibration-coefficient error
+      • bit 34 — flow generator fault (excessive power draw)
+      • bit 33 — voltage reference fault for AD7738
+      • bit 32 — CAN transmission error
+      • bit 31 — nebulizer running
+      • bit 30 — no link with the gas mixer (SG)
+      • bit 29 — differential pressure sensor fault for the exhalation valve flow sensor
+      • bit 28 — expiratory line pressure sensor fault
+      • bit 27 — inspiratory line pressure sensor fault
+      • bit 26 — AD7738 ADC fault
+      • bit 25 — oxygen sensor fault
+      • bit 24 — exhalation valve fault
+      • bit 23 — VLV_F- fault
+      • bit 22 — VLV_F+ fault
+      • bit 21 — VLV_Z- fault
+      • bit 20 — VLV_Z+ fault
+      • bit 19 — purge compressor fault
+      • bit 18 — safety valve fault
+      • bit 17 — flow generator fault (unspecified cause)
+      • bit 16 — EEPROM fault
+      • bit 15 — flow generator constants error
+      • bit 14 — exhalation valve constants error
+      • bit 13 — "flow-to-pressure" converter constants error
+      • bit 12 — pressure sensor constants error
+      • bit 11 — 12VA voltage error
+      • bit 10 — 2.5VA voltage error
+      • bit 9 — 5VA voltage error
+      • bit 8 — 12V_VLV voltage error
+      • bit 7 — 15VA voltage error
+      • bit 6 — V_EMV voltage error
+      • bit 5 — 27V_PWR voltage error
+      • bit 4 — apnea
+      • bit 3 — Pmax reached
+      • bit 2 — breathing circuit occlusion
+      • bit 1 — depressurization
+      • bit 0 — no link with the control unit (BU)
+      Data fields:
+      • byte 6 — current active operating-mode code (as in ID_MODE_CIVL)
+      • byte 7 — current %O₂ measured by the oxygen sensor

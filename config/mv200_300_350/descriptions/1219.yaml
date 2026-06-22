@@ -1,0 +1,56 @@
+packageId: 1219
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет ПП (преобразователь протоколов, капнограф БО CAPNO2). Состояние модуля: формируется при изменении статуса и в ответ на ID_SYNHRO. Содержит флаги и приоритетное сообщение капнографа.
+    details: |-
+      Поля данных и флаги (длина 8 байт):
+      • Байты 0–3 — слово состояния капнографа (при Байт 5 = 0):
+         • бит 0 — отрицательное значение CO₂ (ошибка нуля/адаптера)
+         • бит 1 — ошибка адаптера
+         • бит 2 — обнаружено дыхание
+         • бит 3 — высокое CO₂ (верхний предел)
+         • бит 4 — капнограф не может начать калибровку
+         • бит 5 — активен режим сна
+         • бит 6 — апноэ
+         • бит 7 — закрытый (1) / открытый (0) контур
+         • биты 8–9 — температурный статус (0 норма, 1 ниже, 2 выше, 3 прогрев)
+         • биты 10–11 — статус калибровки нуля (0 не требуется, 1 активна, 2 требуется, 3 ошибка)
+         • бит 12 — capnostat5 не проинициализирован
+         • биты 13–14 — стабилизатор тока (0 норма, 1 стабилизация, 2/3 аппаратная ошибка)
+         • бит 21 — аппаратная ошибка
+         • бит 22 — неисправна EEPROM
+         • бит 24 — отсутствует адаптер бокового потока
+         • бит 25 — насос выработал ресурс
+         • бит 26 — ошибка пневматики
+         • бит 27 — аппаратная ошибка
+      • Байт 4 — приоритетное сообщение: 0 нет, 1 датчик перегрет, 2 дефектный датчик, 3 не задано атм. давление, 4 спящий режим, 5 коррекция нуля, 6 прогрев, 7 ошибка измерения нуля, 8 высокое CO₂, 9 ошибка адаптера, 10 высокое давление в линии пробы
+      • Байт 5 — наличие капнографа (0x00 — подключён, 0x14 — не подключён)
+      • Байты 6–7 — атмосферное давление [мм рт.ст.]
+  en:
+    summary: |-
+      Output packet from the protocol converter (PP, sidestream capnograph CAPNO2). Module state: emitted on status change and in response to ID_SYNHRO. Carries capnograph flags and the priority message.
+    details: |-
+      Data fields and flags (length 8 bytes):
+      • bytes 0–3 — capnograph status word (when byte 5 = 0):
+         • bit 0 — negative CO₂ value (zero/adapter error)
+         • bit 1 — adapter error
+         • bit 2 — breath detected
+         • bit 3 — high CO₂ (upper limit)
+         • bit 4 — capnograph cannot start calibration
+         • bit 5 — sleep mode active
+         • bit 6 — apnea
+         • bit 7 — closed (1) / open (0) circuit
+         • bits 8–9 — temperature status (0 normal, 1 below, 2 above, 3 warming up)
+         • bits 10–11 — zero-calibration status (0 not required, 1 active, 2 required, 3 error)
+         • bit 12 — capnostat5 not initialized
+         • bits 13–14 — current stabilizer (0 normal, 1 stabilizing, 2/3 hardware error)
+         • bit 21 — hardware error
+         • bit 22 — EEPROM faulty
+         • bit 24 — sidestream adapter missing
+         • bit 25 — pump resource exhausted
+         • bit 26 — pneumatics error
+         • bit 27 — hardware error
+      • byte 4 — priority message: 0 none, 1 sensor overheated, 2 defective sensor, 3 atm pressure not set, 4 sleep mode, 5 zero correction, 6 warming up, 7 zero-measurement error, 8 high CO₂, 9 adapter error, 10 high sampling-line pressure
+      • byte 5 — capnograph presence (0x00 — connected, 0x14 — not connected)
+      • bytes 6–7 — atmospheric pressure [mmHg]

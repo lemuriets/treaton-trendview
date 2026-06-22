@@ -1,0 +1,20 @@
+packageId: 1300
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Транспульмональные давления и комплайнс грудной стенки. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 8 байт, величины знаковые):
+      • Байты 0–1 — Ptpi, транспульмональное давление на макс. вдохе [мм вод.ст.]
+      • Байты 2–3 — Ptpe, транспульмональное давление в конце выдоха [мм вод.ст.]
+      • Байты 4–5 — Ptpm, среднее транспульмональное давление за цикл [мм вод.ст.]
+      • Байты 6–7 — Ccw, комплайнс грудной стенки [мл/см вод.ст.]
+  en:
+    summary: |-
+      Output packet from the CIVL. Transpulmonary pressures and chest-wall compliance. Contains no errors.
+    details: |-
+      Data fields (length 8 bytes, signed values):
+      • bytes 0–1 — Ptpi, transpulmonary pressure at peak inspiration [mmH₂O]
+      • bytes 2–3 — Ptpe, transpulmonary pressure at end of exhalation [mmH₂O]
+      • bytes 4–5 — Ptpm, mean transpulmonary pressure over the cycle [mmH₂O]
+      • bytes 6–7 — Ccw, chest-wall compliance [ml/cmH₂O]
