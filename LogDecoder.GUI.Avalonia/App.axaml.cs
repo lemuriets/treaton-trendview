@@ -127,6 +127,10 @@ public partial class App : Application
             Content = Localizer.L("ConfigSelectOk"),
             Width = 120,
             HorizontalAlignment = HorizontalAlignment.Center,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            Background = new SolidColorBrush(Color.Parse("#4CAF50")),
+            Foreground = Brushes.White,
             Margin = new Thickness(0, 8, 0, 12),
             IsDefault = true
         };
@@ -207,6 +211,10 @@ public partial class App : Application
             Content = "OK",
             Width = 90,
             HorizontalAlignment = HorizontalAlignment.Center,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            Background = new SolidColorBrush(Color.Parse("#4CAF50")),
+            Foreground = Brushes.White,
             Margin = new Thickness(0, 8, 0, 12)
         };
 
