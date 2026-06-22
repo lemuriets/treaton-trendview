@@ -1,5 +1,5 @@
 protocol:
-  name: Zisline CAN protocol subset
+  name: АИВЛ в исполнениях MV200, MV300, MV350
   revision: 1.0.1
   endianness: Little
   synchroId: 1120

@@ -1,0 +1,20 @@
+packageId: 1104
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет СГ (смеситель газов). Информация о причине неисправности модуля. Формируется совместно с ID_STATUS_MIX при возникновении неисправности.
+    details: |-
+      При одновременном возникновении нескольких неисправностей (или при добавлении новой к текущим) пакеты ID_STAT_ERR_MIX выводятся последовательно — по одному на каждую неисправность, с номером бита и текущим значением напряжения.
+
+      Поля данных (длина 4 байта):
+      • Байты 0–1 — номер бита неисправности в статусном слове (см. ID_STATUS_MIX)
+      • Байты 2–3 — текущее значение напряжения неисправности [мВ]
+  en:
+    summary: |-
+      Output packet from the gas mixer (MIX). Information about the cause of a module fault. Emitted together with ID_STATUS_MIX when a fault occurs.
+    details: |-
+      When several faults occur simultaneously (or a new one is added to the current ones), ID_STAT_ERR_MIX packets are emitted sequentially — one per fault, each carrying the bit number and the current voltage value.
+
+      Data fields (length 4 bytes):
+      • bytes 0–1 — fault bit number in the status word (see ID_STATUS_MIX)
+      • bytes 2–3 — current fault voltage value [mV]

@@ -30,11 +30,36 @@ fields:
   kind: Value
   byte: 5
   description: Приращение deltaPEEP для маневра раскрытия альвеол
-- name: Flags
-  kind: Value
+- name: LeakCompensation
+  kind: Bit
   byte: 6
-  description: Взаимоисключающие признаки (точное значение байта)
+  bit: 0
   values:
-    0: вкл компенсацию утечки
-    1: вкл функцию "свободное дыхание"
-    2: неонатальный/детский режим ИВЛ
+    0:
+      message: вкл компенсацию утечки
+      status: Ok
+    1:
+      message: выкл компенсацию утечки
+      status: Ok
+- name: FuncFreeBreath
+  kind: Bit
+  byte: 6
+  bit: 1
+  values:
+    0:
+      message: вкл функцию "свободное дыхание"
+      status: Ok
+    1:
+      message: выкл функцию "свободное дыхание"
+      status: Ok
+- name: Mode
+  kind: Bit
+  byte: 6
+  bit: 1
+  values:
+    0:
+      message: неонатальный режим ИВЛ
+      status: Ok
+    1:
+      message: детский режим ИВЛ
+      status: Ok
