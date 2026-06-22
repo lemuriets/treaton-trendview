@@ -55,7 +55,7 @@ fields:
 - name: Mode
   kind: Bit
   byte: 6
-  bit: 1
+  bit: 2
   values:
     0:
       message: неонатальный режим ИВЛ
