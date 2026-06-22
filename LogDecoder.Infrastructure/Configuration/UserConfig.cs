@@ -15,6 +15,9 @@ public sealed class UserConfig
     /// <summary>Folder name of the last-selected protocol config family (pre-selected at startup).</summary>
     public string? ActiveConfig { get; set; }
 
+    /// <summary>Application version shown in the title and About dialog. Stored only here.</summary>
+    public string? Version { get; set; }
+
     public static UserConfig LoadOrCreate()
     {
         var path = GetPath();

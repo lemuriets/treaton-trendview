@@ -1,7 +1,0 @@
-<Project>
-    <PropertyGroup>
-        <Version>2.5.3-260621</Version>
-        <InformationalVersion>$(Version)</InformationalVersion>
-        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    </PropertyGroup>
-</Project>

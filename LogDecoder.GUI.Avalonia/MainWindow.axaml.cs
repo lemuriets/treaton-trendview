@@ -8,6 +8,7 @@ using LogDecoder.GUI.Avalonia.Models;
 using LogDecoder.GUI.Avalonia.Services;
 using LogDecoder.GUI.Avalonia.ViewModels;
 using LogDecoder.Helpers;
+using LogDecoder.Infrastructure.Configuration;
 using LogDecoder.Infrastructure.Logging;
 using Microsoft.Extensions.Logging;
 
@@ -32,6 +33,13 @@ public partial class MainWindow : Window
         _loggerProvider = loggerProvider;
         var logger = _loggerProvider.CreateLogger<MainWindow>();
 
+        var version = UserConfig.LoadOrCreate().Version;
+        if (string.IsNullOrWhiteSpace(version))
+        {
+            logger.LogWarning("No version set in userconfig.json; loading without version");
+            version = string.Empty;
+        }
+
         var packageCatalog = new PackageCatalog(factory);
         var indexing = new IndexingService(logger, factory);
         var export = new ExportService();
@@ -53,7 +61,7 @@ public partial class MainWindow : Window
             dialogs,
             parser => new Trends(parser).Show(this),
             () => new DebugLogWindow().Show(this),
-            AppVersionProvider.GetVersion());
+            version);
 
         InitializeComponent();
 
