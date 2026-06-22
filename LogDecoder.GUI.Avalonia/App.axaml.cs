@@ -6,6 +6,7 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using LogDecoder.CAN.Protocol;
 using LogDecoder.GUI.Avalonia.Services;
 using LogDecoder.Infrastructure.Configuration;
@@ -172,7 +173,7 @@ public partial class App : Application
         });
 
         var proceeded = false;
-        okButton.Click += (_, _) =>
+        void Proceed()
         {
             var index = listBox.SelectedIndex >= 0 ? listBox.SelectedIndex : 0;
             Window next;
@@ -190,6 +191,17 @@ public partial class App : Application
             desktop.MainWindow = next;
             next.Show();
             window.Close();
+        }
+
+        okButton.Click += (_, _) => Proceed();
+
+        listBox.DoubleTapped += (_, e) =>
+        {
+            if ((e.Source as Control)?.FindAncestorOfType<ListBoxItem>() is not null
+                && listBox.SelectedIndex >= 0)
+            {
+                Proceed();
+            }
         };
 
         window.Closed += (_, _) =>
