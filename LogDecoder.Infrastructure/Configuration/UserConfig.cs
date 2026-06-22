@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LogDecoder.Helpers;
 
 namespace LogDecoder.Infrastructure.Configuration;
 
@@ -37,7 +38,7 @@ public sealed class UserConfig
 
     public static string GetPath()
     {
-        return Path.Combine(AppContext.BaseDirectory, "userconfig.json");
+        return Path.Combine(AppPaths.BaseDirectory, "userconfig.json");
     }
 
     private static JsonSerializerOptions JsonOptions()

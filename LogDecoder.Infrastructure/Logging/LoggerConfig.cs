@@ -1,4 +1,5 @@
 using LogDecoder.Infrastructure.Configuration;
+using LogDecoder.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -51,7 +52,7 @@ public static class LoggerConfig
     private static IConfigurationRoot LoadConfiguration()
     {
         return new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
+            .SetBasePath(AppPaths.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
     }
@@ -61,7 +62,7 @@ public static class LoggerConfig
         var userConfig = UserConfig.LoadOrCreate();
         var logsDirectory = Path.IsPathRooted(userConfig.Logging.LogDirectory)
             ? userConfig.Logging.LogDirectory
-            : Path.Combine(AppContext.BaseDirectory, userConfig.Logging.LogDirectory);
+            : Path.Combine(AppPaths.BaseDirectory, userConfig.Logging.LogDirectory);
 
         Directory.CreateDirectory(logsDirectory);
 

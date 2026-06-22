@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LogDecoder.Helpers;
 using Microsoft.Extensions.Logging;
 
 namespace LogDecoder.GUI.Avalonia.Services;
@@ -66,6 +67,6 @@ public sealed class LanguageSettingsService
 
     private static string GetPath()
     {
-        return Path.Combine(AppContext.BaseDirectory, FileName);
+        return Path.Combine(AppPaths.BaseDirectory, FileName);
     }
 }

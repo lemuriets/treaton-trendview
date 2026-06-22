@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using LogDecoder.CAN.Protocol.Definitions;
+using LogDecoder.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using YamlDotNet.Core;
@@ -38,7 +39,7 @@ public static class ProtocolLoader
         {
             var overridden = Environment.GetEnvironmentVariable(ConfigDirEnvVar);
             return string.IsNullOrWhiteSpace(overridden)
-                ? Path.Combine(AppContext.BaseDirectory, ConfigFolderName)
+                ? Path.Combine(AppPaths.BaseDirectory, ConfigFolderName)
                 : overridden;
         }
     }
