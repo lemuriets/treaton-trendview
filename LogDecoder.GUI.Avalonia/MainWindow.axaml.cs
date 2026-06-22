@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using LogDecoder.CAN.Packages;
@@ -60,7 +61,7 @@ public partial class MainWindow : Window
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
         PackageIdList.SelectionChanged += PackageSelectionChanged;
-        PackageIdList.ContextRequested += PackageContextRequested;
+        PackageIdList.AddHandler(PointerPressedEvent, PackageListPointerPressed, RoutingStrategies.Tunnel);
         ChkSelectAllPackages.Checked += ChkSelectAllPackagesChecked;
         ChkSelectAllPackages.Unchecked += ChkSelectAllPackagesUnchecked;
 
@@ -75,7 +76,7 @@ public partial class MainWindow : Window
     {
         _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         PackageIdList.SelectionChanged -= PackageSelectionChanged;
-        PackageIdList.ContextRequested -= PackageContextRequested;
+        PackageIdList.RemoveHandler(PointerPressedEvent, PackageListPointerPressed);
         ChkSelectAllPackages.Checked -= ChkSelectAllPackagesChecked;
         ChkSelectAllPackages.Unchecked -= ChkSelectAllPackagesUnchecked;
 
@@ -104,14 +105,26 @@ public partial class MainWindow : Window
         UpdateSelectAllCheckbox();
     }
 
-    private void PackageContextRequested(object? sender, ContextRequestedEventArgs e)
+    private void PackageListPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (_descriptionFlyout is null || e.Source is not Control source)
+        if (!e.GetCurrentPoint(PackageIdList).Properties.IsRightButtonPressed)
         {
             return;
         }
 
-        if (source.DataContext is not PackageItem item)
+        // Right-click is for showing the package description, not selecting.
+        // Handle it here so the ListBox does not toggle the current selection.
+        e.Handled = true;
+
+        if (e.Source is Control source)
+        {
+            ShowDescriptionFlyout(source);
+        }
+    }
+
+    private void ShowDescriptionFlyout(Control source)
+    {
+        if (_descriptionFlyout is null || source.DataContext is not PackageItem item)
         {
             return;
         }
@@ -123,7 +136,6 @@ public partial class MainWindow : Window
         }
 
         _descriptionFlyout.ShowAt(target, showAtPointer: true);
-        e.Handled = true;
     }
 
     private void ChkSelectAllPackagesChecked(object? sender, RoutedEventArgs e)
