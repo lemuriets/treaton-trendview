@@ -1,0 +1,29 @@
+<Window x:Class="LogDecoder.GUI.Avalonia.ConfigSelectionWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="clr-namespace:LogDecoder.GUI.Avalonia.Localization"
+        Title="{loc:Localize ConfigSelectTitle}"
+        Width="420" Height="320"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top"
+                   Text="{loc:Localize ConfigSelectPrompt}"
+                   TextWrapping="Wrap"
+                   Margin="16,12,16,0"/>
+
+        <Button x:Name="OkButton"
+                DockPanel.Dock="Bottom"
+                Content="{loc:Localize ConfigSelectOk}"
+                Width="120"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="#4CAF50"
+                Foreground="White"
+                Margin="0,8,0,12"
+                IsDefault="True"/>
+
+        <ListBox x:Name="ConfigList"
+                 Margin="16,8,16,8"/>
+    </DockPanel>
+</Window>

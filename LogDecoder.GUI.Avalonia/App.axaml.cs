@@ -1,12 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using LogDecoder.CAN.Protocol;
 using LogDecoder.GUI.Avalonia.Services;
 using LogDecoder.Infrastructure.Configuration;
@@ -113,69 +111,16 @@ public partial class App : Application
         LoggerProvider loggerProvider,
         ILogger logger)
     {
-        var listBox = new ListBox
-        {
-            Margin = new Thickness(16, 8, 16, 8),
-            ItemsSource = families.Select(f => f.DisplayName).ToList()
-        };
-
         var saved = UserConfig.LoadOrCreate().ActiveConfig;
         var preselect = families.ToList().FindIndex(f => f.FolderName == saved);
-        listBox.SelectedIndex = preselect >= 0 ? preselect : 0;
 
-        var okButton = new Button
-        {
-            Content = Localizer.L("ConfigSelectOk"),
-            Width = 120,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            HorizontalContentAlignment = HorizontalAlignment.Center,
-            VerticalContentAlignment = VerticalAlignment.Center,
-            Background = new SolidColorBrush(Color.Parse("#4CAF50")),
-            Foreground = Brushes.White,
-            Margin = new Thickness(0, 8, 0, 12),
-            IsDefault = true
-        };
-
-        var prompt = new TextBlock
-        {
-            Text = Localizer.L("ConfigSelectPrompt"),
-            TextWrapping = TextWrapping.Wrap,
-            Margin = new Thickness(16, 12, 16, 0)
-        };
-
-        var content = new DockPanel();
-        DockPanel.SetDock(prompt, Dock.Top);
-        DockPanel.SetDock(okButton, Dock.Bottom);
-        content.Children.Add(prompt);
-        content.Children.Add(okButton);
-        content.Children.Add(listBox);
-
-        var window = new Window
-        {
-            Title = Localizer.L("ConfigSelectTitle"),
-            Width = 420,
-            Height = 320,
-            Content = content,
-            WindowStartupLocation = WindowStartupLocation.CenterScreen
-        };
-
-        window.Opened += (_, _) => Dispatcher.UIThread.Post(() =>
-        {
-            var index = listBox.SelectedIndex >= 0 ? listBox.SelectedIndex : 0;
-            if (listBox.ContainerFromIndex(index) is Control container)
-            {
-                container.Focus(NavigationMethod.Directional);
-            }
-            else
-            {
-                listBox.Focus();
-            }
-        });
+        var window = new ConfigSelectionWindow(
+            families.Select(f => f.DisplayName).ToList(),
+            preselect >= 0 ? preselect : 0);
 
         var proceeded = false;
-        void Proceed()
+        window.Accepted += index =>
         {
-            var index = listBox.SelectedIndex >= 0 ? listBox.SelectedIndex : 0;
             Window next;
             try
             {
@@ -191,17 +136,6 @@ public partial class App : Application
             desktop.MainWindow = next;
             next.Show();
             window.Close();
-        }
-
-        okButton.Click += (_, _) => Proceed();
-
-        listBox.DoubleTapped += (_, e) =>
-        {
-            if ((e.Source as Control)?.FindAncestorOfType<ListBoxItem>() is not null
-                && listBox.SelectedIndex >= 0)
-            {
-                Proceed();
-            }
         };
 
         window.Closed += (_, _) =>
