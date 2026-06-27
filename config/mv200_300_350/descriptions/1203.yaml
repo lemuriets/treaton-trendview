@@ -1,0 +1,16 @@
+packageId: 1203
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Параметры дыхания: время вдоха и постоянная времени на вдохе. Ошибок не содержит.
+    details: |-
+      Поля данных:
+      • Байты 0–1 — измеренное время вдоха [мс]
+      • Байты 2–3 — постоянная времени на вдохе RCinsp [мс] (0 — прочерки)
+  en:
+    summary: |-
+      Output packet from the CIVL. Breathing parameters: inspiratory time and inspiratory time constant. Contains no errors.
+    details: |-
+      Data fields:
+      • bytes 0–1 — measured inspiratory time [ms]
+      • bytes 2–3 — inspiratory time constant RCinsp [ms] (0 — dashes)

@@ -1,0 +1,20 @@
+packageId: 1294
+descriptions:
+  ru:
+    summary: |-
+      Входной пакет КИВЛ. Параметры вентиляции (часть 5, повышенное разрешение); имеют приоритет над ID_PAR1/2/3_CIVL.
+    details: |-
+      Поля данных (длина 7 байт):
+      • Байты 0–1 — объём вдоха [0,1 мл]
+      • Байты 2–3 — заданный поток [0,1 л/мин]
+      • Байт 4 — заданная частота вентиляции RB [1/мин]
+      • Байты 5–6 — объём поддержки Vsupp [0,1 мл]
+  en:
+    summary: |-
+      Input packet to the CIVL. Ventilation parameters (part 5, higher resolution); take priority over ID_PAR1/2/3_CIVL.
+    details: |-
+      Data fields (length 7 bytes):
+      • bytes 0–1 — tidal volume [0.1 ml]
+      • bytes 2–3 — set flow [0.1 l/min]
+      • byte 4 — set ventilation rate RB [1/min]
+      • bytes 5–6 — support volume Vsupp [0.1 ml]

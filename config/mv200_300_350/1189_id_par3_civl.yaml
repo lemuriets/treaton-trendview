@@ -1,0 +1,65 @@
+id: 1189
+name: ID_PAR3_CIVL
+length: 7
+parser: config
+description: Параметры вентиляции 3
+fields:
+- name: PressureRiseRate
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Скорость нарастания давления 50..2000
+  unit: ммH2O/с
+- name: WaveOutputDivider
+  kind: Value
+  byte: 2
+  description: Частота ID_WAVE_CIVL = 500/байт, минимум 15 Гц
+- name: SupportFlow
+  kind: Value
+  byte: 3
+  description: Поток поддержки
+  unit: л/мин
+- name: DisconnectSensitivity
+  kind: Value
+  byte: 4
+  max: 100
+  description: Чувствительность к дисконнекции
+  unit: '%'
+- name: DeltaPEEP
+  kind: Value
+  byte: 5
+  description: Приращение deltaPEEP для маневра раскрытия альвеол
+- name: LeakCompensation
+  kind: Bit
+  byte: 6
+  bit: 0
+  values:
+    0:
+      message: вкл компенсацию утечки
+      status: Ok
+    1:
+      message: выкл компенсацию утечки
+      status: Ok
+- name: FuncFreeBreath
+  kind: Bit
+  byte: 6
+  bit: 1
+  values:
+    0:
+      message: вкл функцию "свободное дыхание"
+      status: Ok
+    1:
+      message: выкл функцию "свободное дыхание"
+      status: Ok
+- name: Mode
+  kind: Bit
+  byte: 6
+  bit: 2
+  values:
+    0:
+      message: неонатальный режим ИВЛ
+      status: Ok
+    1:
+      message: детский режим ИВЛ
+      status: Ok

@@ -1,5 +1,5 @@
-﻿using LogDecoder.CAN.Packages;
-using LogDecoder.CAN.Protocol;
+﻿using LogDecoder.CAN;
+using LogDecoder.CAN.Packages;
 
 namespace LogDecoder.GUI.Avalonia.Models;
 

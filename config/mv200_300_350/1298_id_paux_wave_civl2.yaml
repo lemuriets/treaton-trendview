@@ -1,0 +1,22 @@
+id: 1298
+name: ID_PAUX_WAVE_CIVL2
+length: 4
+parser: config
+description: Давление Paux
+fields:
+- name: Paux1Pressure
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: -1020..1020
+  signed: true
+  unit: мм вод.ст.
+- name: Paux2Pressure
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: -1020..1020
+  signed: true
+  unit: мм вод.ст.

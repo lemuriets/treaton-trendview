@@ -1,0 +1,33 @@
+id: 1157
+name: ID_CO2_DATA_CAPNO1
+length: 5
+parser: config
+description: Измеренные параметры CO2
+fields:
+- name: EtCO2Percent
+  kind: Value
+  byte: 0
+  description: Концентрация CO2 в конце выдоха
+  scale: 0.1
+  unit: '%'
+- name: FiCO2Percent
+  kind: Value
+  byte: 1
+  description: Концентрация CO2 в начале выдоха
+  scale: 0.1
+  unit: '%'
+- name: EtCO2Pressure
+  kind: Value
+  byte: 2
+  description: Парциальное давление CO2 в конце выдоха
+  unit: мм рт.ст.
+- name: FiCO2Pressure
+  kind: Value
+  byte: 3
+  description: Парциальное давление CO2 в начале выдоха
+  unit: мм рт.ст.
+- name: RespiratoryRate
+  kind: Value
+  byte: 4
+  description: Частота дыханий; 0 означает капнографическое апноэ
+  unit: 1/мин

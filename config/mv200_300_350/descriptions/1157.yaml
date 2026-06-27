@@ -1,0 +1,22 @@
+packageId: 1157
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет CAPNO1. Измеренные параметры CO₂ в конце дыхательного цикла. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 5 байт):
+      • Байт 0 — концентрация CO₂ в конце выдоха [0,1 %]
+      • Байт 1 — концентрация CO₂ в начале выдоха [0,1 %]
+      • Байт 2 — парциальное давление CO₂ в конце выдоха [мм рт.ст.]
+      • Байт 3 — парциальное давление CO₂ в начале выдоха [мм рт.ст.]
+      • Байт 4 — частота дыханий (0 = капнографическое апноэ)
+  en:
+    summary: |-
+      Output packet from CAPNO1. Measured CO₂ parameters at the end of the breath cycle. Contains no errors.
+    details: |-
+      Data fields (length 5 bytes):
+      • byte 0 — CO₂ concentration at end of exhalation [0.1 %]
+      • byte 1 — CO₂ concentration at start of exhalation [0.1 %]
+      • byte 2 — CO₂ partial pressure at end of exhalation [mmHg]
+      • byte 3 — CO₂ partial pressure at start of exhalation [mmHg]
+      • byte 4 — respiratory rate (0 = capnographic apnea)

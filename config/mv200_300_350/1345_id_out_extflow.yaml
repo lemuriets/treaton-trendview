@@ -1,0 +1,35 @@
+id: 1345
+name: ID_OUT_EXTFLOW
+length: 3
+parser: config
+description: Информация о потоке от внешнего датчика
+fields:
+- name: FlowSensorCode
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Код, считанный из датчика потока
+- name: NoSensorData
+  kind: Bit
+  byte: 2
+  bit: 7
+  values:
+    1:
+      message: Нет данных от датчика; передается последняя измеренная точка
+      status: Warning
+- name: AverageCount
+  kind: BitRange
+  byte: 2
+  bitRange:
+    from: 0
+    to: 6
+  description: Число усреднений; 0 означает датчик не завершил преобразование
+- name: AverageCountZeroMsg
+  kind: BitRange
+  byte: 2
+  bitRange:
+    from: 0
+    to: 6
+  values:
+    0: Данные не обновлены (используется предыдущая точка)

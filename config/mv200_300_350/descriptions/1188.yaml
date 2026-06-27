@@ -1,0 +1,26 @@
+packageId: 1188
+descriptions:
+  ru:
+    summary: |-
+      Входной пакет КИВЛ. Параметры вентиляции (часть 2): объём вдоха, плато, давления PS/Pmax/Pt, триггерное окно.
+    details: |-
+      Поля данных (длина 8 байт):
+      • Байты 0–1 — объём вдоха [мл]
+      • Байт 2 — длительность плато [%]
+      • Байт 3 — PS над ПДКВ [см вод.ст.]
+      • Байт 4 — Pmax [см вод.ст.]
+      • Байт 5 — Pt (целевое давление вдоха) [см вод.ст.] (в BiSTEP — Phigh)
+      • Байт 6 — триггерное окно [0–100 %]
+      • Байт 7 — триггер окончания вдоха [% от Finsp_max] (0xFF — авто)
+  en:
+    summary: |-
+      Input packet to the CIVL. Ventilation parameters (part 2): tidal volume, plateau, PS/Pmax/Pt pressures, trigger window.
+    details: |-
+      Data fields (length 8 bytes):
+      • bytes 0–1 — tidal volume [ml]
+      • byte 2 — plateau duration [%]
+      • byte 3 — PS above PEEP [cmH₂O]
+      • byte 4 — Pmax [cmH₂O]
+      • byte 5 — Pt (target inspiratory pressure) [cmH₂O] (Phigh in BiSTEP)
+      • byte 6 — trigger window [0–100 %]
+      • byte 7 — end-of-inspiration trigger [% of Finsp_max] (0xFF — auto)

@@ -1,0 +1,14 @@
+packageId: 1202
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Параметры дыхания: измеренное время выдоха. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 2 байта):
+      • Байты 0–1 — измеренное время выдоха [мс]
+  en:
+    summary: |-
+      Output packet from the CIVL. Breathing parameters: measured expiratory time. Contains no errors.
+    details: |-
+      Data fields (length 2 bytes):
+      • bytes 0–1 — measured expiratory time [ms]

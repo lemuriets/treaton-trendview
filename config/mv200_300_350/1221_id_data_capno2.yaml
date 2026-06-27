@@ -1,0 +1,27 @@
+id: 1221
+name: ID_DATA_CAPNO2
+length: 5
+parser: config
+description: Измеренные параметры CO2
+fields:
+- name: FiCO2Percent
+  kind: Value
+  byte: 0
+  unit: '%'
+- name: FiCO2Pressure
+  kind: Value
+  byte: 1
+  unit: мм рт.ст.
+- name: EtCO2Percent
+  kind: Value
+  byte: 2
+  unit: '%'
+- name: EtCO2Pressure
+  kind: Value
+  byte: 3
+  unit: мм рт.ст.
+- name: RespiratoryRate
+  kind: Value
+  byte: 4
+  description: 0xFF недействительно
+  unit: 1/мин

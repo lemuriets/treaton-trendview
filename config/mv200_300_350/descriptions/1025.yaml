@@ -1,0 +1,42 @@
+packageId: 1025
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет ИП (источник питания). Состояние блока питания: формируется однократно при рестарте и асинхронно каждые 100 мс. Содержит выходное напряжение, уровень заряда/ток аккумулятора и флаги состояния.
+    details: |-
+      Поля данных и флаги (длина 5 байт):
+      • Байт 0 — выходное напряжение БП [x·0,1 В + 10 В]
+      • Байт 1 — при заряде: 255 — идёт заряд, 100 — заряжен; при разряде: уровень заряда 0–100 %
+      • Байты 2–3 — слово состояния:
+         • бит 0 — отсутствует напряжение в сети 220 В
+         • бит 1 — вентилятор неисправен
+         • бит 2 — заряда аккумулятора хватит не более чем на 10 минут
+         • бит 3 — авария аккумулятора (аккумулятор отсутствует)
+         • бит 4 — авария аккумулятора (превышение тока зарядки или замыкание)
+         • бит 5 — превышение напряжения зарядки аккумулятора
+         • бит 6 — неисправность ключа зарядного устройства
+         • бит 7 — неисправность динамика (обрыв)
+         • бит 8 — подключено внешнее питание
+         • бит 9 — «плохой» внешний источник питания
+         • бит 15 — признак рестарта
+      • Байт 4 — состояние тревог: 0 — нет, 1 — высокий приоритет, 2 — средний приоритет
+  en:
+    summary: |-
+      Output packet from the power supply (PWR). Power-supply state: emitted once on restart and asynchronously every 100 ms. Carries the output voltage, battery charge level/current and status flags.
+    details: |-
+      Data fields and flags (length 5 bytes):
+      • byte 0 — power-supply output voltage [x·0.1 V + 10 V]
+      • byte 1 — when charging: 255 — charging, 100 — charged; when discharging: charge level 0–100 %
+      • bytes 2–3 — status word:
+         • bit 0 — no 220 V mains voltage
+         • bit 1 — fan fault
+         • bit 2 — remaining battery charge lasts no more than 10 minutes
+         • bit 3 — battery alarm (battery missing)
+         • bit 4 — battery alarm (charge overcurrent or short circuit)
+         • bit 5 — battery charge overvoltage
+         • bit 6 — charger switch fault
+         • bit 7 — speaker fault (open circuit)
+         • bit 8 — external power connected
+         • bit 9 — "bad" external power source
+         • bit 15 — restart flag
+      • byte 4 — alarm state: 0 — none, 1 — high priority, 2 — medium priority

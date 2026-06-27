@@ -1,0 +1,14 @@
+packageId: 1123
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИНД (контроллер индикации). Содержание кислорода на вдохе. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 1 байт):
+      • Байт 0 — % содержания кислорода на вдохе [%]
+  en:
+    summary: |-
+      Output packet from the display controller (KIND). Inspired oxygen fraction. Contains no errors.
+    details: |-
+      Data fields (length 1 byte):
+      • byte 0 — inspired oxygen fraction [%]

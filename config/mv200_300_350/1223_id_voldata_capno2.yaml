@@ -1,0 +1,35 @@
+id: 1223
+name: ID_VOLDATA_CAPNO2
+length: 8
+parser: config
+description: Параметры объемной капнографии
+fields:
+- name: CO2Elimination
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: 0xFFFF недействительно
+  unit: мл/мин
+- name: AlveolarVentilationPerMinute
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: 0xFFFF недействительно
+  scale: 0.1
+  unit: л/мин
+- name: DeadSpacePerCycle
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  description: 0xFFFF недействительно
+  unit: мл
+- name: AlveolarVentilationPerCycle
+  kind: Value
+  bytes:
+  - 6
+  - 7
+  description: 0xFFFF недействительно
+  unit: мл

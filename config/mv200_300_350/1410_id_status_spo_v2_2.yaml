@@ -1,0 +1,140 @@
+id: 1410
+name: ID_STATUS_SPO_V2_2
+length: 8
+description: Состояние модуля пульсоксиметрии Masimo 2
+fields:
+- name: Exceptions 2
+  kind: Value
+  bytes:
+  - 0
+  - 1
+- name: Diagnostic Failure Codes
+  kind: Value
+  bytes:
+  - 2
+  - 3
+- name: Board Failure Codes
+  kind: Value
+  bytes:
+  - 4
+  - 5
+- name: PVI Exception
+  kind: BitRange
+  byte: 6
+  bitRange:
+    from: 1
+    to: 3
+- name: SFail
+  kind: BitRange
+  byte: 6
+  bitRange:
+    from: 4
+    to: 7
+- name: Byte6Bit0
+  kind: Bit
+  byte: 6
+  bit: 0
+  values:
+    0: Измерение PVI не поддерживается
+    1: PVI поддержан
+- name: Byte6Bit1
+  kind: Bit
+  byte: 6
+  bit: 1
+  values:
+    1: { message: 'PVI Exception: Invalid PVI', status: Warning }
+- name: Byte6Bit2
+  kind: Bit
+  byte: 6
+  bit: 2
+  values:
+    1: 'PVI Exception: StartupState'
+- name: Byte6Bit3
+  kind: Bit
+  byte: 6
+  bit: 3
+  values:
+    1: { message: 'PVI Exception: Low PVI Confidence', status: Warning }
+- name: PviExceptionDetail
+  kind: BitRange
+  byte: 6
+  bitRange:
+    from: 1
+    to: 3
+  values:
+    0: { message: 'PVI Exception: всё нормально', status: Ok }
+    1: { message: 'PVI Exception: Invalid PVI', status: Warning }
+    2: 'PVI Exception: StartupState'
+    3: { message: 'PVI Exception: Low PVI Confidence', status: Warning }
+- name: SensorFailureDetail
+  kind: BitRange
+  byte: 6
+  bitRange:
+    from: 4
+    to: 7
+  values:
+    0: { message: 'Детализация сообщения датчика: No Failure', status: Ok }
+    1: { message: 'Детализация сообщения датчика: Open LEDs', status: Error }
+    2: { message: 'Детализация сообщения датчика: Shorted LEDs', status: Error }
+    3: { message: 'Детализация сообщения датчика: Shorted Detector', status: Error }
+    4: { message: 'Детализация сообщения датчика: Bad Sensor ID Offset', status: Error }
+    5: { message: 'Детализация сообщения датчика: Pro Cal Failure', status: Error }
+    6: { message: 'Детализация сообщения датчика: Memory Failure', status: Error }
+    7: 'Детализация сообщения датчика: reserved'
+    8: 'Детализация сообщения датчика: reserved'
+- name: Byte7Bit0
+  kind: Bit
+  byte: 7
+  bit: 0
+  values:
+    0: 'Качество Exceptions 2: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество Exceptions 2: значение OK'
+- name: Byte7Bit1
+  kind: Bit
+  byte: 7
+  bit: 1
+  values:
+    0: 'Качество Diagnostic Failure Codes: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество Diagnostic Failure Codes: значение OK'
+- name: Byte7Bit2
+  kind: Bit
+  byte: 7
+  bit: 2
+  values:
+    0: 'Качество Board Failure Codes: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество Board Failure Codes: значение OK'
+- name: Byte7Bit3
+  kind: Bit
+  byte: 7
+  bit: 3
+  values:
+    0: 'Качество PVI Exception: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество PVI Exception: значение OK'
+- name: Byte7Bit4
+  kind: Bit
+  byte: 7
+  bit: 4
+  values:
+    0: 'Качество SFail: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество SFail: значение OK'
+- name: Byte7Bit5
+  kind: Bit
+  byte: 7
+  bit: 5
+  values:
+    0: 'Качество Exceptions 3 seq 22: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество Exceptions 3 seq 22: значение OK'
+- name: Byte7Bit6
+  kind: Bit
+  byte: 7
+  bit: 6
+  values:
+    0: 'Качество Exceptions 3 seq 23: значение недостоверное, нужно вывести прочерки'
+    1: 'Качество Exceptions 3 seq 23: значение OK'
+- name: Byte7Bit7
+  kind: Bit
+  byte: 7
+  bit: 7
+  values:
+    0: Режим демо выключен
+    1: Режим демо включен

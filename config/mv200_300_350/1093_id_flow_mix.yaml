@@ -1,0 +1,24 @@
+id: 1093
+name: ID_FLOW_MIX
+length: 4
+parser: config
+description: Мгновенные потоки воздуха и кислорода; частота 500 Гц
+fields:
+- name: AirFlowSTPD
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: STPD-поток воздуха
+  signed: true
+  scale: 0.01
+  unit: л/мин
+- name: OxygenFlowSTPD
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: STPD-поток кислорода
+  signed: true
+  scale: 0.01
+  unit: л/мин

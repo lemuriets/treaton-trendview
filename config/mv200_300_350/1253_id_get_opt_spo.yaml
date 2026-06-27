@@ -1,0 +1,20 @@
+id: 1253
+name: ID_GET_OPT_SPO
+length: 4
+parser: config
+description: Параметры работы модуля
+fields:
+- name: PpgSampleRate
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Частота отсчетов ФПГ
+- name: AnalysisSettings
+  kind: Value
+  byte: 2
+  description: Текущие настройки анализа
+- name: Reserved
+  kind: Raw
+  byte: 3
+  description: Резерв

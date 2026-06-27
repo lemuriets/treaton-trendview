@@ -1,0 +1,16 @@
+packageId: 1293
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Параметры дыхания: измеренный объём выдоха (повышенное разрешение). Ошибок не содержит.
+    details: |-
+      Поля данных (длина 8 байт):
+      • Байты 0–3 — объём выдоха [0,1 мл], усреднённый за 4 цикла
+      • Байты 4–7 — объём выдоха без усреднения [0,1 мл]
+  en:
+    summary: |-
+      Output packet from the CIVL. Breathing parameters: measured expiratory volume (higher resolution). Contains no errors.
+    details: |-
+      Data fields (length 8 bytes):
+      • bytes 0–3 — expiratory volume [0.1 ml], averaged over 4 cycles
+      • bytes 4–7 — expiratory volume without averaging [0.1 ml]

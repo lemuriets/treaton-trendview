@@ -1,0 +1,22 @@
+packageId: 1168
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет CAPNO1. Измеренные параметры метаболизма. Ошибок не содержит (0xFFFF — недействительное значение).
+    details: |-
+      Поля данных (длина 8 байт):
+      • Байты 0–1 — VCO₂, минутное выделение CO₂ [мл/мин]
+      • Байты 2–3 — VO₂, минутное потребление O₂ [мл/мин]
+      • Байты 4–5 — RQ, дыхательный коэффициент [0,01]
+      • Байты 6–7 — REE, суточная энергопотребность [ккал/сут]
+      • 0xFFFF — недействительные значения
+  en:
+    summary: |-
+      Output packet from CAPNO1. Measured metabolic parameters. Contains no errors (0xFFFF — invalid value).
+    details: |-
+      Data fields (length 8 bytes):
+      • bytes 0–1 — VCO₂, CO₂ output per minute [ml/min]
+      • bytes 2–3 — VO₂, O₂ consumption per minute [ml/min]
+      • bytes 4–5 — RQ, respiratory quotient [0.01]
+      • bytes 6–7 — REE, daily energy expenditure [kcal/day]
+      • 0xFFFF — invalid values

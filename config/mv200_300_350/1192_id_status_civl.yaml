@@ -1,0 +1,426 @@
+id: 1192
+name: ID_STATUS_CIVL
+length: 8
+parser: config
+description: Информация о статусе КИВЛ
+fields:
+- name: StatusBit0
+  kind: Bit
+  byte: 0
+  bit: 0
+  values:
+    1:
+      message: Отсутствие связи с БУ
+      status: Error
+- name: StatusBit1
+  kind: Bit
+  byte: 0
+  bit: 1
+  values:
+    1:
+      message: Разгерметизация
+      status: Warning
+- name: StatusBit2
+  kind: Bit
+  byte: 0
+  bit: 2
+  values:
+    1:
+      message: Окклюзия дыхательного контура
+      status: Warning
+- name: StatusBit3
+  kind: Bit
+  byte: 0
+  bit: 3
+  values:
+    1:
+      message: Достижение Pmax
+      status: Warning
+- name: StatusBit4
+  kind: Bit
+  byte: 0
+  bit: 4
+  values:
+    1:
+      message: Апноэ
+      status: Warning
+- name: StatusBit5
+  kind: Bit
+  byte: 0
+  bit: 5
+  values:
+    1:
+      message: Ошибка напряжения 27V_PWR
+      status: Error
+- name: StatusBit6
+  kind: Bit
+  byte: 0
+  bit: 6
+  values:
+    1:
+      message: Ошибка напряжения V_EMV
+      status: Error
+- name: StatusBit7
+  kind: Bit
+  byte: 0
+  bit: 7
+  values:
+    1:
+      message: Ошибка напряжения 15VA
+      status: Error
+- name: StatusBit8
+  kind: Bit
+  byte: 1
+  bit: 0
+  values:
+    1:
+      message: Ошибка напряжения 12V_VLV
+      status: Error
+- name: StatusBit9
+  kind: Bit
+  byte: 1
+  bit: 1
+  values:
+    1:
+      message: Ошибка напряжения 5VA
+      status: Error
+- name: StatusBit10
+  kind: Bit
+  byte: 1
+  bit: 2
+  values:
+    1:
+      message: Ошибка напряжения 2.5VA
+      status: Error
+- name: StatusBit11
+  kind: Bit
+  byte: 1
+  bit: 3
+  values:
+    1:
+      message: Ошибка напряжения 12VA
+      status: Error
+- name: StatusBit12
+  kind: Bit
+  byte: 1
+  bit: 4
+  values:
+    1:
+      message: Ошибка констант датчиков давления
+      status: Error
+- name: StatusBit13
+  kind: Bit
+  byte: 1
+  bit: 5
+  values:
+    1:
+      message: Ошибка констант преобразователя поток-давление
+      status: Error
+- name: StatusBit14
+  kind: Bit
+  byte: 1
+  bit: 6
+  values:
+    1:
+      message: Ошибка констант клапана выдоха
+      status: Error
+- name: StatusBit15
+  kind: Bit
+  byte: 1
+  bit: 7
+  values:
+    1:
+      message: Ошибка констант генератора потока
+      status: Error
+- name: StatusBit16
+  kind: Bit
+  byte: 2
+  bit: 0
+  values:
+    1:
+      message: Неисправность EEPROM
+      status: Error
+- name: StatusBit17
+  kind: Bit
+  byte: 2
+  bit: 1
+  values:
+    1:
+      message: Неисправность ГП
+      status: Error
+- name: StatusBit18
+  kind: Bit
+  byte: 2
+  bit: 2
+  values:
+    1:
+      message: Неисправность клапана безопасности
+      status: Error
+- name: StatusBit19
+  kind: Bit
+  byte: 2
+  bit: 3
+  values:
+    1:
+      message: Неисправность компрессора продувки
+      status: Error
+- name: StatusBit20
+  kind: Bit
+  byte: 2
+  bit: 4
+  values:
+    1:
+      message: Неисправность VLV_Z+
+      status: Error
+- name: StatusBit21
+  kind: Bit
+  byte: 2
+  bit: 5
+  values:
+    1:
+      message: Неисправность VLV_Z-
+      status: Error
+- name: StatusBit22
+  kind: Bit
+  byte: 2
+  bit: 6
+  values:
+    1:
+      message: Неисправность VLV_F+
+      status: Error
+- name: StatusBit23
+  kind: Bit
+  byte: 2
+  bit: 7
+  values:
+    1:
+      message: Неисправность VLV_F-
+      status: Error
+- name: StatusBit24
+  kind: Bit
+  byte: 3
+  bit: 0
+  values:
+    1:
+      message: Неисправность клапана выдоха
+      status: Error
+- name: StatusBit25
+  kind: Bit
+  byte: 3
+  bit: 1
+  values:
+    1:
+      message: Неисправность датчика кислорода
+      status: Error
+- name: StatusBit26
+  kind: Bit
+  byte: 3
+  bit: 2
+  values:
+    1:
+      message: Неисправность АЦП AD7738
+      status: Error
+- name: StatusBit27
+  kind: Bit
+  byte: 3
+  bit: 3
+  values:
+    1:
+      message: Неисправность датчика давления в магистрали вдоха
+      status: Error
+- name: StatusBit28
+  kind: Bit
+  byte: 3
+  bit: 4
+  values:
+    1:
+      message: Неисправность датчика давления в магистрали выдоха
+      status: Error
+- name: StatusBit29
+  kind: Bit
+  byte: 3
+  bit: 5
+  values:
+    1:
+      message: Неисправность дифференциального датчика давления для датчика потока
+        в ЭМКВ
+      status: Error
+- name: StatusBit30
+  kind: Bit
+  byte: 3
+  bit: 6
+  values:
+    1:
+      message: Отсутствие связи с СГ
+      status: Error
+- name: StatusBit31
+  kind: Bit
+  byte: 3
+  bit: 7
+  values:
+    1:
+      message: Работает небулайзер
+      status: Info
+- name: StatusBit32
+  kind: Bit
+  byte: 4
+  bit: 0
+  values:
+    1:
+      message: Ошибка передачи по CAN
+      status: Error
+- name: StatusBit33
+  kind: Bit
+  byte: 4
+  bit: 1
+  values:
+    1:
+      message: Неисправность ИОН для AD7738
+      status: Error
+- name: StatusBit34
+  kind: Bit
+  byte: 4
+  bit: 2
+  values:
+    1:
+      message: Неисправность ГП (большая потребляемая мощность)
+      status: Error
+- name: StatusBit35
+  kind: Bit
+  byte: 4
+  bit: 3
+  values:
+    1:
+      message: Ошибка калибровочного коэффициента датчика кислорода
+      status: Error
+- name: StatusBit36
+  kind: Bit
+  byte: 4
+  bit: 4
+  values:
+    1:
+      message: Сбой в памяти начального напряжения на датчике кислорода
+      status: Error
+- name: StatusBit37
+  kind: Bit
+  byte: 4
+  bit: 5
+  values:
+    1:
+      message: Маневр раскрытия альвеол
+      status: Info
+- name: StatusBit38
+  kind: Bit
+  byte: 4
+  bit: 6
+  values:
+    1:
+      message: Работает алгоритм автоматической калибровки датчика кислорода
+      status: Info
+- name: StatusBit39
+  kind: Bit
+  byte: 4
+  bit: 7
+  values:
+    1:
+      message: Ошибка автоматической калибровки датчика кислорода
+      status: Warning
+- name: StatusBit40
+  kind: Bit
+  byte: 5
+  bit: 0
+  values:
+    1:
+      message: Признак возникновения рестарта
+      status: Info
+- name: StatusBit41
+  kind: Bit
+  byte: 5
+  bit: 1
+  values:
+    1:
+      message: Признак подключения внешнего модуля потока
+      status: Info
+- name: StatusBit42
+  kind: Bit
+  byte: 5
+  bit: 2
+  values:
+    1:
+      message: Признак подключения внешнего датчика потока
+      status: Info
+- name: StatusBit43
+  kind: Bit
+  byte: 5
+  bit: 3
+  values:
+    1:
+      message: AutoLeak
+      status: Info
+- name: StatusBit44
+  kind: Bit
+  byte: 5
+  bit: 4
+  values:
+    1:
+      message: Неисправность небулайзера
+      status: Error
+- name: StatusBit45
+  kind: Bit
+  byte: 5
+  bit: 5
+  values:
+    1:
+      message: Окклюзия контура
+      status: Warning
+- name: StatusBit46
+  kind: Bit
+  byte: 5
+  bit: 6
+  values:
+    1:
+      message: Окклюзия клапана
+      status: Warning
+- name: StatusBit47
+  kind: Bit
+  byte: 5
+  bit: 7
+  values:
+    1:
+      message: Окклюзия ЭТ-трубки
+      status: Warning
+- name: ActiveMode
+  kind: Value
+  byte: 6
+  description: Код текущего активного режима работы
+  values:
+    0: ОЖИДАНИЕ
+    1: РАБОТА
+    2: Короткий Внутренний Тест (КВТ)
+    3: Полный Внутренний Тест (ПВТ)
+    4: калибровка клапана выдоха
+    5: калибровка датчика кислорода на вдохе
+    6: калибровка FASTOXY в капнографе бокового отведения
+    7: калибровка датчиков давления
+    8: проверка ЭМКВ
+    9: калибровка датчика потока кислорода в СГ
+    10: калибровка генератора потока
+    11: генерация потока
+    12: проверка утечки
+    13: технологический детский режим
+    14: калибровка датчика потока воздуха в СГ
+    15: калибровка преобразователя поток-давление
+    16: АВАРИЙНЫЙ РЕЖИМ №1 (АР-1)
+    17: АВАРИЙНЫЙ РЕЖИМ №2 (АР-2)
+    18: АВАРИЙНЫЙ РЕЖИМ №3 (АР-3)
+    19: ПОЛНОСТЬЮ АВАРИЙНЫЙ РЕЖИМ (ПАР)
+    21: замена датчика кислорода на вдохе
+    22: запуск загрузчика для обновления прошивки КИВЛ
+    23: Инициализация
+    24: калибровка нулей датчиков давления в зависимости от температуры
+    25: тест контура для режима nCPAP
+- name: MeasuredOxygenPercent
+  kind: Value
+  byte: 7
+  description: Текущий %O2, измеренный датчиком кислорода
+  unit: '%'

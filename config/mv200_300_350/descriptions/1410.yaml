@@ -1,0 +1,28 @@
+packageId: 1410
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет модуля Masimo (статус 2). Диагностические коды ошибок и детализация неисправности датчика; формируется следом за ID_STATUS_SPO_V2_1.
+    details: |-
+      Поля данных (длина 8 байт):
+      • Байты 0–1 — коды Exceptions 2 (Exc2), 0xNNNN
+      • Байты 2–3 — Diagnostic Failure Codes (DFC), 0xNNNN
+      • Байты 4–5 — Board Failure Codes (BFC)
+      • Байт 6:
+         • бит 0 — поддержка PVI
+         • биты 1–3 — коды ошибок PVI (0 норма, 1 Invalid PVI, 2 StartupState, 3 Low PVI Confidence)
+         • биты 4–7 — детализация «датчик неисправен» (SFail): 0 нет, 1 Open LEDs, 2 Shorted LEDs, 3 Shorted Detector, 4 Bad Sensor ID Offset, 5 Pro Cal Failure, 6 Memory Failure
+      • Байт 7 — биты достоверности (Exc2, DFC, BFC, PVI, SFail, Exceptions 3) и бит 7 — режим демо
+  en:
+    summary: |-
+      Output packet from the Masimo module (status 2). Diagnostic error codes and sensor-fault detail; emitted right after ID_STATUS_SPO_V2_1.
+    details: |-
+      Data fields (length 8 bytes):
+      • bytes 0–1 — Exceptions 2 codes (Exc2), 0xNNNN
+      • bytes 2–3 — Diagnostic Failure Codes (DFC), 0xNNNN
+      • bytes 4–5 — Board Failure Codes (BFC)
+      • byte 6:
+         • bit 0 — PVI support
+         • bits 1–3 — PVI error codes (0 normal, 1 Invalid PVI, 2 StartupState, 3 Low PVI Confidence)
+         • bits 4–7 — "sensor faulty" detail (SFail): 0 none, 1 Open LEDs, 2 Shorted LEDs, 3 Shorted Detector, 4 Bad Sensor ID Offset, 5 Pro Cal Failure, 6 Memory Failure
+      • byte 7 — validity bits (Exc2, DFC, BFC, PVI, SFail, Exceptions 3) and bit 7 — demo mode

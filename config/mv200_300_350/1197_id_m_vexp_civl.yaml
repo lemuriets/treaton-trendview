@@ -1,0 +1,19 @@
+id: 1197
+name: ID_M_VEXP_CIVL
+length: 4
+parser: config
+fields:
+- name: MeasuredExpiratoryVolumeAvg4
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Измеренный объем выдоха, усредненный за 4 последних цикла
+  unit: мл
+- name: MeasuredExpiratoryVolumeCurrent
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: Измеренный объем выдоха без усреднения
+  unit: мл

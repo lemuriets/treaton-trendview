@@ -1,0 +1,13 @@
+id: 1199
+name: ID_M_RB_CIVL
+length: 2
+parser: config
+fields:
+- name: RespiratoryRateLastMinute
+  kind: Value
+  byte: 0
+  unit: вд/мин
+- name: SpontaneousRespiratoryRateLastMinute
+  kind: Value
+  byte: 1
+  unit: вд/мин

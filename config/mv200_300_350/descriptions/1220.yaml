@@ -1,0 +1,16 @@
+packageId: 1220
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет ПП (CAPNO2). Графическая информация по CO₂. Отрицательные значения возможны при ошибке нуля/адаптера — проверьте статус.
+    details: |-
+      Поля данных (длина 4 байта):
+      • Байты 0–1 — парциальное давление CO₂ [0,01 мм рт.ст.], от -75,00 до 15,00
+      • Байты 2–3 — содержание CO₂ [0,01 %], от -9,99 до 19,70
+  en:
+    summary: |-
+      Output packet from the PP (CAPNO2). CO₂ graph data. Negative values may appear on zero/adapter errors — check the status.
+    details: |-
+      Data fields (length 4 bytes):
+      • bytes 0–1 — CO₂ partial pressure [0.01 mmHg], -75.00 to 15.00
+      • bytes 2–3 — CO₂ fraction [0.01 %], -9.99 to 19.70

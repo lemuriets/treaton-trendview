@@ -1,5 +1,4 @@
 using LogDecoder.CAN.Contracts;
-using LogDecoder.CAN.Packages;
 using Microsoft.Extensions.Logging;
 
 namespace LogDecoder.Parser.Data;
@@ -59,7 +58,7 @@ public class IndexBuilder
         var indexes = new List<string>();
         var seenDates = new HashSet<string>();
         var context = new ParseContext();
-        foreach (var (offset, package) in fileScanner.GetPackagesParsed(_factory, new HashSet<int>{IdSynchro.Id}, context))
+        foreach (var (offset, package) in fileScanner.GetPackagesParsed(_factory, new HashSet<int>{_factory.SynchroId}, context))
         {
             // cancellationToken.ThrowIfCancellationRequested();
             var packageData = package.ParseData();

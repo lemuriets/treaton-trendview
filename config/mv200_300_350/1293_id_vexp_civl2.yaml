@@ -1,0 +1,26 @@
+id: 1293
+name: ID_VEXP_CIVL2
+length: 8
+parser: config
+description: Параметры дыхания
+fields:
+- name: MeasuredExpiratoryVolumeAvg4
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  - 2
+  - 3
+  description: Усреднено за 4 последних цикла
+  scale: 0.1
+  unit: мл
+- name: MeasuredExpiratoryVolumeCurrent
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  - 6
+  - 7
+  description: Без усреднения
+  scale: 0.1
+  unit: мл

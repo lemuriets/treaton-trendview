@@ -1,0 +1,18 @@
+id: 1104
+name: ID_STAT_ERR_MIX
+length: 4
+description: Информация о причине неисправности модуля
+fields:
+- name: error_bit_number
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Номер бита ошибки
+- name: error_voltage_mV
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  unit: мВ
+  description: Напряжение ошибки

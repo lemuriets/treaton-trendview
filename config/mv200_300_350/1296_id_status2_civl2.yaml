@@ -1,0 +1,103 @@
+id: 1296
+name: ID_STATUS2_CIVL2
+length: 2
+parser: config
+description: Дополнительный статус КИВЛ2
+fields:
+- name: StatusBit0
+  kind: Bit
+  byte: 0
+  bit: 0
+  values:
+    1:
+      message: Неисправность датчика потока Jet
+      status: Error
+- name: StatusBit1
+  kind: Bit
+  byte: 0
+  bit: 1
+  values:
+    1:
+      message: Неисправность клапана безопасности Jet
+      status: Error
+- name: StatusBit2
+  kind: Bit
+  byte: 0
+  bit: 2
+  values:
+    1:
+      message: Неисправность регулятора ШИМ Jet
+      status: Error
+- name: StatusBit3
+  kind: Bit
+  byte: 0
+  bit: 3
+  values:
+    1:
+      message: Неисправность АЦП1
+      status: Error
+- name: StatusBit4
+  kind: Bit
+  byte: 0
+  bit: 4
+  values:
+    1:
+      message: Неисправность модуля респираторной механики
+      status: Error
+- name: StatusBit5
+  kind: Bit
+  byte: 0
+  bit: 5
+  values:
+    1:
+      message: Превышен предел давления nCPAP
+      status: Warning
+- name: StatusBit6
+  kind: Bit
+  byte: 0
+  bit: 6
+  values:
+    1:
+      message: Неисправность датчика давления Aux1
+      status: Error
+- name: StatusBit7
+  kind: Bit
+  byte: 0
+  bit: 7
+  values:
+    1:
+      message: Неисправность системного напряжения 27V
+      status: Error
+- name: StatusBit8
+  kind: Bit
+  byte: 1
+  bit: 0
+  values:
+    1:
+      message: Неисправность датчика температуры и атмосферного давления на плате
+        КИВЛ
+      status: Error
+- name: StatusBit9
+  kind: Bit
+  byte: 1
+  bit: 1
+  values:
+    1:
+      message: Заданный объем вдоха Vt недостижим
+      status: Warning
+- name: StatusBit10
+  kind: Bit
+  byte: 1
+  bit: 2
+  values:
+    1:
+      message: Значение Paux не соответствует установленному значению
+      status: Warning
+- name: StatusBit11
+  kind: Bit
+  byte: 1
+  bit: 3
+  values:
+    1:
+      message: Достигнуто давление 50 см вод.ст.
+      status: Warning

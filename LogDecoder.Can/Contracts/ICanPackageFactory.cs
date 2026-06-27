@@ -8,4 +8,7 @@ public interface ICanPackageFactory
     void Register(int id, string name, Func<CanPackage, string, ParseContext, ICanPackageParsed> constructor);
     IReadOnlySet<int> RegisteredIds { get; }
     List<(int Id, string Name)> GetIdsWithNames(IReadOnlySet<int>? excludeIds = null);
+
+    /// <summary>Id of the synchronization package, taken from the loaded manifest.</summary>
+    int SynchroId { get; }
 }

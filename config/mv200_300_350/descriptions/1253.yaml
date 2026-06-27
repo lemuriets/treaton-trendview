@@ -1,0 +1,18 @@
+packageId: 1253
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет модуля SpO₂ (Тритон). Текущие параметры работы; формируется по запросу в ID_OPT_SPO. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 4 байта):
+      • Байты 0–1 — частота отсчётов ФПГ
+      • Байт 2 — текущие настройки анализа
+      • Байт 3 — резерв
+  en:
+    summary: |-
+      Output packet from the SpO₂ module (Triton). Current operating parameters; emitted on request via ID_OPT_SPO. Contains no errors.
+    details: |-
+      Data fields (length 4 bytes):
+      • bytes 0–1 — PPG sampling rate
+      • byte 2 — current analysis settings
+      • byte 3 — reserved

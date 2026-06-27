@@ -1,8 +1,0 @@
-namespace LogDecoder.CAN.Protocol;
-
-public enum PackageType
-{
-    Empty = 0,
-    Standard = 2,
-    Extended = 4
-}

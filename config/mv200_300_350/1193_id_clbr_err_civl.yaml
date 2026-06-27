@@ -1,0 +1,114 @@
+id: 1193
+name: ID_CLBR_ERR_CIVL
+length: 2
+requiresContext: civlMode
+description: Информация об ошибках калибровок; содержание зависит от режима работы модуля
+fields:
+- name: ResponseCode
+  kind: Value
+  byte: 0
+  description: Код ответа; смысл зависит от режима работы модуля (CivlMode)
+  cases:
+  - when: { mode: 2 }
+    values:
+      0: начало калибровки
+      1: { message: успешное завершение калибровки, status: Ok }
+      2: { message: 'успешное завершение калибровки, рекомендуется замена датчика кислорода', status: Warning }
+      3: { message: датчик кислорода отсутствует или неисправен, status: Error }
+      4: { message: 'нет информации об атмосферном давлении или информация некорректна', status: Error }
+      5: { message: отмена калибровки, status: Warning }
+      6: выдача напряжения с датчика кислорода
+      7: { message: неисправен канал измерения кислорода в КИВЛ, status: Error }
+      8: { message: ошибка записи во flash, status: Error }
+      9: выдача информации с процентом завершения калибровки
+      10: { message: напряжение на датчике выше ранее запомненной величины, status: Warning }
+      11: { message: вышел срок жизни датчика, status: Warning }
+      12: { message: слишком низкое напряжение с нового датчика кислорода, status: Warning }
+      13: { message: слишком высокое напряжение с нового датчика, status: Warning }
+      14: { message: ошибка считывания напряжения из файловой системы, status: Error }
+  - when: { mode: 4 }
+    values:
+      0: начало калибровки
+      1: { message: калибровка ЭМКВ успешно завершена, status: Ok }
+      2: { message: не удаётся достичь давления 10 см вод.ст., status: Error }
+      3: { message: не удаётся достичь давления 30 см вод.ст., status: Error }
+      4: { message: не удаётся достичь давления 50 см вод.ст., status: Error }
+      5: { message: отсутствует поток на выдохе, status: Error }
+      6: { message: не удаётся достичь нулевого потока на выдохе при останове ГП, status: Error }
+      7: { message: при потоке 10 л/мин и снятом напряжении с ЭМКВ давление на выдохе превышает 2 см вод.ст., status: Warning }
+      8: { message: большая нелинейность ЭМКВ, status: Warning }
+      9: { message: ошибка записи в FLASH, status: Error }
+      10: { message: отмена калибровки, status: Warning }
+      11: { message: ошибка не откалиброван датчик потока в ЭМКВ, status: Error }
+      12: { message: ошибка не откалиброван ДД в маг. выдоха, status: Error }
+      13: { message: ошибка не откалиброван дифф. ДД для ДП в ЭМКВ, status: Error }
+      14: { message: ошибка калибровочная кривая на потоке 20л/мин не соответствует реальной, status: Error }
+  - when: { mode: 5 }
+    values:
+      0: начало калибровки
+      1: { message: калибровка успешно завершена, status: Ok }
+      2: обновить процент завершения калибровки
+      3: { message: отказ смесителя газов, status: Error }
+      4: { message: нет ответа от смесителя газов, status: Error }
+      5: { message: поток не равен нулю, status: Warning }
+      6: { message: неверная скорость передачи данных от смесителя газов, status: Error }
+      7: { message: большое давление в магистрали вдоха, status: Warning }
+      8: { message: ошибка вычисления аппроксимирующих коэффициентов, status: Error }
+      9: { message: ошибочные коэффициенты для датчика давления в магистрали вдоха, status: Error }
+      10: { message: ошибочные коэффициенты для дифференциального датчика давления, status: Error }
+      11: { message: нет ответа от источника питания, status: Error }
+      12: { message: датчик температуры в источнике питания неисправен, status: Error }
+      13: { message: низкая температура окружающего воздуха, status: Warning }
+      14: { message: остановка задачи калибровки датчика потока в магистрали выдоха, status: Warning }
+      15: { message: ошибка монотонности во входной таблице, status: Error }
+      16: { message: ошибка записи коэффициентов, status: Error }
+      17: { message: ошибочный коэффициент для датчика давления в магистрали выдоха, status: Error }
+      18: { message: указывает на содержание в байте 1 максимального значения погрешности, status: Warning }
+  - when: { mode: 14 }
+    values:
+      0: начало калибровки
+      1: { message: ошибка "Датчик давления на вдохе не откалиброван", status: Error }
+      2: { message: ошибка "Датчик давления на выдохе не откалиброван", status: Error }
+      3: { message: ошибка "Нет ответа от смесителя газов", status: Error }
+      4: { message: ошибка "Неверная частота выдачи пакетов от смесителя газов", status: Error }
+      5: { message: ошибка "Низкая температура окружающего воздуха", status: Warning }
+      6: { message: ошибка "Датчик температуры в источнике питания неисправен", status: Error }
+      7: { message: ошибка "Отмена калибровки", status: Warning }
+      8: { message: ошибка "Неисправность смесителя газов", status: Error }
+      9: { message: ошибка "Высокое давление в магистрали вдоха", status: Warning }
+      10: действовать далее
+      11: { message: ошибка "Ошибка монотонности во входных данных", status: Error }
+      12: { message: ошибка "Ошибка записи коэффициентов", status: Error }
+      13: { message: ошибка "Нет ответа от источника питания", status: Error }
+      14: действовать далее
+      15: обновить процент завершения калибровки
+      16: { message: ошибка "Большой комплайнс контура", status: Warning }
+      17: { message: ошибка "Низкий комплайнс контура", status: Warning }
+      18: { message: ошибка "Большая утечка из контура", status: Warning }
+      19: { message: ошибка "Клапан выдоха не закрывается", status: Error }
+  - when: { mode: 25 }
+    values:
+      0: начало калибровки
+      1: { message: успешное завершение калибровки, status: Ok }
+      2: { message: 'Error: датчик Paux не подсоединён к тройнику', status: Error }
+      3: { message: 'Error: High inspiratory pressure', status: Error }
+      4: { message: 'Error: Paux pressure sensor did not calibrate', status: Error }
+      5: { message: 'Error: inspiratory pressure sensor did not calibrate', status: Error }
+      6: { message: 'Error: Initial Paux pressure > 1 см', status: Warning }
+      7: { message: отмена калибровки, status: Warning }
+- name: ResponseValue
+  kind: Value
+  byte: 1
+  description: Зависит от ResponseCode и режима (Resource/Voltage/Progress/MaxError)
+  emitNumeric:
+  - when: { mode: 5, code: 1 }
+    name: Resource
+  - when: { mode: 5, code: 6 }
+    name: Voltage
+    scale: 0.1
+  - when: { mode: 2 }
+    name: Progress
+  - when: { mode: 14, code: 2 }
+    name: Progress
+  - when: { mode: 14, code: 18 }
+    name: MaxError

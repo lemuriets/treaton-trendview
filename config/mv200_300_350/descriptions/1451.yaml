@@ -1,0 +1,16 @@
+packageId: 1451
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КМ (контроллер мотора). Текущая угловая скорость вала ГП и состояние модуля. Формируется в ответ на ID_SYNHRO и запросы.
+    details: |-
+      Поля данных (длина 3 байта):
+      • Байты 0–1 — текущая скорость вращения [0,1 об/мин]
+      • Байт 2 — статусная информация (совпадает с Байт 0 пакета ID_STATUS_MOTOR)
+  en:
+    summary: |-
+      Output packet from the motor controller (KM). Current flow-generator shaft angular speed and module state. Emitted in response to ID_SYNHRO and requests.
+    details: |-
+      Data fields (length 3 bytes):
+      • bytes 0–1 — current rotation speed [0.1 rpm]
+      • byte 2 — status info (matches byte 0 of ID_STATUS_MOTOR)

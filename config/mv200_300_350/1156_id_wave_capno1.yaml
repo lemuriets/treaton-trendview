@@ -1,0 +1,38 @@
+id: 1156
+name: ID_WAVE_CAPNO1
+length: 8
+parser: config
+description: Значения CO2, N2O и O2
+fields:
+- name: CO2PartialPressure
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Парциальное давление CO2
+  scale: 0.1
+  unit: мм рт.ст.
+- name: CO2Percent
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: Процентное содержание CO2
+  scale: 0.01
+  unit: '%'
+- name: O2Value
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  description: Значение O2; при отсутствии FASTOXY некорректно
+  scale: 0.1
+  unit: '%'
+- name: N2OValue
+  kind: Value
+  bytes:
+  - 6
+  - 7
+  description: Значение N2O; при отсутствии N2O некорректно
+  scale: 0.1
+  unit: '%'

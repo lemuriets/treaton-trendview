@@ -1,0 +1,64 @@
+packageId: 1154
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет метаболографа/капнографа БО (CAPNO1). Состояние модуля: формируется при изменении статусных битов и в ответ на ID_SYNHRO. Содержит код текущего состояния/отключения и флаги режима.
+    details: |-
+      Поля данных и флаги (длина 4 байта):
+      • Байт 0 — состояние модуля:
+         • 0x00 — измерение
+         • 0x01 — калибровка нуля
+         • 0x02 — прогрев
+         • 0x03 — закупорка
+         • 0x04 — просушка пневмотракта
+         • 0x05 — режим демонстрации
+         • 0x06 — не подключена линия
+         • 0x10 — отключён пользователем
+         • 0x11 — отключён, закупорка
+         • 0x12 — откл., неисправность излучателя
+         • 0x13 — откл., неисправность приёмника
+         • 0x14 — откл., неисправность компрессора
+         • 0x15 — откл., неисправность датчика давления
+         • 0x16 — откл., перегрев
+         • 0x17 — откл., капнограф не использовался более 1 ч
+         • 0x18 — откл., залита камера
+         • 0x19 — откл., продувка неудачна
+      • Байт 1 — флаги режима:
+         • бит 0 — единицы (0 — мм рт.ст., 1 — проценты)
+         • бит 1 — деморежим
+         • бит 2 — синхронизация (0 — внутренняя, 1 — внешняя)
+         • бит 4 — наличие блока измерения N₂O
+         • бит 5 — наличие блока измерения O₂
+         • бит 6 — измерения в дыхательной паузе
+         • бит 7 — режим метаболографа (1) / капнографа (0)
+  en:
+    summary: |-
+      Output packet from the metabolograph/sidestream capnograph (CAPNO1). Module state: emitted on status-bit change and in response to ID_SYNHRO. Carries the current state/shutdown code and mode flags.
+    details: |-
+      Data fields and flags (length 4 bytes):
+      • byte 0 — module state:
+         • 0x00 — measuring
+         • 0x01 — zero calibration
+         • 0x02 — warming up
+         • 0x03 — blockage
+         • 0x04 — pneumatic-path drying
+         • 0x05 — demo mode
+         • 0x06 — line not connected
+         • 0x10 — disabled by user
+         • 0x11 — disabled, blockage
+         • 0x12 — disabled, emitter fault
+         • 0x13 — disabled, receiver fault
+         • 0x14 — disabled, compressor fault
+         • 0x15 — disabled, pressure-sensor fault
+         • 0x16 — disabled, overheat
+         • 0x17 — disabled, capnograph unused for over 1 h
+         • 0x18 — disabled, cell flooded
+         • 0x19 — disabled, purge failed
+      • byte 1 — mode flags:
+         • bit 0 — units (0 — mmHg, 1 — percent)
+         • bit 1 — demo mode
+         • bit 2 — sync (0 — internal, 1 — external)
+         • bit 4 — N₂O measuring block present
+         • bit 5 — O₂ measuring block present
+         • bit 6 — measurements during breath pause
+         • bit 7 — metabolograph (1) / capnograph (0) mode

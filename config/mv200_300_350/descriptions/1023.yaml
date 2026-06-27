@@ -1,0 +1,12 @@
+packageId: 1023
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет ИП (источник питания). Информирует все устройства на шине CAN о выключении питания примерно через 5 с после нажатия кнопки выключения. Имеет максимальный приоритет в системе.
+    details: |-
+      Длина 0 байт. Данных не содержит — само наличие пакета является событием «выключение».
+  en:
+    summary: |-
+      Output packet from the power supply (PWR). Notifies all CAN-bus devices that power will be cut about 5 s after the power button is pressed. Has the highest priority in the system.
+    details: |-
+      Length 0 bytes. Carries no data — the mere presence of the packet is the "power-off" event.

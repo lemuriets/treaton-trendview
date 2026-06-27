@@ -1,0 +1,18 @@
+packageId: 1200
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Параметры дыхания: пиковое давление, динамический комплайнс, стресс-индекс. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 5 байт):
+      • Байт 0 — пиковое давление вдоха [см H₂O]
+      • Байты 1–2 — динамический комплайнс [0,01 мл/мм вод.ст.]
+      • Байты 3–4 — стресс-индекс [0,01] (0xFFFF — ошибка измерения)
+  en:
+    summary: |-
+      Output packet from the CIVL. Breathing parameters: peak pressure, dynamic compliance, stress index. Contains no errors.
+    details: |-
+      Data fields (length 5 bytes):
+      • byte 0 — peak inspiratory pressure [cmH₂O]
+      • bytes 1–2 — dynamic compliance [0.01 ml/mmH₂O]
+      • bytes 3–4 — stress index [0.01] (0xFFFF — measurement error)

@@ -1,0 +1,11 @@
+id: 1202
+name: ID_M_TEXP_CIVL
+length: 2
+parser: config
+fields:
+- name: MeasuredExpirationTime
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  unit: мс

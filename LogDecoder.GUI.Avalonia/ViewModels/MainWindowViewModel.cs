@@ -72,7 +72,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         _openDebugLog = openDebugLog;
         _appVersion = appVersion;
 
-        _title = $"{AppName} v{appVersion}";
+        _title = string.IsNullOrEmpty(appVersion) ? AppName : $"{AppName} v{appVersion}";
         _currentCulture = _language.CurrentCulture;
         _startDateTimeText = DateTime.MinValue.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
         _endDateTimeText = DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture);

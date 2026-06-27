@@ -1,0 +1,24 @@
+packageId: 1189
+descriptions:
+  ru:
+    summary: |-
+      Входной пакет КИВЛ. Параметры вентиляции (часть 3): скорость нарастания давления, частота графиков, поток поддержки, чувствительность к дисконнекции.
+    details: |-
+      Поля данных (длина 7 байт):
+      • Байты 0–1 — скорость нарастания давления [мм вод.ст./с], 50–2000
+      • Байт 2 — делитель частоты выдачи ID_WAVE_CIVL (частота = 500/Байт, не менее 15 Гц)
+      • Байт 3 — поток поддержки [л/мин]
+      • Байт 4 — чувствительность к дисконнекции [%]
+      • Байт 5 — приращение deltaPEEP для манёвра раскрытия альвеол
+      • Байт 6: бит 0 — компенсация утечки (CMV/VCV); бит 1 — «свободное дыхание»; бит 2 — неонатальный/детский режим
+  en:
+    summary: |-
+      Input packet to the CIVL. Ventilation parameters (part 3): pressure rise rate, graph rate, support flow, disconnection sensitivity.
+    details: |-
+      Data fields (length 7 bytes):
+      • bytes 0–1 — pressure rise rate [mmH₂O/s], 50–2000
+      • byte 2 — ID_WAVE_CIVL rate divisor (rate = 500/byte, at least 15 Hz)
+      • byte 3 — support flow [l/min]
+      • byte 4 — disconnection sensitivity [%]
+      • byte 5 — deltaPEEP increment for the alveolar recruitment maneuver
+      • byte 6: bit 0 — leak compensation (CMV/VCV); bit 1 — "free breathing"; bit 2 — neonatal/pediatric mode

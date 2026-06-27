@@ -1,6 +1,7 @@
 using FluentAssertions;
 using LogDecoder.CAN.Contracts;
 using LogDecoder.CAN.Packages;
+using LogDecoder.CAN.Protocol;
 using LogDecoder.Parser;
 using LogDecoder.Parser.Tests.Fixtures;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -203,8 +204,24 @@ public class LogParserIntegrationTests
     private void InitParser()
     {
         var factory = new CanPackageFactory();
+        factory.LoadFrom(ProtocolLoader.LoadActiveFamily(FindConfigRoot()));
         _parser = new LogParser(NullLogger.Instance, _tempDir, factory);
         _parser.CreateOrLoadAllIndexes();
+    }
+
+    private static string FindConfigRoot()
+    {
+        var dir = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
+        while (dir is not null)
+        {
+            var candidate = Path.Combine(dir.FullName, "config");
+            if (Directory.Exists(candidate) && Directory.GetDirectories(candidate).Length > 0)
+            {
+                return candidate;
+            }
+            dir = dir.Parent;
+        }
+        throw new DirectoryNotFoundException("Root config/ folder not found.");
     }
 
     private void WriteLogFile(string filename, params byte[][] buffers)

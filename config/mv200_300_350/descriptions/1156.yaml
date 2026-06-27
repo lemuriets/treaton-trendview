@@ -1,0 +1,20 @@
+packageId: 1156
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет CAPNO1. Графические значения CO₂, N₂O и O₂ в режиме «РАБОТА». Ошибок не содержит.
+    details: |-
+      Поля данных (длина 8 байт):
+      • Байты 0–1 — парциальное давление CO₂ [0,1 мм рт.ст.], 0–115
+      • Байты 2–3 — содержание CO₂ [0,01 %], 0–15 %
+      • Байты 4–5 — O₂ [0,1 %] (некорректно без опции FASTOXY)
+      • Байты 6–7 — N₂O [0,1 %] (некорректно без опции N2O)
+  en:
+    summary: |-
+      Output packet from CAPNO1. Graph values for CO₂, N₂O and O₂ in RUN mode. Contains no errors.
+    details: |-
+      Data fields (length 8 bytes):
+      • bytes 0–1 — CO₂ partial pressure [0.1 mmHg], 0–115
+      • bytes 2–3 — CO₂ fraction [0.01 %], 0–15 %
+      • bytes 4–5 — O₂ [0.1 %] (invalid without the FASTOXY option)
+      • bytes 6–7 — N₂O [0.1 %] (invalid without the N2O option)

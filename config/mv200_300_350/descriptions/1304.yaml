@@ -1,0 +1,14 @@
+packageId: 1304
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Усреднённое давление nCPAP. Ошибок не содержит.
+    details: |-
+      Поля данных (длина 2 байта):
+      • Байты 0–1 — усреднённое давление nCPAP [мм вод.ст.]
+  en:
+    summary: |-
+      Output packet from the CIVL. Averaged nCPAP pressure. Contains no errors.
+    details: |-
+      Data fields (length 2 bytes):
+      • bytes 0–1 — averaged nCPAP pressure [mmH₂O]

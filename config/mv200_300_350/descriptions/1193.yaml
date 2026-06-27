@@ -1,0 +1,142 @@
+packageId: 1193
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Коды ошибок калибровок датчиков и других операций. Содержимое зависит от текущего режима работы модуля (ID_MODE_CIVL).
+    details: |-
+      Байт 0 — код ответа/ошибки; содержимое зависит от режима.
+
+      Режим «калибровка датчика кислорода»:
+      • 0 — начало калибровки
+      • 1 — успешно (Байт 1 — оставшийся ресурс датчика, %)
+      • 2 — успешно, рекомендуется замена датчика кислорода
+      • 3 — датчик кислорода отсутствует или неисправен
+      • 4 — нет/некорректна информация об атмосферном давлении
+      • 5 — отмена калибровки
+      • 6 — выдача напряжения с датчика (Байт 1 — [0,1 мВ])
+      • 7 — неисправен канал измерения кислорода в КИВЛ
+      • 8 — ошибка записи во flash
+      • 9 — процент завершения калибровки (Байт 1)
+      • 10 — напряжение на датчике выше ранее запомненного
+      • 11 — вышел срок жизни датчика
+      • 12 — слишком низкое напряжение нового датчика
+      • 13 — слишком высокое напряжение нового датчика
+      • 14 — ошибка считывания напряжения из файловой системы
+
+      Режим «калибровка клапана выдоха»:
+      • 0 — начало; 1 — ЭМКВ откалибрована успешно
+      • 2/3/4 — не удаётся достичь давления 10/30/50 см вод.ст.
+      • 5 — отсутствует поток на выдохе
+      • 6 — не удаётся достичь нулевого потока при останове ГП
+      • 7 — давление на выдохе > 2 см при потоке 10 л/мин
+      • 8 — большая нелинейность ЭМКВ
+      • 9 — ошибка записи во FLASH; 10 — отмена
+      • 11 — не откалиброван датчик потока в ЭМКВ
+      • 12 — не откалиброван ДД в маг. выдоха
+      • 13 — не откалиброван дифф. ДД для ДП в ЭМКВ
+      • 14 — калибровочная кривая на 20 л/мин не соответствует реальной
+
+      Режим «калибровка датчика потока в магистрали выдоха»:
+      • 0 — начало; 1 — успешно; 2 — обновить процент завершения
+      • 3 — отказ смесителя газов; 4 — нет ответа от СГ
+      • 5 — поток не равен нулю; 6 — неверная скорость передачи от СГ
+      • 7 — большое давление в магистрали вдоха
+      • 8 — ошибка вычисления коэффициентов
+      • 9/10 — ошибочные коэффициенты датчиков давления (вдох/дифф.)
+      • 11 — нет ответа от источника питания
+      • 12 — датчик температуры ИП неисправен
+      • 13 — низкая температура воздуха
+      • 14 — остановка задачи калибровки
+      • 15 — ошибка монотонности; 16 — ошибка записи коэффициентов
+      • 17 — ошибочный коэффициент датчика давления выдоха
+      • 18 — Байт 1 содержит макс. погрешность
+
+      Режим «КВТ»:
+      • 0 — начало
+      • 1/2 — датчик давления вдоха/выдоха не откалиброван
+      • 3 — нет ответа от СГ; 4 — неверная частота пакетов от СГ
+      • 5 — низкая температура воздуха; 6 — датчик температуры ИП неисправен
+      • 7 — отмена; 8 — неисправность СГ; 9 — высокое давление вдоха
+      • 10 — действовать далее; 11 — ошибка монотонности
+      • 12 — ошибка записи коэффициентов; 13 — нет ответа от ИП
+      • 15 — обновить процент завершения
+      • 16/17 — большой/низкий комплайнс контура
+      • 18 — большая утечка из контура; 19 — клапан выдоха не закрывается
+
+      Режим «тест контура nCPAP»:
+      • 0 — начало; 1 — успешно
+      • 2 — датчик Paux не подсоединён к тройнику
+      • 3 — высокое давление вдоха
+      • 4 — датчик Paux не откалибровался
+      • 5 — датчик давления вдоха не откалибровался
+      • 6 — начальное давление Paux больше 1 см; 7 — отмена
+  en:
+    summary: |-
+      Output packet from the CIVL. Error codes for sensor calibrations and other operations. Contents depend on the module's current operating mode (ID_MODE_CIVL).
+    details: |-
+      Byte 0 — response/error code; contents depend on the mode.
+
+      "Oxygen sensor calibration" mode:
+      • 0 — calibration start
+      • 1 — success (byte 1 — remaining sensor resource, %)
+      • 2 — success, oxygen sensor replacement recommended
+      • 3 — oxygen sensor missing or faulty
+      • 4 — no/invalid atmospheric-pressure info
+      • 5 — calibration cancelled
+      • 6 — sensor voltage output (byte 1 — [0.1 mV])
+      • 7 — oxygen measuring channel in the CIVL faulty
+      • 8 — flash write error
+      • 9 — calibration progress percent (byte 1)
+      • 10 — sensor voltage above previously stored value
+      • 11 — sensor lifetime expired
+      • 12 — new-sensor voltage too low
+      • 13 — new-sensor voltage too high
+      • 14 — error reading voltage from the file system
+
+      "Exhalation valve calibration" mode:
+      • 0 — start; 1 — exhalation valve calibrated successfully
+      • 2/3/4 — cannot reach pressure 10/30/50 cmH₂O
+      • 5 — no expiratory flow
+      • 6 — cannot reach zero expiratory flow when the flow generator stops
+      • 7 — expiratory pressure over 2 cm at 10 l/min flow
+      • 8 — large valve nonlinearity
+      • 9 — FLASH write error; 10 — cancelled
+      • 11 — exhalation-valve flow sensor not calibrated
+      • 12 — expiratory-line pressure sensor not calibrated
+      • 13 — differential pressure sensor for the valve flow sensor not calibrated
+      • 14 — calibration curve at 20 l/min does not match reality
+
+      "Expiratory-line flow sensor calibration" mode:
+      • 0 — start; 1 — success; 2 — update progress percent
+      • 3 — gas-mixer failure; 4 — no response from the mixer
+      • 5 — flow not zero; 6 — wrong data rate from the mixer
+      • 7 — high inspiratory-line pressure
+      • 8 — coefficient computation error
+      • 9/10 — invalid pressure-sensor coefficients (inspiratory/differential)
+      • 11 — no response from the power supply
+      • 12 — power-supply temperature sensor faulty
+      • 13 — low ambient air temperature
+      • 14 — calibration task stopped
+      • 15 — monotonicity error; 16 — coefficient write error
+      • 17 — invalid expiratory pressure-sensor coefficient
+      • 18 — byte 1 holds the max error
+
+      "KVT" mode:
+      • 0 — start
+      • 1/2 — inspiratory/expiratory pressure sensor not calibrated
+      • 3 — no response from the mixer; 4 — wrong packet rate from the mixer
+      • 5 — low ambient air temperature; 6 — power-supply temperature sensor faulty
+      • 7 — cancelled; 8 — mixer fault; 9 — high inspiratory pressure
+      • 10 — proceed; 11 — monotonicity error
+      • 12 — coefficient write error; 13 — no response from the power supply
+      • 15 — update progress percent
+      • 16/17 — high/low circuit compliance
+      • 18 — large circuit leak; 19 — exhalation valve does not close
+
+      "nCPAP circuit test" mode:
+      • 0 — start; 1 — success
+      • 2 — Paux sensor not connected to the wye
+      • 3 — high inspiratory pressure
+      • 4 — Paux pressure sensor did not calibrate
+      • 5 — inspiratory pressure sensor did not calibrate
+      • 6 — initial Paux pressure over 1 cm; 7 — cancelled

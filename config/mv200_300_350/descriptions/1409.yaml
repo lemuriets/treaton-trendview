@@ -1,0 +1,54 @@
+packageId: 1409
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет модуля пульсоксиметрии Masimo (статус 1). Измерения и состояние датчика: наполнение, пульс, сатурация, PVI и достоверность.
+    details: |-
+      Поля данных и состояние (длина 8 байт):
+      • Байты 0–1 — наполнение [0,001 %], норма 0,000–20,000
+      • Байты 2–3 — частота пульса [уд/мин], норма 0–240
+      • Байт 4 — сатурация [%], норма 0–100
+      • Байт 5 — PVI [%], норма 0–100
+      • Байт 6 — состояние датчика (биты 0–3):
+         • 0 — норма
+         • 1 — датчик не подключён
+         • 2 — датчик сброшен
+         • 3 — датчик неисправен
+         • 4 — деградация датчика
+         • 5 — слабый сигнал ФПГ
+         • 6 — установка соединения с модулем
+         • 7 — модуль отсутствует
+         • 8 — высокий уровень помех
+         • 9 — калибровка датчика
+         • 10 — поиск пульса
+         • 11 — несовместимый датчик
+         • 12 — модуль неисправен
+         • 13 — измерения недостоверны
+         • биты 4–7 — тип датчика (SType)
+      • Байт 7 — биты достоверности (PI, PR, SpO₂, PVI, SType); биты 6–7 — режим работы (как в ID_MODE_SPO_V2)
+  en:
+    summary: |-
+      Output packet from the Masimo pulse oximetry module (status 1). Measurements and sensor state: perfusion, pulse, saturation, PVI and validity.
+    details: |-
+      Data fields and state (length 8 bytes):
+      • bytes 0–1 — perfusion [0.001 %], normal 0.000–20.000
+      • bytes 2–3 — pulse rate [bpm], normal 0–240
+      • byte 4 — saturation [%], normal 0–100
+      • byte 5 — PVI [%], normal 0–100
+      • byte 6 — sensor state (bits 0–3):
+         • 0 — normal
+         • 1 — sensor not connected
+         • 2 — sensor reset
+         • 3 — sensor faulty
+         • 4 — sensor degradation
+         • 5 — weak PPG signal
+         • 6 — connecting to the module
+         • 7 — module absent
+         • 8 — high interference level
+         • 9 — sensor calibration
+         • 10 — pulse search
+         • 11 — incompatible sensor
+         • 12 — module faulty
+         • 13 — measurements unreliable
+         • bits 4–7 — sensor type (SType)
+      • byte 7 — validity bits (PI, PR, SpO₂, PVI, SType); bits 6–7 — operating mode (as in ID_MODE_SPO_V2)

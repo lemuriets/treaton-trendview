@@ -1,0 +1,18 @@
+id: 1203
+name: ID_M_TINSP_CIVL
+length: 4
+parser: config
+fields:
+- name: MeasuredInspirationTime
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  unit: мс
+- name: RCinsp
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: 0 выводится как прочерки
+  unit: мс

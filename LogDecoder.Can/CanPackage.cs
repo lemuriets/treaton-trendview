@@ -1,5 +1,3 @@
-using LogDecoder.CAN.Protocol;
-
 namespace LogDecoder.CAN;
 
 public readonly struct CanPackage(PackageType type, int id, ReadOnlyMemory<byte> data, int hrc, int length)

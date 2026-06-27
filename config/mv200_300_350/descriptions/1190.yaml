@@ -1,0 +1,18 @@
+packageId: 1190
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ. Графическая информация (поток, давление, объём) в режиме «РАБОТА». Ошибок не содержит.
+    details: |-
+      Поля данных (длина 8 байт, величины знаковые):
+      • Байты 0–1 — поток, приведённый к тройнику [0,1 л/мин]
+      • Байты 2–3 — давление в магистрали [мм вод.ст.]
+      • Байты 4–7 — объём [0,1 мл]
+  en:
+    summary: |-
+      Output packet from the CIVL. Graph data (flow, pressure, volume) in RUN mode. Contains no errors.
+    details: |-
+      Data fields (length 8 bytes, signed values):
+      • bytes 0–1 — flow referred to the patient wye [0.1 l/min]
+      • bytes 2–3 — circuit pressure [mmH₂O]
+      • bytes 4–7 — volume [0.1 ml]

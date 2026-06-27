@@ -1,0 +1,56 @@
+packageId: 1184
+descriptions:
+  ru:
+    summary: |-
+      Входной пакет КИВЛ. Управление режимом работы модуля. Переход в «РАБОТА» возможен после приёма ID_PAR1/2/3_CIVL, ID_PARAPNEA_CIVL, ID_OPT_CIVL.
+    details: |-
+      Поля данных (длина 1 байт). Байт 0 — режим работы:
+      • 0 — ОЖИДАНИЕ
+      • 1 — РАБОТА
+      • 2 — Короткий внутренний тест (КВТ)
+      • 3 — Полный внутренний тест (ПВТ)
+      • 4 — калибровка клапана выдоха
+      • 5 — калибровка датчика кислорода на вдохе
+      • 6 — калибровка FASTOXY в капнографе БО
+      • 7 — калибровка датчиков давления (сервис)
+      • 8 — проверка ЭМКВ (сервис)
+      • 9 — калибровка датчика потока O₂ в СГ (сервис)
+      • 10 — калибровка генератора потока (сервис)
+      • 11 — генерация потока (сервис)
+      • 12 — проверка утечки (сервис)
+      • 13 — технологический детский режим (сервис)
+      • 14 — калибровка датчика потока воздуха в СГ (сервис)
+      • 15 — калибровка преобразователя поток-давление (сервис)
+      • 16–19 — аварийные режимы АР-1…ПАР (сервис)
+      • 21 — замена датчика кислорода на вдохе
+      • 22 — запуск загрузчика КИВЛ (сервис)
+      • 23 — Инициализация
+      • 24 — калибровка нулей датчиков давления по температуре
+      • 25 — тест контура для режима nCPAP
+  en:
+    summary: |-
+      Input packet to the CIVL. Module operating-mode control. Switching to RUN requires prior receipt of ID_PAR1/2/3_CIVL, ID_PARAPNEA_CIVL, ID_OPT_CIVL.
+    details: |-
+      Data fields (length 1 byte). Byte 0 — operating mode:
+      • 0 — STANDBY
+      • 1 — RUN
+      • 2 — Short Internal Test (KVT)
+      • 3 — Full Internal Test (PVT)
+      • 4 — exhalation valve calibration
+      • 5 — inspiratory oxygen sensor calibration
+      • 6 — FASTOXY calibration in the sidestream capnograph
+      • 7 — pressure-sensor calibration (service)
+      • 8 — exhalation valve check (service)
+      • 9 — O₂ flow-sensor calibration in the mixer (service)
+      • 10 — flow-generator calibration (service)
+      • 11 — flow generation (service)
+      • 12 — leak check (service)
+      • 13 — technological pediatric mode (service)
+      • 14 — air flow-sensor calibration in the mixer (service)
+      • 15 — flow-to-pressure converter calibration (service)
+      • 16–19 — emergency modes AR-1…PAR (service)
+      • 21 — inspiratory oxygen sensor replacement
+      • 22 — CIVL bootloader launch (service)
+      • 23 — Initialization
+      • 24 — pressure-sensor zero calibration by temperature
+      • 25 — circuit test for nCPAP mode

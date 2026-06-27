@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Diagnostics;
+using LogDecoder.CAN;
 using LogDecoder.CAN.Packages;
 using LogDecoder.CAN.Protocol;
 using LogDecoder.Infrastructure.Logging;
@@ -24,7 +25,7 @@ class Program
     
     private static void Run()
     {
-        var ivlLogsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/problem_log_test";
+        var ivlLogsFolder = "/Users/lemuriets/Projects/treaton/log decoder/sharp/LogDecoder/test_1";
         var logsFolder = Path.Combine(ivlLogsFolder, "logs");
         // var logsFolder = "/Volumes/Cucumber/treaton_bin_avl";
         // var logsFolder = "/Volumes/KINGSTON/SD";
@@ -33,6 +34,7 @@ class Program
         using var loggerProvider = new LoggerProvider();
         var logger = loggerProvider.CreateLogger<LogParser>();
         var factory = new CanPackageFactory();
+        factory.LoadFrom(ProtocolLoader.LoadActiveFamily(logger: logger), logger);
         var parser = new LogParser(logger, ivlLogsFolder, factory);
         
         parser.CreateOrLoadAllIndexes();
@@ -43,7 +45,7 @@ class Program
         // var start = parser.MinDatetime.Value;
         // var end = parser.MaxDatetime.Value;
         // IReadOnlySet<int> ids = parser.RegisteredIds;
-        IReadOnlySet<int> ids = new HashSet<int>(){IdSynchro.Id, IdModeCivl.Id};
+        IReadOnlySet<int> ids = new HashSet<int>(){factory.SynchroId, 1184};
         
         var export = new CsvExport(logger, parser);
         export.ToCsv(

@@ -4,6 +4,8 @@ namespace LogDecoder.CAN.General;
 
 public readonly record struct NumericDataItem(string Name, double Value)
 {
+    public string? Unit { get; init; }
+
     public override string ToString()
     {
         return $"{Name}: {Value}";

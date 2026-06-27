@@ -1,0 +1,7 @@
+id: 1023
+name: ID_OFF_PWR
+length: 0
+description: Информирование о выключении питания через примерно 5 секунд
+fields: []
+messages:
+- { message: выключения питания, status: Ok }

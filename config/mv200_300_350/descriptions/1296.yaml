@@ -1,0 +1,36 @@
+packageId: 1296
+descriptions:
+  ru:
+    summary: |-
+      Выходной пакет КИВЛ (статус 2). Дополнительные флаги неисправностей; формируется следом за ID_STATUS_CIVL каждые 100 мс. Отсутствие пакета не считается отказом модуля.
+    details: |-
+      Слово состояния (длина 2 байта), биты 0–11:
+      • бит 0 — неисправность датчика потока Jet
+      • бит 1 — неисправность клапана безопасности Jet
+      • бит 2 — неисправность регулятора ШИМ Jet
+      • бит 3 — неисправность АЦП1
+      • бит 4 — неисправность модуля респираторной механики
+      • бит 5 — превышен предел давления nCPAP
+      • бит 6 — неисправность датчика давления Aux1
+      • бит 7 — неисправность системного напряжения 27V
+      • бит 8 — неисправность датчика температуры и атм. давления на плате КИВЛ
+      • бит 9 — заданный объём вдоха недостижим (PCV-VG, SIMV/DC)
+      • бит 10 — Paux не соответствует установленному значению
+      • бит 11 — достигнуто давление 50 см вод.ст. (nCPAP, HF O₂)
+  en:
+    summary: |-
+      Output packet from the CIVL (status 2). Additional fault flags; emitted right after ID_STATUS_CIVL every 100 ms. Its absence is not treated as a module no-response.
+    details: |-
+      Status word (length 2 bytes), bits 0–11:
+      • bit 0 — Jet flow sensor fault
+      • bit 1 — Jet safety valve fault
+      • bit 2 — Jet PWM regulator fault
+      • bit 3 — ADC1 fault
+      • bit 4 — respiratory-mechanics module fault
+      • bit 5 — nCPAP pressure limit exceeded
+      • bit 6 — Aux1 pressure sensor fault
+      • bit 7 — system voltage (27V) fault
+      • bit 8 — temperature/atm-pressure sensor fault on the CIVL board
+      • bit 9 — set tidal volume unreachable (PCV-VG, SIMV/DC)
+      • bit 10 — Paux does not match the set value
+      • bit 11 — pressure 50 cmH₂O reached (nCPAP, HF O₂)

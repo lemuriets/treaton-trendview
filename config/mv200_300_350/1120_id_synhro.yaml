@@ -1,0 +1,16 @@
+id: 1120
+name: ID_SYNHRO
+length: 6
+description: Синхропакет; формируется с частотой 1 Гц
+fields:
+- name: Timestamp
+  kind: DateTime
+  bytes:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  yearOffset: 2000
+  description: 'Год(+2000), месяц, день, час, минута, секунда'

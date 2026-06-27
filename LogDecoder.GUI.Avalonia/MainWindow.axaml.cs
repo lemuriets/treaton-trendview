@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using LogDecoder.CAN.Packages;
@@ -7,6 +8,7 @@ using LogDecoder.GUI.Avalonia.Models;
 using LogDecoder.GUI.Avalonia.Services;
 using LogDecoder.GUI.Avalonia.ViewModels;
 using LogDecoder.Helpers;
+using LogDecoder.Infrastructure.Configuration;
 using LogDecoder.Infrastructure.Logging;
 using Microsoft.Extensions.Logging;
 
@@ -20,12 +22,24 @@ public partial class MainWindow : Window
     private bool _isUpdatingSelectAll;
     private Flyout? _descriptionFlyout;
 
-    public MainWindow()
+    // Parameterless ctor required by the Avalonia XAML compiler/previewer; at
+    // runtime App always uses the factory ctor with the loaded protocol.
+    public MainWindow() : this(new CanPackageFactory(), new LoggerProvider())
     {
-        _loggerProvider = new LoggerProvider();
+    }
+
+    public MainWindow(CanPackageFactory factory, LoggerProvider loggerProvider)
+    {
+        _loggerProvider = loggerProvider;
         var logger = _loggerProvider.CreateLogger<MainWindow>();
 
-        var factory = new CanPackageFactory();
+        var version = UserConfig.LoadOrCreate().Version;
+        if (string.IsNullOrWhiteSpace(version))
+        {
+            logger.LogWarning("No version set in userconfig.json; loading without version");
+            version = string.Empty;
+        }
+
         var packageCatalog = new PackageCatalog(factory);
         var indexing = new IndexingService(logger, factory);
         var export = new ExportService();
@@ -47,7 +61,7 @@ public partial class MainWindow : Window
             dialogs,
             parser => new Trends(parser).Show(this),
             () => new DebugLogWindow().Show(this),
-            AppVersionProvider.GetVersion());
+            version);
 
         InitializeComponent();
 
@@ -55,7 +69,7 @@ public partial class MainWindow : Window
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
         PackageIdList.SelectionChanged += PackageSelectionChanged;
-        PackageIdList.ContextRequested += PackageContextRequested;
+        PackageIdList.AddHandler(PointerPressedEvent, PackageListPointerPressed, RoutingStrategies.Tunnel);
         ChkSelectAllPackages.Checked += ChkSelectAllPackagesChecked;
         ChkSelectAllPackages.Unchecked += ChkSelectAllPackagesUnchecked;
 
@@ -70,7 +84,7 @@ public partial class MainWindow : Window
     {
         _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         PackageIdList.SelectionChanged -= PackageSelectionChanged;
-        PackageIdList.ContextRequested -= PackageContextRequested;
+        PackageIdList.RemoveHandler(PointerPressedEvent, PackageListPointerPressed);
         ChkSelectAllPackages.Checked -= ChkSelectAllPackagesChecked;
         ChkSelectAllPackages.Unchecked -= ChkSelectAllPackagesUnchecked;
 
@@ -99,14 +113,26 @@ public partial class MainWindow : Window
         UpdateSelectAllCheckbox();
     }
 
-    private void PackageContextRequested(object? sender, ContextRequestedEventArgs e)
+    private void PackageListPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (_descriptionFlyout is null || e.Source is not Control source)
+        if (!e.GetCurrentPoint(PackageIdList).Properties.IsRightButtonPressed)
         {
             return;
         }
 
-        if (source.DataContext is not PackageItem item)
+        // Right-click is for showing the package description, not selecting.
+        // Handle it here so the ListBox does not toggle the current selection.
+        e.Handled = true;
+
+        if (e.Source is Control source)
+        {
+            ShowDescriptionFlyout(source);
+        }
+    }
+
+    private void ShowDescriptionFlyout(Control source)
+    {
+        if (_descriptionFlyout is null || source.DataContext is not PackageItem item)
         {
             return;
         }
@@ -118,7 +144,6 @@ public partial class MainWindow : Window
         }
 
         _descriptionFlyout.ShowAt(target, showAtPointer: true);
-        e.Handled = true;
     }
 
     private void ChkSelectAllPackagesChecked(object? sender, RoutedEventArgs e)

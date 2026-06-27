@@ -5,7 +5,11 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
+using LogDecoder.CAN.Protocol;
 using LogDecoder.GUI.Avalonia.Services;
+using LogDecoder.Infrastructure.Configuration;
+using LogDecoder.Infrastructure.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace LogDecoder.GUI.Avalonia;
 
@@ -35,10 +39,154 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow();
+            desktop.MainWindow = CreateStartupWindow(desktop);
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static Window CreateStartupWindow(IClassicDesktopStyleApplicationLifetime desktop)
+    {
+        var loggerProvider = new LoggerProvider();
+        var logger = loggerProvider.CreateLogger<App>();
+
+        try
+        {
+            var families = ProtocolLoader.ListFamilies(logger: logger);
+            if (families.Count == 0)
+            {
+                loggerProvider.Dispose();
+                return CreateFatalWindow(
+                    Localizer.L("ConfigMissingTitle"),
+                    Localizer.F("ConfigMissingMessage", ProtocolLoader.DefaultConfigRoot));
+            }
+            if (families.Count == 1)
+            {
+                return BuildMainWindow(families[0], loggerProvider, logger);
+            }
+            return CreateConfigSelectionWindow(desktop, families, loggerProvider, logger);
+        }
+        catch (ConfigFolderMissingException ex)
+        {
+            logger.LogError(ex, "Configuration folder missing; cannot start");
+            loggerProvider.Dispose();
+            return CreateFatalWindow(
+                Localizer.L("ConfigMissingTitle"),
+                Localizer.F("ConfigMissingMessage", ex.ConfigPath));
+        }
+        catch (ProtocolLoadException ex)
+        {
+            logger.LogError(ex, "Failed to load protocol configuration; cannot start");
+            loggerProvider.Dispose();
+            return CreateFatalWindow(Localizer.L("ConfigInvalidTitle"), Localizer.F("ConfigInvalidMessage", ex.Message));
+        }
+    }
+
+    private static MainWindow BuildMainWindow(ConfigFamily family, LoggerProvider loggerProvider, ILogger logger)
+    {
+        var factory = ProtocolBootstrap.CreateFactory(family, logger);
+        PackageDescriptionService.Initialize(family.FullPath, logger);
+        SaveActiveConfig(family.FolderName);
+        logger.LogInformation("Active config family: {Family}", family.FolderName);
+        return new MainWindow(factory, loggerProvider);
+    }
+
+    private static void SaveActiveConfig(string folderName)
+    {
+        try
+        {
+            var config = UserConfig.LoadOrCreate();
+            config.ActiveConfig = folderName;
+            config.Save();
+        }
+        catch
+        {
+            // Persisting the choice is best-effort; failure must not block startup.
+        }
+    }
+
+    private static Window CreateConfigSelectionWindow(
+        IClassicDesktopStyleApplicationLifetime desktop,
+        IReadOnlyList<ConfigFamily> families,
+        LoggerProvider loggerProvider,
+        ILogger logger)
+    {
+        var saved = UserConfig.LoadOrCreate().ActiveConfig;
+        var preselect = families.ToList().FindIndex(f => f.FolderName == saved);
+
+        var window = new ConfigSelectionWindow(
+            families.Select(f => f.DisplayName).ToList(),
+            preselect >= 0 ? preselect : 0);
+
+        var proceeded = false;
+        window.Accepted += index =>
+        {
+            Window next;
+            try
+            {
+                next = BuildMainWindow(families[index], loggerProvider, logger);
+            }
+            catch (ProtocolLoadException ex)
+            {
+                logger.LogError(ex, "Failed to load selected configuration; cannot start");
+                loggerProvider.Dispose();
+                next = CreateFatalWindow(Localizer.L("ConfigInvalidTitle"), Localizer.F("ConfigInvalidMessage", ex.Message));
+            }
+            proceeded = true;
+            desktop.MainWindow = next;
+            next.Show();
+            window.Close();
+        };
+
+        window.Closed += (_, _) =>
+        {
+            if (!proceeded)
+            {
+                loggerProvider.Dispose();
+                Environment.Exit(0);
+            }
+        };
+
+        return window;
+    }
+
+    private static Window CreateFatalWindow(string title, string message)
+    {
+        var okButton = new Button
+        {
+            Content = "OK",
+            Width = 90,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            Background = new SolidColorBrush(Color.Parse("#4CAF50")),
+            Foreground = Brushes.White,
+            Margin = new Thickness(0, 8, 0, 12)
+        };
+
+        var textBlock = new TextBlock
+        {
+            Text = message,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(16)
+        };
+
+        var content = new DockPanel
+        {
+            Children = { okButton, new ScrollViewer { Content = textBlock } }
+        };
+        DockPanel.SetDock(okButton, Dock.Bottom);
+
+        var window = new Window
+        {
+            Title = title,
+            Width = 560,
+            Height = 260,
+            Content = content
+        };
+
+        okButton.Click += (_, _) => Environment.Exit(0);
+        return window;
     }
 
     private static void SetupGlobalExceptionHandlers()

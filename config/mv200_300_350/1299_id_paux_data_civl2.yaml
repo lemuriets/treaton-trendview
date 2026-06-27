@@ -1,0 +1,27 @@
+id: 1299
+name: ID_PAUX_DATA_CIVL2
+length: 6
+parser: config
+description: Давление Paux за дыхательный цикл
+fields:
+- name: PauxMaxPressure
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  signed: true
+  unit: мм вод.ст.
+- name: PauxMeanPressure
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  signed: true
+  unit: мм вод.ст.
+- name: PauxMinPressure
+  kind: Value
+  bytes:
+  - 4
+  - 5
+  signed: true
+  unit: мм вод.ст.

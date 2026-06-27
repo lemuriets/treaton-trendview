@@ -1,0 +1,44 @@
+id: 1188
+name: ID_PAR2_CIVL
+length: 8
+parser: config
+description: Параметры вентиляции 2
+fields:
+- name: InspiratoryVolume
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Объем вдоха
+  unit: мл
+- name: PlateauDuration
+  kind: Value
+  byte: 2
+  description: Длительность плато
+  unit: '%'
+- name: PressureSupportAbovePEEP
+  kind: Value
+  byte: 3
+  description: PS над уровнем ПДКВ
+  unit: см вод.ст.
+- name: Pmax
+  kind: Value
+  byte: 4
+  description: Pmax
+  unit: см вод.ст.
+- name: Pt
+  kind: Value
+  byte: 5
+  description: Pressure Tidal; в BiSTEP Phigh
+  unit: см вод.ст.
+- name: TriggerWindow
+  kind: Value
+  byte: 6
+  description: Триггерное окно 0..100%
+  unit: '%'
+- name: InspirationEndTrigger
+  kind: Value
+  byte: 7
+  description: Триггер окончания вдоха; 0xFF авто
+  unit: '%'
+  sentinel: { value: 255, message: 'Триггер окончания вдоха: AUTO' }

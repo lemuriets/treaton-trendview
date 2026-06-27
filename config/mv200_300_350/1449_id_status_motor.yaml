@@ -1,0 +1,70 @@
+id: 1449
+name: ID_STATUS_MOTOR
+length: 1
+parser: config
+description: Статус мотора; отказ модуля = биты 0|1|2|5|6|7
+fields:
+- name: StatusBit0
+  kind: Bit
+  byte: 0
+  bit: 0
+  values:
+    1:
+      message: Отказ датчиков Холла
+      status: Error
+- name: StatusBit1
+  kind: Bit
+  byte: 0
+  bit: 1
+  values:
+    1:
+      message: Отказ драйвера ЭД OCTW DRV8301
+      status: Error
+- name: StatusBit2
+  kind: Bit
+  byte: 0
+  bit: 2
+  values:
+    1:
+      message: Отказ драйвера ЭД FAULT DRV8301
+      status: Error
+- name: StatusBit3
+  kind: Bit
+  byte: 0
+  bit: 3
+  values:
+    1:
+      message: 'Бит сброса: первый пакет после загрузки'
+      status: Info
+- name: StatusBit5
+  kind: Bit
+  byte: 0
+  bit: 5
+  values:
+    1:
+      message: Отказ энкодера
+      status: Error
+- name: StatusBit6
+  kind: Bit
+  byte: 0
+  bit: 6
+  values:
+    1:
+      message: Отказ привода
+      status: Error
+- name: StatusBit7
+  kind: Bit
+  byte: 0
+  bit: 7
+  values:
+    1:
+      message: 'Критический отказ: останов мотора'
+      status: Critical
+- name: UnusedBit4
+  kind: Bit
+  byte: 0
+  bit: 4
+  values:
+    1:
+      message: Не используется; должно быть 0
+      status: Ok

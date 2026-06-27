@@ -1,0 +1,68 @@
+id: 1249
+name: ID_STATUS_SPO
+length: 7
+parser: config
+description: Информация о состоянии модуля пульсоксиметрии Тритон
+fields:
+- name: Filling
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Наполнение; значения >=1000 вызывают прочерки
+  scale: 0.1
+  unit: '%'
+- name: PulseRate
+  kind: Value
+  bytes:
+  - 2
+  - 3
+  description: Значения >=1000 вызывают прочерки
+  unit: уд/мин
+- name: Saturation
+  kind: Value
+  byte: 4
+  description: 255 вызывает прочерки
+  unit: '%'
+- name: SensorAndSignalStatus
+  kind: BitRange
+  byte: 5
+  bitRange:
+    from: 0
+    to: 3
+  values:
+    0:
+      message: Норма
+      status: Ok
+    1:
+      message: Модуль отключен
+      status: Info
+    2:
+      message: Модуль неисправен
+      status: Error
+    3:
+      message: Датчик отсоединен
+      status: Warning
+    4:
+      message: Датчик неисправен
+      status: Error
+    5:
+      message: Датчик сброшен
+      status: Info
+    6:
+      message: Слабый сигнал датчика ФПГ
+      status: Warning
+    7:
+      message: Деградация датчика
+      status: Warning
+- name: ReservedStatusBits
+  kind: BitRange
+  byte: 5
+  bitRange:
+    from: 4
+    to: 7
+  description: Резерв
+- name: ModuleMode
+  kind: Value
+  byte: 6
+  description: Режим работы блока, соответствует ID_MODE_SPO

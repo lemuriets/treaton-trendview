@@ -1,0 +1,13 @@
+id: 1304
+name: ID_NCPAP_CIVL2
+length: 2
+parser: config
+description: Давление nCPAP
+fields:
+- name: MeanNcpapPressure
+  kind: Value
+  bytes:
+  - 0
+  - 1
+  description: Усредненное давление nCPAP
+  unit: мм вод.ст.

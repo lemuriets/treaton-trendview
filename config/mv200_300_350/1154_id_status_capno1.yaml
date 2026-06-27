@@ -1,0 +1,113 @@
+id: 1154
+name: ID_STATUS_CAPNO1
+length: 4
+parser: config
+description: Информация о статусе модуля капнографа бокового отведения
+fields:
+- name: ModuleStatus
+  kind: Value
+  byte: 0
+  description: Статус модуля
+  values:
+    0: { message: измерение, status: Ok }
+    1: калибровка нуля
+    2: прогрев
+    3: { message: закупорка, status: Warning }
+    4: просушка пневмотракта
+    5: режим демонстрации
+    6: { message: не подключена линия, status: Warning }
+    16: отключен пользователем
+    17: { message: 'отключен, закупорка', status: Warning }
+    18: { message: 'отключен, неисправность излучателя', status: Error }
+    19: { message: 'отключен, неисправность приемника', status: Error }
+    20: { message: 'отключен, неисправность компрессора', status: Error }
+    21: { message: 'отключен, неисправность датчика давления', status: Error }
+    22: { message: 'отключен, перегрев', status: Error }
+    23: отключен, капнограф не использовался больше 1 часа
+    24: { message: 'отключен, залита камера', status: Error }
+    25: { message: 'отключен, продувка неудачна', status: Error }
+- name: DisplayMode
+  kind: Bit
+  byte: 1
+  bit: 0
+  values:
+    0:
+      message: Отображение в мм рт.ст.
+      status: Ok
+    1:
+      message: Отображение в процентах
+      status: Ok
+- name: DemoMode
+  kind: Bit
+  byte: 1
+  bit: 1
+  values:
+    0:
+      message: Деморежим выключен
+      status: Ok
+    1:
+      message: Деморежим включен
+      status: Ok
+- name: SyncMode
+  kind: Bit
+  byte: 1
+  bit: 2
+  values:
+    0:
+      message: Внутренняя синхронизация
+      status: Ok
+    1:
+      message: Внешняя синхронизация
+      status: Ok
+- name: SampleLineConnected
+  kind: Bit
+  byte: 1
+  bit: 3
+  values:
+    1:
+      message: Признак подключенной линии отбора пробы
+      status: Ok
+- name: N2OOptionPresent
+  kind: Bit
+  byte: 1
+  bit: 4
+  values:
+    1:
+      message: Наличие блока измерения N2O
+      status: Ok
+- name: O2OptionPresent
+  kind: Bit
+  byte: 1
+  bit: 5
+  values:
+    1:
+      message: Наличие блока измерения O2
+      status: Ok
+- name: MeasurementMode
+  kind: Bit
+  byte: 1
+  bit: 6
+  values:
+    0:
+      message: Обычные циклические измерения
+      status: Ok
+    1:
+      message: Измерения в дыхательной паузе
+      status: Ok
+- name: CapnographOrMetabolographMode
+  kind: Bit
+  byte: 1
+  bit: 7
+  values:
+    0:
+      message: Режим капнографа
+      status: Ok
+    1:
+      message: Режим метаболографа
+      status: Ok
+- name: UnusedBytes
+  kind: Raw
+  bytes:
+  - 2
+  - 3
+  description: Не используется

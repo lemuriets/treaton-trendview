@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LogDecoder.Helpers;
 
 namespace LogDecoder.Infrastructure.Configuration;
 
@@ -10,6 +11,12 @@ public sealed class LoggingUserConfig
 public sealed class UserConfig
 {
     public LoggingUserConfig Logging { get; set; } = new();
+
+    /// <summary>Folder name of the last-selected protocol config family (pre-selected at startup).</summary>
+    public string? ActiveConfig { get; set; }
+
+    /// <summary>Application version shown in the title and About dialog. Stored only here.</summary>
+    public string? Version { get; set; }
 
     public static UserConfig LoadOrCreate()
     {
@@ -34,7 +41,7 @@ public sealed class UserConfig
 
     public static string GetPath()
     {
-        return Path.Combine(AppContext.BaseDirectory, "userconfig.json");
+        return Path.Combine(AppPaths.BaseDirectory, "userconfig.json");
     }
 
     private static JsonSerializerOptions JsonOptions()
